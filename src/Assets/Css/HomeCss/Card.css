@@ -1,0 +1,132 @@
+.card_body {
+  /* filter: drop-shadow(0px 22px 40px rgba(0, 0, 0, 0.08)); */
+  background-color: #7998d7;
+  box-shadow: 0px 22px 40px 0px rgb(0 0 0 / 8%);
+  padding: 10px;
+  margin-left: 31px;
+  border-radius: 14px;
+  width: 20%;
+  height: 360px;
+}
+.cards_info h1{
+  position: relative;
+  right: 33%;
+  top:5%;
+  padding-top: 32px;
+}
+.card_body div img {
+  width: 183px;
+  height: 160px;
+  border-radius: 50%;
+  margin-top: 30px;
+}
+
+.card_body h1 {
+  font-size: 19px;
+  margin-top: 10px;
+  text-transform: capitalize;
+}
+
+.card_body p {
+  font-size: 12px;
+  font-weight: 400;
+  color: #fff;
+  /* margin-top: 10px; */
+  padding: 5px;
+}
+
+.btn_card {
+  border: none;
+  padding: 5px 20px 5px 20px;
+  border-radius: 26px;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.btn_border_primary {
+  background-color: transparent;
+  border: 2px #0d63f3 solid;
+  color: #fff;
+  padding: 3px 18px 3px 18px;
+}
+
+.btn_border_primary:hover {
+  background-color: #f1f3f6;
+  color: #0b60ed;
+}
+
+.mr_lf {
+  margin-left: 5px;
+}
+
+.mr_ri {
+  margin-right: 5px;
+}
+
+
+
+
+/* Tablet View (max-width: 1024px) */
+@media (max-width: 1024px) {
+  .card_body {
+    width: 40%; /* Adjust width for tablet */
+    margin-bottom: 20px; /* Add spacing between cards */
+  }
+
+  .card_body div img {
+    width: 160px;
+    height: 140px; /* Adjust image size */
+  }
+
+  .card_body h1 {
+    font-size: 17px; /* Adjust font size */
+  }
+
+  .btn_card {
+    font-size: 14px;
+  }
+}
+
+/* Mobile View (max-width: 768px) */
+@media (max-width: 768px) {
+  .card_body {
+    width: 90%; /* Full width for mobile */
+    margin-bottom: 15px;
+  }
+
+  .card_body div img {
+    width: 140px;
+    height: 120px; /* Further adjust image size */
+  }
+
+  .card_body h1 {
+    font-size: 16px;
+  }
+
+  .card_body p {
+    font-size: 11px;
+  }
+
+  .btn_card {
+    font-size: 12px;
+    width: 80%; /* Button takes more width */
+  }
+
+  .card_body {
+   margin-left: unset;
+   }
+.cards_info h1 {
+  right:unset;
+   }
+article.card_container.height_article_2 {
+  margin-top: 36px;
+}
+
+
+.btn_card {
+
+  width:unset;
+  margin-top: 10px;
+}
+ 
+}

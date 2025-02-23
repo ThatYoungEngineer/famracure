@@ -1,0 +1,104 @@
+.customer-love {
+    padding: 40px 0;
+    background-color: #fff; /* Background color similar to design */
+}
+
+.container {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.customer-love h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    color: #1e4080; /* Text color for the title */
+    margin-bottom: 30px;
+}
+
+.testimonials-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.testimonial {
+    background: #007bff4d; 
+    padding: 50px;
+    border-radius: 8px;
+    width: 30%;
+    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.customer-img {
+    width: 120px; /* Adjust width as needed */
+    height: auto;
+    /* border-radius: 50%; */
+    margin-bottom: 15px;
+    position: relative;
+    left: 30%;
+}
+
+.testimonial p {
+    font-size: 1rem;
+    color: #000; /* Text color for testimonials */
+    margin-bottom: 15px;
+}
+
+.testimonial h4 {
+    font-size: 1.25rem;
+    color: #333333; /* Text color for customer names */
+    margin-bottom: 5px;
+}
+
+.customer-position {
+    font-size: 0.875rem;
+    color: #999999; /* Text color for customer position */
+}
+
+.testimonial:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+
+
+/* Responsive for Tablets */
+@media (max-width: 1024px) {
+    .container {
+        width: 90%; /* Adjust width for tablets */
+    }
+    .testimonials-container {
+        justify-content: center;
+        gap: 15px;
+    }
+    .testimonial {
+        width: 45%; /* Two testimonials per row */
+    }
+    .customer-img {
+        left: 35%; /* Adjust for smaller layout */
+    }
+}
+
+/* Responsive for Mobile Devices */
+@media (max-width: 768px) {
+    .container {
+        width: 95%; /* Full-width on mobile */
+    }
+    .testimonial {
+        width: 100%; /* Single testimonial per row */
+        margin-bottom: 20px;
+    }
+    .customer-img {
+        left: auto; /* Center the image */
+        margin: 0 auto 15px;
+    }
+    .customer-love h2 {
+        font-size: 2rem; /* Adjust title size for smaller screens */
+    }
+    .testimonial p {
+        font-size: 0.875rem; /* Adjust text size for better readability */
+    }
+}

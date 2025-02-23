@@ -1,0 +1,135 @@
+/* BannerSearch.css */
+
+.banner_search {
+    padding: 20px;
+    background-color: #587fd9; /* Light blue background */
+    border-radius: 8px;
+    margin: 20px auto;
+    width: 500px; 
+    text-align: center; /* Center the content */
+    height: 400px;
+    margin-top: -86px;
+    position: relative;
+    right: 85px;
+  }
+  
+  
+  .search_heading {
+    font-size: 33px;
+    font-weight: bold;
+    margin-bottom: 20px; /* Spacing between heading and form */
+    color: #fff; /* Dark blue color for the heading */
+    margin-top:58px;
+font-weight: 400;
+text-align: justify;
+}
+  
+  
+  .search_form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Spacing between rows */
+  }
+  
+  .search_input {
+    display: flex;
+    flex-direction: column;
+    text-align: left; /* Align labels and inputs to the left */
+    width: 295px;
+  }
+  
+  .label_search {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #fff; /* Dark blue color for the labels */
+  }
+  
+  .input_search {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .btn_search {
+    padding: 12px;
+    background-color: #004080 !important; /* Dark blue background for the button */
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    width: 200px;
+  }
+  
+  .btn_search:hover {
+    /* background-color: #003060; Darker blue on hover */
+  }
+
+  button, [type='button'], [type='reset'], [type='submit'] {
+    -webkit-appearance: button;
+    /* background-color: #1c64f2 !important; */
+    background-image: none;
+}
+  
+
+
+@media (max-width: 768px) {
+  .banner_search {
+    padding: 20px;
+    background-color: #587fd9;
+    border-radius: 8px;
+    /* margin: 20px auto; */
+    width: unset;
+    text-align: center;
+    height: unset;
+    margin-top: -86px;
+    position: relative;
+    right: unset;
+    margin-top: -27px;
+}
+
+.Section_bg {
+  background-image: none; /* Remove background image on mobile */
+}
+}
+
+@media (max-width: 480px) {
+    .banner_search {
+        width: 95%; /* Further reduce width for mobile */
+        padding: 15px; /* Adjust padding */
+        margin-top: -30px; /* Adjust margin for better layout */
+    }
+
+    .search_heading {
+        font-size: 24px; /* Further reduce heading size */
+    }
+
+    .btn_search {
+        width: 100%; /* Ensure button takes full width */
+    }
+
+    .Section_bg {
+      background-image: none; /* Remove background image on mobile */
+    }
+}
+
+
+@media (max-width: 480px) {
+  .banner_search {
+      width: 95%; /* Further reduce width for mobile */
+      padding: 15px; /* Adjust padding */
+     margin-top: 50px;
+  }
+
+  .search_heading {
+      font-size: 24px; /* Further reduce heading size */
+  }
+
+  .btn_search {
+      width: 100%; /* Ensure button takes full width */
+  }
+
+  .Section_bg {
+    background-image: none; /* Remove background image on mobile */
+  }
+}

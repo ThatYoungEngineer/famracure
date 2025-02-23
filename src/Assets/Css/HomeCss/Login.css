@@ -1,0 +1,16 @@
+
+@media (max-width: 768px) {
+    .w-\[27rem\].bg-white.rounded-lg.shadow-lg.p-8.l-from {
+        right: unset !important;
+        margin-top: 80px;
+    }
+
+    .footer {
+       
+        margin-top: 0px !important;
+    }
+
+    .h-full {
+        height:unset !important;
+    }
+}

@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/static/css/main.ccbd4b33.css",
+    "main.js": "/static/js/main.afcfe705.js",
+    "static/media/InterVariable-Italic.woff2": "/static/media/InterVariable-Italic.e295f70fe3e2df296c7b.woff2",
+    "static/media/InterVariable.woff2": "/static/media/InterVariable.a0e477f2f1f9d2376fde.woff2",
+    "static/media/apointment_img.jpg": "/static/media/apointment_img.b491cecd317ae654a159.jpg",
+    "index.html": "/index.html",
+    "static/media/getFetch.cjs": "/static/media/getFetch.40f37ddea2378391108f.cjs",
+    "main.ccbd4b33.css.map": "/static/css/main.ccbd4b33.css.map",
+    "main.afcfe705.js.map": "/static/js/main.afcfe705.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.ccbd4b33.css",
+    "static/js/main.afcfe705.js"
+  ]
+}

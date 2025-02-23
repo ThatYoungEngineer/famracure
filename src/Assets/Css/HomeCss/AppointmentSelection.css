@@ -1,0 +1,155 @@
+.appointment-container {
+    text-align: center;
+    padding: 20px;
+    max-width: 600px;
+    margin: auto;
+    font-family: Arial, sans-serif;
+
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-bottom: 40px;
+  }
+  
+  .date-selector {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 10px 0;
+  }
+  
+  .date-button {
+    margin: 5px;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    background-color: white;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+  
+  .date-button.active,
+  .date-button:hover {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .time-slot-container {
+    margin-top: 20px;
+  }
+  
+  .time-slots {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .time-button {
+    margin: 5px;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    background-color: white;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+  
+  .time-button.active,
+  .time-button:hover {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .confirmation {
+    margin-top: 15px;
+    font-weight: bold;
+  }
+  
+
+  .bg-black {
+    opacity: unset;
+    background: #f8f9fa !important;
+}
+
+
+  /* this  is bookappointment card css */
+
+
+  /* Additional styles for the doctor's image */
+.doctor-image {
+    width: 25%;
+    height: auto;
+    border-radius: 8px; /* Rounded corners for the image */
+    margin-bottom: 15px; /* Space below the image */
+   position: relative;
+    left: 38%;
+  }
+  
+  /* Container for the card */
+  .doctor-card {
+    width: 700px;
+    margin: 20px auto;
+    padding: 5px;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  /* Card hover effect */
+  .doctor-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Styling for the content inside the card */
+  .card-content h3 {
+    margin: 0 0 10px;
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .consultation-type {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 8px;
+  }
+  
+  .fee {
+    font-size: 16px;
+    color: #444;
+    margin-bottom: 6px;
+  }
+  
+  .discount {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 15px;
+  }
+  
+  .highlight {
+    color: #d9534f;
+    font-weight: bold;
+  }
+  
+  /* Book button styling */
+  .book-now {
+    width: 100%;
+    padding: 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .book-now:hover {
+    background-color: #218838;
+  }
+  

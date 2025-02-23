@@ -1,0 +1,75 @@
+.appointment-card {
+    max-width: 400px;
+    margin: 20px auto;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease-in-out;
+  }
+  
+  .appointment-card:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  }
+  
+  .card-body {
+    padding: 20px;
+  }
+  
+  .header {
+    margin-bottom: 10px;
+  }
+  
+  .heading a {
+    text-decoration: none;
+    color: #000066;
+    font-size: 18px;
+    font-weight: 500;
+    margin-left: 10px;
+  }
+  
+  .info-table {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  
+  .font-weight-bold {
+    font-weight: bold;
+  }
+  
+  .availability-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #000;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px 0;
+  }
+  
+  .availability-details {
+    margin-top: 10px;
+  }
+  
+  .availability-table {
+    width: 100%;
+  }
+  
+  .book-btn {
+    display: block;
+    text-align: center;
+    background-color: #000066;
+    color: #fff;
+    padding: 10px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    margin-top: 10px;
+  }
+  
+  .book-btn:hover {
+    background-color: #232426;
+  }
+  

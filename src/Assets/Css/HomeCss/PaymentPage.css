@@ -1,0 +1,78 @@
+.payment-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+  }
+  
+  .payment-header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .payment-header h1 {
+    font-size: 24px;
+    color: #333;
+  }
+  
+  .payment-details {
+    margin-bottom: 30px;
+  }
+  
+  .appointment-card {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .appointment-card h3 {
+    margin: 0;
+    color: #007bff;
+  }
+  
+  .fee {
+    font-weight: bold;
+    font-size: 18px;
+  }
+  
+  .discount {
+    color: #28a745;
+    font-weight: bold;
+  }
+  
+  .payment-method {
+    margin-bottom: 20px;
+  }
+  
+  .payment-options {
+    margin: 10px 0;
+  }
+  
+  .payment-option {
+    margin: 10px 0;
+  }
+  
+  .payment-option input {
+    margin-right: 10px;
+  }
+  
+  .pay-button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .pay-button:hover {
+    background-color: #0056b3;
+  }
+  

@@ -1,0 +1,81 @@
+/* Container Styles */
+.doctor-info-container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    /* background-color: #f9f9f9; */
+    border-radius: 8px;
+    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+  }
+  
+  /* Section Titles */
+  .doctor-info-container h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 15px;
+    text-align: justify;
+  }
+  
+  /* Doctor About Section */
+  .doctor-about {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #555;
+    margin-bottom: 25px;
+  }
+  
+  /* Education List Styles */
+  .education-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .education-item {
+    margin-bottom: 15px;
+    padding: 15px;
+    /* background-color: #fff; */
+    border-radius: 6px;
+    /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
+    transition: transform 0.2s;
+  }
+  
+  .education-item:hover {
+    transform: scale(1.02);
+  }
+  
+  .education-item h4 {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 5px;
+  }
+  
+  .education-item p {
+    font-size: 16px;
+    color: #666;
+  }
+  
+  .education-item span {
+    font-size: 14px;
+    color: #999;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .doctor-info-container {
+      padding: 15px;
+    }
+  
+    .education-item {
+      padding: 10px;
+    }
+  
+    .education-item h4 {
+      font-size: 16px;
+    }
+  
+    .education-item p,
+    .education-item span {
+      font-size: 14px;
+    }
+  }
+  

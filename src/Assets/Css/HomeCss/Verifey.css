@@ -1,0 +1,13 @@
+@media (max-width: 768px) {
+
+    .h-\[80\.65vh\] {
+        height: unset !important;
+    }
+    .flex {
+        /* display: unset !important; */
+    }    
+
+    .w-\[40\%\] {
+        width: unset !important;
+    }
+}

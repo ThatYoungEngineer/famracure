@@ -1,0 +1,85 @@
+/* Container Styles */
+.review-container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Header */
+  .review-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+  }
+  
+  /* Individual Review Card */
+  .review-card {
+    padding: 15px;
+    margin: 10px 0;
+    background-color: #fff;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+  }
+  
+  .review-card:hover {
+    transform: scale(1.02);
+  }
+  
+  /* Review Header (Name and Rating) */
+  .review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  
+  .review-header h3 {
+    font-size: 18px;
+    color: #333;
+  }
+  
+  /* Rating Stars */
+  .star {
+    font-size: 18px;
+    color: #ddd;
+  }
+  
+  .star.filled {
+    color: #f39c12;
+  }
+  
+  /* Comment and Date */
+  .review-comment {
+    margin: 10px 0;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #555;
+  }
+  
+  .review-date {
+    font-size: 14px;
+    color: #aaa;
+    text-align: right;
+    display: block;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .review-card {
+      padding: 10px;
+    }
+  
+    .review-header h3 {
+      font-size: 16px;
+    }
+  
+    .review-comment {
+      font-size: 14px;
+    }
+  }
+  

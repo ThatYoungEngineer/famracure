@@ -1,0 +1,12 @@
+@media (max-width: 768px) {
+    .w-\[27rem\].rounded-md.bg-white.pl-8.pt-7.pr-8.pb-7 {
+        right: unset !important;
+        margin-top: 400px;
+        /* margin-bottom: 200px; */
+    }
+
+    .footer {
+        
+        margin-top: 300px;
+    }
+}
