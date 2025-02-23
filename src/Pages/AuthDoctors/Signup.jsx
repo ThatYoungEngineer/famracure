@@ -17,6 +17,7 @@ const Signup = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [prefix, setPrefix] = useState("+1"); // Default country code
 
   useEffect(() => {
     if (doctorData.isAuthenticated && get("TOKEN_DOCTOR")) {
@@ -32,6 +33,8 @@ const Signup = () => {
     email: "",
     password: "",
     password_confirmation: "",
+    gender: "",
+    prefix: "",
   });
 
   const [error, setError] = useState({
@@ -41,16 +44,27 @@ const Signup = () => {
     phoneNumber: [],
     email: [],
     password: [],
+    gender: [],
   });
 
+  
+  
   const HandleChangeData = (e) => {
     const { name, value } = e.target;
-    setData({ ...DataForm, [name]: value });
+
+    if (name === "prefix") {
+      setPrefix(value); // Update prefix separately, not affecting phone number
+    } else if (name === "phoneNumber") {
+      setData({ ...DataForm, phoneNumber: value }); // Store only the number
+    } else {
+      setData({ ...DataForm, [name]: value });
+    }
   };
 
   const HandleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
+    DataForm.phoneNumber = prefix + DataForm.phoneNumber
 
     axiosClient
       .post("/doctor/register", DataForm)
@@ -67,7 +81,9 @@ const Signup = () => {
         } else {
           console.error(er);
         }
-      });
+      }).finally(() => {
+        DataForm.phoneNumber = ""
+      })
   };
 
   // Helper function to get error message
@@ -211,7 +227,7 @@ const Signup = () => {
     </div>
   </div>
   <div className="grid gap-6 mb-[20px] md:grid-cols-2">
-    <div className="mb-[20px]">
+    <div>
       <label
         htmlFor="Matricule"
         className="block mb-1 text-xs font-medium text-gray-900 dark:text-white"
@@ -233,22 +249,38 @@ const Signup = () => {
         </p>
       )}
     </div>
-    <div className="mb-[20px]">
+    <div>
       <label
         htmlFor="phoneNumber"
         className="block mb-1 text-xs font-medium text-gray-900 dark:text-white"
       >
         Phone Number
       </label>
-      <input
-        type="text"
-        id="phoneNumber"
-        name="phoneNumber"
-        className={`bg-gray-50 border text-xs rounded-lg block w-full py-2 px-3 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${getErrorMessage('phoneNumber') ? 'border-red-500 bg-red-50 text-red-900 placeholder-red-700' : 'border-gray-300 text-gray-900'}`}
-        placeholder="Phone Number"
-        onChange={HandleChangeData}
-        required
-      />
+      <div className="flex items-center">
+        <select 
+          value={prefix} 
+          name="prefix"
+          id="prefix"
+          onChange={HandleChangeData}
+          className={`bg-gray-50 !border !border-r-transparent text-xs rounded-lg rounded-r-none block !w-fit py-2 px-3 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${getErrorMessage('phoneNumber') ? 'border-red-500 bg-red-50 text-red-900 placeholder-red-700' : 'border-gray-300 text-gray-900'}`}
+        >
+          <option value="+92">+92 (PK)</option>
+          <option value="+1">+1 (USA)</option>
+          <option value="+91">+91 (IN)</option>
+          <option value="+44">+44 (UK)</option>
+          {/* Add more country codes */}
+        </select>
+        <input
+          type="text"
+          id="phoneNumber"
+          name="phoneNumber"
+          className={`bg-gray-50 !border !border-l-transparent text-xs rounded-lg rounded-l-none block w-full py-2 px-3 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${getErrorMessage('phoneNumber') ? 'border-red-500 bg-red-50 text-red-900 placeholder-red-700' : 'border-gray-300 text-gray-900'}`}
+          placeholder="Phone Number"
+          onChange={HandleChangeData}
+          required
+        />
+
+      </div>
       {getErrorMessage('phoneNumber') && (
         <p className="mt-2 text-xs text-red-600 dark:text-red-500">
           {getErrorMessage('phoneNumber')}
@@ -256,27 +288,52 @@ const Signup = () => {
       )}
     </div>
   </div>
-  <div className="mb-[20px]">
-    <label
-      htmlFor="email"
-      className="block mb-1 text-xs font-medium text-gray-900 dark:text-white"
-    >
-      Email
-    </label>
-    <input
-      type="text"
-      id="email"
-      name="email"
-      className={`bg-gray-50 border text-xs rounded-lg block w-full py-2 px-3 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${getErrorMessage('email') ? 'border-red-500 bg-red-50 text-red-900 placeholder-red-700' : 'border-gray-300 text-gray-900'}`}
-      placeholder="Email"
-      onChange={HandleChangeData}
-      required
-    />
-    {getErrorMessage('email') && (
-      <p className="mt-2 text-xs text-red-600 dark:text-red-500">
-        {getErrorMessage('email')}
-      </p>
-    )}
+
+  <div className="grid gap-6 mb-[15px] md:grid-cols-2">
+    <div>
+      <label
+        htmlFor="date_of_birth"
+        className="block mb-1 text-[12px] font-medium text-gray-900 dark:text-white"
+      >
+        Gender
+      </label>
+      <select 
+        name="gender" id="gender"
+        onChange={HandleChangeData}
+        className={`bg-gray-50 !border text-xs rounded-lg block w-full py-2 px-3 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${getErrorMessage('gender') ? 'border-red-500 bg-red-50 text-red-900 placeholder-red-700' : 'border-gray-300 text-gray-900'}`}
+      >
+        <option value="#" selected disabled  >--Select Gender--</option>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+      </select>
+      {getErrorMessage('gender') && (
+        <p className="mt-2 text-xs text-red-600 dark:text-red-500">
+          {getErrorMessage('gender')}
+        </p>
+      )}
+    </div>
+    <div>
+      <label
+        htmlFor="email"
+        className="block mb-1 text-xs font-medium text-gray-900 dark:text-white"
+      >
+        Email
+      </label>
+      <input
+        type="text"
+        id="email"
+        name="email"
+        className={`bg-gray-50 border text-xs w-full rounded-lg block py-2 px-3 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${getErrorMessage('email') ? 'border-red-500 bg-red-50 text-red-900 placeholder-red-700' : 'border-gray-300 text-gray-900'}`}
+        placeholder="Email"
+        onChange={HandleChangeData}
+        required
+      />
+      {getErrorMessage('email') && (
+        <p className="mt-2 text-xs text-red-600 dark:text-red-500">
+          {getErrorMessage('email')}
+        </p>
+      )}
+    </div>
   </div>
   <div className="grid gap-6 mb-[20px] md:grid-cols-2">
     <div className="mb-[20px]">
