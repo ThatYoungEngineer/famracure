@@ -130,7 +130,7 @@ const Signup = () => {
                 width: '40rem',
                 position:'relative',
                 right:'20%',
-                top: '-7%',
+                top: '-3%',
                 boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
               }}
             >
@@ -306,7 +306,7 @@ const Signup = () => {
                       {/* Add more country codes */}
                     </select>
                     <input
-                      type="text"
+                      type="number"
                       id="phone_number"
                       name="phone_number"
                       className={

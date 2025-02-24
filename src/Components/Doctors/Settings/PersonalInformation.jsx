@@ -33,7 +33,7 @@ const PersonalInformation = () => {
         cin: doctorData.doctor.cin || "",
         phoneNumber: doctorData.doctor.phoneNumber || "",
         email: doctorData.doctor.email || "",
-        Matricule: doctorData.doctor.Matricule || "",
+        Matricule: doctorData.doctor.matricule || "",
         specialite: doctorData.doctor.specialite || "",
         nom_cabinet: doctorData.doctor.nom_cabinet || "",
         address_cabinet: doctorData.doctor.address_cabinet || "",

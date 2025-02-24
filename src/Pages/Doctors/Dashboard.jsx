@@ -4,6 +4,7 @@ import {
   SidebarDoctors,
   TableDashboard,
 } from "../../Components";
+import DoctorDashboardStats from "../../Components/Doctors/Dashboard/DoctorDashboardStats";
 import GetAuthDoctor from "../../hooks/GetAuthDoctor";
 
 const Dashboard = () => {
@@ -20,7 +21,7 @@ const Dashboard = () => {
         >
           <main>
             <SectionDoctor />
-            <TableDashboard />
+            <DoctorDashboardStats />
           </main>
         </div>
       </div>

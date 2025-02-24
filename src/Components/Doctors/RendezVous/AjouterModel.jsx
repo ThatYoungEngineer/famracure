@@ -5,11 +5,12 @@ import AlertSucces from "../../Alert/AlertSucces";
 const initialState = {
   dateAppointment: "",
   timeSlot: {
-    appointment_time: "",
+    appointment_time: "", // Current time being selected
     video_fee: "",
     clinic_fee: "",
     appointment_type: ""
   },
+  selectedTimes: [], // Array of selected times (for pills)
   isLoading: false,
   successMessage: ""
 };
@@ -20,6 +21,10 @@ const reducer = (state, action) => {
       return { ...state, dateAppointment: action.payload };
     case "SET_TIME_SLOT":
       return { ...state, timeSlot: { ...state.timeSlot, [action.field]: action.payload } };
+    case "ADD_SELECTED_TIME":
+      return { ...state, selectedTimes: [...state.selectedTimes, action.payload] };
+    case "REMOVE_SELECTED_TIME":
+      return { ...state, selectedTimes: state.selectedTimes.filter((time, index) => index !== action.payload) };
     case "SET_LOADING":
       return { ...state, isLoading: action.payload };
     case "SET_SUCCESS_MESSAGE":
@@ -38,9 +43,17 @@ const AjouterModel = ({ show, setShow }) => {
     dispatch({ type: "SET_LOADING", payload: true });
     dispatch({ type: "SET_SUCCESS_MESSAGE", payload: "" });
     try {
+      // Prepare time slots with shared details
+      const timeSlots = state.selectedTimes.map((time) => ({
+        appointment_time: time,
+        video_fee: state.timeSlot.video_fee,
+        clinic_fee: state.timeSlot.clinic_fee,
+        appointment_type: state.timeSlot.appointment_type
+      }));
+
       const response = await axiosClient.post("/doctor/appointments/create", {
         appointment_date: state.dateAppointment,
-        time_slots: [state.timeSlot]
+        time_slots: timeSlots // Send the array of time slots
       });
       
       if (response?.data?.message) {
@@ -55,8 +68,8 @@ const AjouterModel = ({ show, setShow }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!state.dateAppointment || !state.timeSlot.appointment_time) {
-      alert("Please enter both date and time.");
+    if (!state.dateAppointment || state.selectedTimes.length === 0) {
+      alert("Please enter a date and at least one time.");
       return;
     }
     postAppointment();
@@ -71,6 +84,17 @@ const AjouterModel = ({ show, setShow }) => {
     }
     const formattedTime = `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
     dispatch({ type: "SET_TIME_SLOT", field: "appointment_time", payload: formattedTime });
+  };
+
+  const handleAddTime = () => {
+    if (state.timeSlot.appointment_time && !state.selectedTimes.includes(state.timeSlot.appointment_time)) {
+      dispatch({ type: "ADD_SELECTED_TIME", payload: state.timeSlot.appointment_time });
+      dispatch({ type: "SET_TIME_SLOT", field: "appointment_time", payload: "" }); // Clear the input
+    }
+  };
+
+  const handleRemoveTime = (index) => {
+    dispatch({ type: "REMOVE_SELECTED_TIME", payload: index });
   };
 
   return (
@@ -93,20 +117,47 @@ const AjouterModel = ({ show, setShow }) => {
               type="date"
               className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               min={new Date().toISOString().split("T")[0]} // Disables past dates
-              max={new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toISOString().split("T")[0]} 
               value={state.dateAppointment} 
               onChange={(e) => dispatch({ type: "SET_DATE", payload: e.target.value })} required 
             />
+
+            <div className="flex flex-wrap gap-2">
+              {state.selectedTimes.map((time, index) => (
+                <div
+                  key={index}
+                  className="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full flex items-center gap-2"
+                >
+                  {time}
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveTime(index)}
+                    className="text-blue-800 hover:text-blue-900"
+                  >
+                    &times;
+                  </button>
+                </div>
+              ))}
+            </div>
+
             <label htmlFor="timeAppointment" className="block w-fit mb-2 text-sm font-medium text-gray-900 dark:text-white">
               Select Time
             </label>
-            <input 
-              type="time" 
-              className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              value={state.timeSlot.appointment_time} 
-              onChange={handleTimeChange} step="1800" 
-              required 
-            />
+            <div className="flex gap-2">
+              <input 
+                type="time" 
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                value={state.timeSlot.appointment_time} 
+                onChange={handleTimeChange} step="1800" 
+              />
+              <button
+                type="button"
+                onClick={handleAddTime}
+                className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+              >
+                Add
+              </button>
+            </div>
+
             <label htmlFor="timeAppointment" className="block w-fit mb-2 text-sm font-medium text-gray-900 dark:text-white">
               Video Fee
             </label>
@@ -117,6 +168,7 @@ const AjouterModel = ({ show, setShow }) => {
               onChange={(e) => dispatch({ type: "SET_TIME_SLOT", field: "video_fee", payload: e.target.value })} 
               required 
             />
+
             <label htmlFor="timeAppointment" className="block w-fit mb-2 text-sm font-medium text-gray-900 dark:text-white">
               Clinic Fee
             </label>
@@ -128,6 +180,7 @@ const AjouterModel = ({ show, setShow }) => {
               onChange={(e) => dispatch({ type: "SET_TIME_SLOT", field: "clinic_fee", payload: e.target.value })} 
               required 
             />
+
             <label htmlFor="timeAppointment" className="block w-fit mb-2 text-sm font-medium text-gray-900 dark:text-white">
               Appointment Type
             </label>
@@ -141,6 +194,7 @@ const AjouterModel = ({ show, setShow }) => {
               <option value="video">Video</option>
               <option value="clinic">Clinic</option>
             </select>
+
             <button 
               type="submit" 
               className="w-full disabled:opacity-30 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"

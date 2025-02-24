@@ -44,6 +44,7 @@ import DoctorsConfirmationGuard from "../Middleware/DoctorsConfirmationGuard";
 import VideoRoom from "../Pages/VideoRoom";
 import Payments from "../Pages/Admin/Payments";
 import AdminAppointments from "../Pages/Admin/AdminAppointments";
+import ForgotPassword from "../Pages/ForgotPassword";
 
 const { createBrowserRouter } = require("react-router-dom");
 
@@ -82,6 +83,10 @@ const router = createBrowserRouter([
   {
     path: "/user-signup",
     element: <Signup />,
+  },
+  {
+    path: "/forgot-password",
+    element: <ForgotPassword />,
   },
   {
     path: "/bookingappointment/:id",

@@ -271,7 +271,7 @@ const Signup = () => {
           {/* Add more country codes */}
         </select>
         <input
-          type="text"
+          type="number"
           id="phoneNumber"
           name="phoneNumber"
           className={`bg-gray-50 !border !border-l-transparent text-xs rounded-lg rounded-l-none block w-full py-2 px-3 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${getErrorMessage('phoneNumber') ? 'border-red-500 bg-red-50 text-red-900 placeholder-red-700' : 'border-gray-300 text-gray-900'}`}
@@ -391,20 +391,20 @@ const Signup = () => {
 </form>
 
     
-    <div className="flex justify-center items-center mb-4">
-  <p className="mt-4 text-[14px] text-gray-500 sm:mt-0">
-    Already have an account?
-    <Link to="/doctor/login" className="text-gray-700 underline">
-      Sign In
-    </Link>
-    .
-  </p>
-</div>
-</div>
-          </div>
-          <Footer colorText="white" />
-        </div>
+      <div className="flex justify-center items-center mb-4">
+        <p className="mt-4 text-[14px] text-gray-500 sm:mt-0">
+          Already have an account?
+          <Link to="/doctor/login" className="text-gray-700 underline">
+            Sign In
+          </Link>
+          .
+        </p>
       </div>
+    </div>
+  </div>
+  <Footer colorText="white" />
+    </div>
+  </div>
     </>
   );
 };
