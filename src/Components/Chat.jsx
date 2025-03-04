@@ -7,15 +7,17 @@ import { Spinner } from 'flowbite-react';
 window.Pusher = Pusher;
 Pusher.logToConsole = true
 
-const Chat = ({ appointmentId, doctor_id, user_id }) => {
-    const [conversationId, setConversationId] = useState(null);
-    const [messages, setMessages] = useState([]);
-    const [message, setMessage] = useState('');
-    const [file, setFile] = useState(null);
+const Chat = ({ appointmentId, doctor_id, user_id, from }) => {
     const messagesEndRef = useRef(null);
+    const [file, setFile] = useState(null);
+    const [message, setMessage] = useState('');
+    const [messages, setMessages] = useState([]);
     const [loading , setLoading] = useState(false);
+    const [conversationId, setConversationId] = useState(null);
+    const [isMessagesLoading , setIsMessagesLoading] = useState(false);
 
     useEffect(() => {
+      setIsMessagesLoading(true)
         axiosClient.get('chat/conversations')
             .then((response) => {
                 const conversations = response.data.conversations;
@@ -32,7 +34,8 @@ const Chat = ({ appointmentId, doctor_id, user_id }) => {
                     console.log('NO conversations found');
                 }
             })
-            .catch(error => console.error('Error fetching conversations:', error));
+            .catch(error => console.error('Error fetching conversations:', error))
+            .finally(() => setIsMessagesLoading(false));
     }, [appointmentId]);
 
     const fetchMessages = (convId) => {
@@ -43,6 +46,7 @@ const Chat = ({ appointmentId, doctor_id, user_id }) => {
 
     const sendMessage = () => {
         if (!message.trim() && !file) return;
+        setLoading(true)
 
         const formData = new FormData();
         formData.append('appointment_id', appointmentId);
@@ -52,15 +56,18 @@ const Chat = ({ appointmentId, doctor_id, user_id }) => {
         }
 
         axiosClient.post('chat/send', formData, {
-            headers: { 'Content-Type': 'multipart/form-data' }
-        }).then(response => {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        })
+        .then(response => {
             setMessages([...messages, response.data.chat]);
             setMessage('');
             setFile(null);
             if (!conversationId) {
                 setConversationId(response.data.conversation_id);
             }
-        }).catch(error => console.error('Error sending message:', error));
+        })
+        .catch(error => console.error('Error sending message:', error))
+        .finally(() => setLoading(false))
     };
 
     useEffect(() => {
@@ -120,8 +127,8 @@ const Chat = ({ appointmentId, doctor_id, user_id }) => {
 
 return (
     <div className="border rounded-lg shadow-md w-full h-[50%] bg-white">
-      <div className="h-[30rem] overflow-y-auto p-2 border-b px-4">
-      {/* {isMessagesLoading && <div className="flex items-center justify-center h-[35rem]"><Spinner size="lg" variant="primary" /></div>} */}
+      <div className="h-[35rem] overflow-y-auto p-2 border-b px-4">
+      {isMessagesLoading && <div className="flex items-center justify-center h-[35rem]"><Spinner size="lg" variant="primary" /></div>}
         {messages.map((msg, index) => (
           <div key={index} className={`p-2 my-2 flex gap-1 items-start ${msg.sender_type.includes("User") ? "justify-start" : "justify-end"}`} >
             {msg.sender_type.includes("User")
@@ -169,9 +176,15 @@ return (
           className="flex-1 p-2 border rounded-lg disabled:opacity-40"
           disabled={loading}
         />
-        <input type="file" 
-        // ref={fileInputRef}
-         multiple={false} onChange={(e) => setFile(e.target.files[0])} className="disabled:opacity-40 border rounded-lg p-1" disabled={loading} />
+        <input 
+          type="file" 
+          accept={from === 'user' ? 'image/*' : ''}
+          // ref={fileInputRef}
+          multiple={false} 
+          onChange={(e) => setFile(e.target.files[0])} 
+          className="disabled:opacity-40 border rounded-lg p-1" 
+          disabled={loading} 
+        />
         <button 
           disabled={loading} 
           onClick={sendMessage}

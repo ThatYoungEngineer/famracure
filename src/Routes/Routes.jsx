@@ -45,6 +45,7 @@ import VideoRoom from "../Pages/VideoRoom";
 import Payments from "../Pages/Admin/Payments";
 import AdminAppointments from "../Pages/Admin/AdminAppointments";
 import ForgotPassword from "../Pages/ForgotPassword";
+import DoctorForgotPassword from "../Pages/AuthDoctors/ForgotPassword";
 
 const { createBrowserRouter } = require("react-router-dom");
 
@@ -149,6 +150,10 @@ const router = createBrowserRouter([
   {
     path: "/doctor/login",
     element: <DoctorsLogin />,
+  },
+  {
+    path: "/doctor/forgot-password",
+    element: <DoctorForgotPassword />,
   },
   {
     path: "/doctor/signup",

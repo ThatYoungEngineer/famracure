@@ -43,7 +43,7 @@ const TableAppointment = ({ showAnnuler, setShowAnnuler, setIdAppointment }) => 
                 <tbody className="bg-white divide-y divide-gray-200">
                   {(appointments && appointments.length > 0) ? appointments.map((el, idx) => (
                     <tr key={idx} className="hover:bg-gray-100">
-                      <td className="p-4 text-[14px] text-gray-500">
+                      <td className="p-4 max-w-fit text-[14px] text-gray-500">
                         <span
                           className={`w-fit text-left px-3 py-1 rounded-full text-sm font-medium ${
                             el?.status === "confirmed"
@@ -64,16 +64,34 @@ const TableAppointment = ({ showAnnuler, setShowAnnuler, setIdAppointment }) => 
                       <td className={`p-4 text-[14px] text-gray-900 ${el.user ? "not-italic" : "italic text-opacity-40"}`}>{el?.user ? el?.user?.phone_number : "NULL"}</td>
                       <td className="p-4 text-[14px] text-gray-500">{el?.appointment_date}</td>
                       <td className="p-4 text-[14px] text-gray-500">{el?.appointment_time}</td>
-                      <td className="p-4 space-x-2">
+                      <td className="p-4 flex gap-2">
                         <button
                           onClick={() => setSelectedAppointment(el)}
                           className="flex items-center gap-2 px-2 py-[8px] text-[14px] text-white rounded-lg bg-primary-600 hover:bg-primary-800"
                         >
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
-                          <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
-                          <path fillRule="evenodd" d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 0 1 0-1.113ZM17.25 12a5.25 5.25 0 1 1-10.5 0 5.25 5.25 0 0 1 10.5 0Z" clipRule="evenodd" />
-                        </svg>
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
+                            <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                            <path fillRule="evenodd" d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 0 1 0-1.113ZM17.25 12a5.25 5.25 0 1 1-10.5 0 5.25 5.25 0 0 1 10.5 0Z" clipRule="evenodd" />
+                          </svg>
                           View
+                        </button>
+                        <button
+                          // onClick={() => setSelectedAppointment(el)}
+                          className="flex items-center gap-2 px-2 py-[8px] text-[14px] text-red-100 rounded-lg bg-red-600 hover:bg-red-800"
+                        >
+                         <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                            className="h-5 w-5"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                            Cancel
                         </button>
                       </td>
                     </tr>

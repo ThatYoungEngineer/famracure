@@ -186,7 +186,7 @@ const Login = () => {
   </div>
   
   <div className="mb-2">
-    <a href="/forgot-password" className="flex flex-row-reverse">
+    <a href="/doctor/forgot-password" className="flex flex-row-reverse">
       <span className="text-medium tracking-wide text-[13px] text-blue-600">
         Forgot your password?
       </span>

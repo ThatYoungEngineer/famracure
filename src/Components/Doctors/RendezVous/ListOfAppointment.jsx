@@ -58,7 +58,7 @@ const ListOfAppointment = () => {
                       to="#"
                       className="ml-1 text-gray-700 hover:text-primary-600 md:ml-2 dark:text-gray-300 dark:hover:text-white"
                     >
-                      Appointmen
+                      Appointments
                     </Link>
                   </div>
                 </li>

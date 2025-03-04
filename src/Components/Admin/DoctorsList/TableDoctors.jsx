@@ -1,6 +1,5 @@
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
 import React, { useEffect, useState } from "react";
-import AxiosClient from "../../../AxiosClient";
 import axiosClient from "../../../AxiosClient";
 import { Button, Spinner } from "flowbite-react";
 
@@ -18,7 +17,7 @@ const TableDoctors = ({ setShowAlertSucces }) => {
 
   const fetchDoctors = (page) => {
     setLoading(true);
-    AxiosClient.get(`/admin/doctors?page=${page}`)
+    axiosClient.get(`/admin/doctors?page=${page}`)
       .then((res) => {
         setDoctors(res?.data?.data);
         setCurrentPage(res?.data?.current_page);
@@ -53,6 +52,9 @@ const TableDoctors = ({ setShowAlertSucces }) => {
       });
   };
 
+  const handleDeleteUser = (user) => {}
+
+
   return (
     <>
       <div className="flex flex-col">
@@ -83,7 +85,7 @@ const TableDoctors = ({ setShowAlertSucces }) => {
                       {(Doctors && Doctors?.length > 0) && Doctors?.map((el, idx) => (
                         <tr key={idx} className="hover:bg-gray-100">
                           <td className="p-4 text-[14px] font-semibold text-gray-900">{el.firstname + " " + el.lastname}</td>
-                          <td className="p-4 text-[14px] font-normal text-gray-500">{el.cin ?? "NULL"}</td>
+                          <td className="p-4 text-[14px] font-normal text-gray-500">{el.matricule ?? "NULL"}</td>
                           <td className="p-4 text-[14px] font-medium text-gray-900">{el.phoneNumber}</td>
                           <td className="p-4 text-[14px] font-medium text-gray-900">{el.email}</td>
                           <td className="p-4 text-[14px] font-normal text-gray-900">
@@ -99,21 +101,31 @@ const TableDoctors = ({ setShowAlertSucces }) => {
                               </div>
                             )}
                           </td>
-                          <td className="p-4">
-                          <button
-                            disabled={el.verified === 1 || (LoadingButton.loading && LoadingButton.id === el.id)}
-                            className={`flex items-center justify-center p-2 text-[14px] font-medium text-white rounded-lg ${
-                              el.verified === 1 ? "bg-gray-400" : "bg-primary-600 hover:bg-primary-800"
-                            }`}
-                            onClick={() => VerifierDoctor(el.id, el.verified)}
-                          >
-                            {LoadingButton.loading && LoadingButton.id === el.id ? (
-                              <Spinner size="sm" className="mr-2" />
-                            ) : (
-                              <CheckCircleIcon className="w-[1.2rem] h-[1.2rem] mr-2" />
-                            )}
-                            {el.verified === 1 ? "Verified" : "Verify Now"}
-                          </button>
+                          <td className="p-4 flex items-center gap-2">
+                            <button
+                              disabled={el.verified === 1 || (LoadingButton.loading && LoadingButton.id === el.id)}
+                              className={` w-32 flex items-center gap-2 p-2 text-[14px] font-medium text-white rounded-lg ${
+                                el.verified === 1 ? "bg-gray-400" : "bg-primary-600 hover:bg-primary-800"
+                              }`}
+                              onClick={() => VerifierDoctor(el.id, el.verified)}
+                            >
+                              {LoadingButton.loading && LoadingButton.id === el.id ? (
+                                <Spinner size="sm" />
+                              ) : (
+                                <CheckCircleIcon className="w-[1.2rem] h-[1.2rem]" />
+                              )}
+                              {el.verified === 1 ? "Verified" : "Verify Now"}
+                            </button>
+                            <button
+                              type="button"
+                              className='flex items-center justify-center gap-2 p-2 text-[14px] font-medium text-red-100 rounded-lg bg-red-600 hover:bg-red-800'
+                              onClick={() => handleDeleteUser(el)}
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                                <path fillRule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.07a3 3 0 0 1-2.991 2.77H8.084a3 3 0 0 1-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 0 1 3.369 0c1.603.051 2.815 1.387 2.815 2.951Zm-6.136-1.452a51.196 51.196 0 0 1 3.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 0 0-6 0v-.113c0-.794.609-1.428 1.364-1.452Zm-.355 5.945a.75.75 0 1 0-1.5.058l.347 9a.75.75 0 1 0 1.499-.058l-.346-9Zm5.48.058a.75.75 0 1 0-1.498-.058l-.347 9a.75.75 0 0 0 1.5.058l.345-9Z" clipRule="evenodd" />
+                              </svg>
+                              Delete
+                            </button>
                           </td>
                         </tr>
                       ))}

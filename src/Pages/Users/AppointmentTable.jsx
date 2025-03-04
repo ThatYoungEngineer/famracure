@@ -176,7 +176,7 @@ const AppointmentPage = () => {
                             )}
                           </div>
                           <section className="mt-20 w-full">
-                            <Chat appointmentId={selectedAppointment?.id} doctor_id={appointment?.doctor?.id} user_id={user?.id}  />
+                            <Chat appointmentId={selectedAppointment?.id} doctor_id={appointment?.doctor?.id} user_id={user?.id} from={'user'}  />
                           </section>
                         </div>
                       )}
