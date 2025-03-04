@@ -40,20 +40,7 @@ function AppointmentFilterPanel({ handleChangeData, specialitiesList, areasList 
   return (
     <div className="bg-white p-6 rounded-lg shadow-lg w-80" style={{ position: 'relative', right: '18%' }}>
       {/* Specialty Filter */}
-      <div className="mb-4">
-        <label className="block text-gray-700 font-medium mb-2" htmlFor="speciality">Specialty</label>
-        <select
-          className="block w-full bg-gray-100 border border-gray-300 rounded-lg py-2 px-3 text-gray-700"
-          id="speciality"
-          value={specialty}
-          onChange={handleSpecialtyChange}
-        >
-          <option value="">Select Specialty</option>
-          {specialitiesList.map((specialty, idx) => (
-            <option key={idx} value={specialty}>{specialty}</option>
-          ))}
-        </select>
-      </div>
+     
 
       {/* Area Filter */}
       <div className="mb-4">

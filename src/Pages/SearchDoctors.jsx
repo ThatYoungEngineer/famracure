@@ -59,26 +59,31 @@ const SearchDoctors = () => {
   };
 
   const handleChangeData = (ev) => {
-  const { name, value, type, checked } = ev.target;
+    const { name, value, type, checked } = ev.target;
 
-  let updatedForm = { ...dataForm };  // Make a copy of the current state
-  if (type === "checkbox") {
-    // If it's a checkbox, update the availability array
-    const updatedAvailability = checked
-      ? [...updatedForm.availability, value]
-      : updatedForm.availability.filter(val => val !== value);
+    let updatedForm = { ...dataForm };  // Make a copy of the current state
+    if (type === "checkbox") {
+      // If it's a checkbox, update the availability array
+      const updatedAvailability = checked
+        ? [...updatedForm.availability, value]
+        : updatedForm.availability.filter(val => val !== value);
 
-    updatedForm.availability = updatedAvailability;
-  } else {
-    updatedForm[name] = value; // For other types of inputs, update directly
-  }
-  
-  setDataForm(updatedForm); // Update state
+      updatedForm.availability = updatedAvailability;
+    } else {
+      updatedForm[name] = value; // For other types of inputs, update directly
+    }
 
-  // Trigger search immediately after the change
-  fetchDoctors({ ...updatedForm, page: 1 });
-};
+    setDataForm(updatedForm); // Update state
 
+    // If the specialite changes, filter the dataSearch array
+    if (name === "specialite") {
+      const filteredData = dataSearch.filter(doctor => doctor.specialite === value);
+      setDataSearch(filteredData);
+    }
+
+    // Trigger search immediately after the change
+    fetchDoctors({ ...updatedForm, page: 1 });
+  };
 
   const handleSubmitData = (e) => {
     e.preventDefault();
@@ -94,7 +99,6 @@ const SearchDoctors = () => {
     });
   };
 
-  
   const [showAlertToRegistre, setSowAlertToRegistre] = useState(AuthUserData.showAlertToAuth);
 
   return (
@@ -129,7 +133,7 @@ const SearchDoctors = () => {
                   className="input_search"
                   onChange={handleChangeData}
                 >
-                  <option value="">Select Specialty</option>
+                  <option value="default" disabled selected>Select Specialty</option>
                   {specialitiesList.map((specialite, idx) => (
                     <option key={idx} value={specialite}>
                       {specialite}
@@ -179,11 +183,9 @@ const SearchDoctors = () => {
                       specialite={info.specialite}
                       available={info.available}
                       avatar_doctor={info.avatar_doctor}
-                      
                       address_cabinet={info.address_cabinet}
                       video_fee={info.video_fee}
                       clinic_fee={info.clinic_fee}
-                      
                     />
                   ))
                 ) : (
@@ -199,7 +201,7 @@ const SearchDoctors = () => {
           </div>
         </div>
       </main>
-      
+
       <FAQSection />
       <FooterTopBar />
       <Footer />

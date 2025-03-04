@@ -25,6 +25,7 @@ const AppointmentPage = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [appointments, setAppointments] = useState(null)
     const [selectedAppointment, setSelectedAppointment] = useState(null);
+    const [rescheduleDialogue, setRescheduleDialogue] = useState(null);
 
     const navigate = useNavigate()
 
@@ -72,7 +73,13 @@ const AppointmentPage = () => {
 
 
   return (
-    <div>
+    <div className="w-screen h-screen">
+    {rescheduleDialogue && 
+      <section className="fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black">
+        <p className="text-white">hello world</p>
+      </section>
+    }
+
       <Header />
       <div className="_container my-8 flex ">
         <UserNavSettings />
@@ -134,6 +141,15 @@ const AppointmentPage = () => {
                       onClick={() => setSelectedAppointment(appointment)} // ✅ Store selected appointment
                     >
                       View
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      size="small"
+                      // disabled={appointment.status === "cancelled"}                      
+                      onClick={() => setRescheduleDialogue(appointment)}
+                    >
+                      Reschedule
                     </Button>
                     <Dialog
                       header="Appointment Details"

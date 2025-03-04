@@ -53,9 +53,10 @@ const HandleSubmit = (e) => {
       }
     })
     .catch((error) => {
-      console.log("errorrrrrrrrrr: " + error)
       const errorMessage = error?.response?.data?.message;
-      if (errorMessage) {
+      if (error.toString().includes("Request failed with status code 422")) {
+        setError("Invalid Credentials");
+      } else if (errorMessage) {
         setError(errorMessage);
       } else {
         setError("Network error");

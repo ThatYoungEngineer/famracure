@@ -9,10 +9,11 @@ const TablePatient = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
   const [totalPatients, setTotalPatients] = useState(null);
+  const [searchQuery, setSearchQuery] = useState(""); // State for search query
 
   useEffect(() => {
     fetchPatients(currentPage);
-    fetchPatientStatus()
+    fetchPatientStatus();
   }, [currentPage]);
 
   const fetchPatients = async (page) => {
@@ -28,14 +29,28 @@ const TablePatient = () => {
       setLoading(false);
     }
   };
+
   const fetchPatientStatus = async () => {
     try {
       const response = await axiosClient.get(`/admin/appointments`);
-      console.log('patient status: ' + response)
+      console.log("patient status: " + response);
     } catch (error) {
       console.error(error);
     }
   };
+
+  // Function to filter patients based on search query
+  const filteredPatients = patients.filter((patient) => {
+    const searchLower = searchQuery.toLowerCase();
+    return (
+      (patient.firstname + " " + patient.lastname).toLowerCase().includes(searchLower) ||
+      patient.email.toLowerCase().includes(searchLower) ||
+      patient.cin.toLowerCase().includes(searchLower) ||
+      patient.phone_number.toLowerCase().includes(searchLower) ||
+      (patient.active === 0 ? "no" : "yes").includes(searchLower) ||
+      new Date(patient.created_at).toLocaleString().toLowerCase().includes(searchLower)
+    );
+  });
 
   return (
     <>
@@ -46,6 +61,18 @@ const TablePatient = () => {
             {loading ? <Spinner /> : <h2>{totalPatients}</h2>}
           </div>
         </div>
+
+        {/* Search Bar */}
+        <div className="mb-4">
+          <input
+            type="text"
+            placeholder="Search patients..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
         <div className="overflow-x-auto">
           <div className="inline-block min-w-full align-middle">
             <div className="overflow-hidden shadow">
@@ -66,8 +93,8 @@ const TablePatient = () => {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {patients.length > 0 ? (
-                      patients.map((el, idx) => (
+                    {filteredPatients.length > 0 ? (
+                      filteredPatients.map((el, idx) => (
                         <tr key={idx} className="hover:bg-gray-100">
                           <td className="p-4 text-[14px] font-medium text-gray-900 whitespace-nowrap">
                             {el?.firstname + " " + el.lastname}
@@ -105,23 +132,25 @@ const TablePatient = () => {
           </div>
         </div>
       </div>
-      
+
+      {/* Pagination Controls */}
       <div className="flex justify-center items-center gap-4 mt-6">
-        <Button 
+        <Button
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
           disabled={currentPage === 1}
         >
           Previous
         </Button>
-        <span>Page {currentPage} of {lastPage}</span>
-        <Button 
+        <span>
+          Page {currentPage} of {lastPage}
+        </span>
+        <Button
           onClick={() => setCurrentPage((prev) => Math.min(prev + 1, lastPage))}
           disabled={currentPage === lastPage}
         >
           Next
         </Button>
       </div>
-
     </>
   );
 };

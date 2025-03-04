@@ -29,7 +29,7 @@ const Signup = () => {
     date_of_birth: "",
     phone_number: "",
     gender: "",
-    prefix: "",
+    country_code: prefix,
   });
   const [error, setError] = useState({
     firstname: "",
@@ -46,13 +46,8 @@ const Signup = () => {
   const HandleChangeData = (e) => {
     const { name, value } = e.target;
 
-    if (name === "prefix") {
-      setPrefix(value); // Update prefix separately, not affecting phone number
-    } else if (name === "phone_number") {
-      setData({ ...DataForm, phone_number: value }); // Store only the number
-    } else {
-      setData({ ...DataForm, [name]: value });
-    }
+      setData({ ...DataForm, [name]: value })
+    
   };
 
 
@@ -65,7 +60,6 @@ const Signup = () => {
   const HandleSubmit = (e) => {
     setLoading(true);
     e.preventDefault();
-    DataForm.phone_number = prefix + DataForm.phone_number
 
     axiosClient
       .post("/user/register", DataForm)
@@ -294,9 +288,9 @@ const Signup = () => {
                   <div className="flex items-center">
                     <select 
                       value={prefix} 
-                      name="prefix"
-                      id="prefix"
-                      onChange={HandleChangeData}
+                      name="country_code"
+                      id="country_code"
+                      onChange={e=>setPrefix(e.target.value)}
                       className={`bg-gray-50 !border !border-r-transparent text-xs rounded-lg rounded-r-none block !w-fit py-2 px-3 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500  border-gray-300 `}
                     >
                       <option value="+92">+92 (PK)</option>

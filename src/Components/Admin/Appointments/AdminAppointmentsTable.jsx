@@ -7,7 +7,8 @@ const AdminAppointmentsTable = () => {
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [lastPage, setLastPage] = useState(1);
-    const [totalAppointments, setTotalAppointments] = useState(null)
+    const [totalAppointments, setTotalAppointments] = useState(null);
+    const [searchQuery, setSearchQuery] = useState(""); // State for search query
 
     useEffect(() => {
         fetchAdminAppointments(currentPage);
@@ -20,13 +21,34 @@ const AdminAppointmentsTable = () => {
             setAppointments(response.data.data || []);
             setCurrentPage(response.data.current_page);
             setLastPage(response.data.last_page);
-            setTotalAppointments(response.data.total)
+            setTotalAppointments(response.data.total);
         } catch (error) {
             console.error(error.response?.data || error.message);
         } finally {
             setLoading(false);
         }
     };
+
+    // Function to filter appointments based on search query
+    const filteredAppointments = appointments.filter((appointment) => {
+        const searchLower = searchQuery.toLowerCase();
+        return (
+            appointment.id.toString().toLowerCase().includes(searchLower) ||
+            appointment.status.toLowerCase().includes(searchLower) ||
+            (appointment.doctor?.firstname + " " + appointment.doctor?.lastname)
+                .toLowerCase()
+                .includes(searchLower) ||
+            (appointment.user?.firstname + " " + appointment.user?.lastname)
+                .toLowerCase()
+                .includes(searchLower) ||
+            (appointment.appointment_type === "video" ? appointment.video_fee : appointment.clinic_fee)
+                .toString()
+                .toLowerCase()
+                .includes(searchLower) ||
+            (appointment.payment_id ?? "NULL").toLowerCase().includes(searchLower) ||
+            new Date(appointment.created_at).toLocaleString().toLowerCase().includes(searchLower)
+        );
+    });
 
     return (
         <div className="flex flex-col">
@@ -36,6 +58,18 @@ const AdminAppointmentsTable = () => {
                     {loading ? <Spinner /> : <h2>{totalAppointments}</h2>}
                 </div>
             </div>
+
+            {/* Search Bar */}
+            <div className="mb-4">
+                <input
+                    type="text"
+                    placeholder="Search appointments..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+            </div>
+
             <div className="overflow-x-auto">
                 <div className="inline-block min-w-full align-middle">
                     <div className="overflow-hidden shadow">
@@ -50,8 +84,8 @@ const AdminAppointmentsTable = () => {
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
-                                {appointments.length > 0 ? (
-                                    appointments.map((el, idx) => (
+                                {filteredAppointments.length > 0 ? (
+                                    filteredAppointments.map((el, idx) => (
                                         <tr key={idx} className="hover:bg-gray-100">
                                             <td className="p-4 text-[14px] font-semibold text-gray-900">{el?.id}</td>
                                             <td className="p-4 text-[14px] font-semibold text-gray-900">{el?.status}</td>

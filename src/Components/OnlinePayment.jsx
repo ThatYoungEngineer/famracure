@@ -8,7 +8,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { CardElement, Elements, useStripe, useElements } from "@stripe/react-stripe-js";
 
 
-const stripePromise = loadStripe("pk_test_51PP8W8GrGHiulY5pNHY51vyoLZ0PM640vi8o4Pd8W1tJ98povf9WhJtDbvprN72V6w0Vb1CGWFdHYXSbORWHp7e600Le41JDar");
+const stripePromise = loadStripe("pk_test_51QyyZBIW1ezGv3xAIl0w4t54mSwgZv8jf51jWg385jNAJXaoXQ7G8HRU0lgPxTQtTZp4d6EhiN2YJS1xe1D6GbGp008Ju0Qbb0");
 
 
 const PaymentForm = () => {
@@ -121,7 +121,7 @@ const PaymentPage = () => {
             <div className="bg-white p-4 rounded shadow border">
               <div className="flex items-center mb-4">
                 <img
-                  alt="Doctor's profile picture"
+                  alt="Doctor's profile"
                   className="rounded-full mr-4 w-16 h-16 object-cover"
                   src="https://static.vecteezy.com/system/resources/previews/035/326/727/large_2x/ai-generated-a-female-doctor-in-uniform-standing-with-folded-arms-and-stethoscope-free-photo.jpg"
                 />

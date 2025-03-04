@@ -20,7 +20,7 @@ const ChangePassword = () => {
     try {
       setError("");
       axiosClient
-      .post("user/reset-password", 
+      .post("reset-password/user", 
         { 
           email: userData.user.email, token: userData.userToken, password: password, password_confirmation: confirmPassword 
         }
