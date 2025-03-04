@@ -9,7 +9,7 @@ const ForgotPassword = () => {
     const handleFormSubmit = (e) => {
         e.preventDefault();
         axiosClient
-        .post("user/forgot-password", {email})
+        .post("forgot-password/user", {email})
         .then((res) => {
             console.log(res)
         })
