@@ -27,6 +27,9 @@ const AppointmentPage = () => {
     const [selectedAppointment, setSelectedAppointment] = useState(null);
     const [rescheduleDialogue, setRescheduleDialogue] = useState(null);
 
+    const [rescheduleDate, setRescheduleDate] = useState(null)
+    const [rescheduleTime, setRescheduleTime] = useState(null)
+
     const navigate = useNavigate()
 
     const fetchAppointments = async () => {
@@ -71,12 +74,95 @@ const AppointmentPage = () => {
       fetchUser()
     }, [])
 
+    const today = new Date();
+
+    const maxDate = new Date();
+    maxDate.setDate(today.getDate() + 7); // Add 7 days to the current date
+
+    // Format the max date as YYYY-MM-DD (required for the input's max attribute)
+    const maxDateFormatted = maxDate.toISOString().split("T")[0];
+
+    const handleTimeChange = (e) => {
+      let [hours, minutes] = e.target.value.split(":").map(Number);
+      minutes = Math.round(minutes / 15) * 15;
+      if (minutes === 60) {
+        minutes = 0;
+        hours += 1;
+      }
+      const formattedTime = `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+      setRescheduleTime(formattedTime)
+    };
+
+
+  const handleRescheduleForm = async (e) => {
+    e.preventDefault()
+
+    try {
+      setIsLoading(true)
+      setError("")
+      const res = await axiosClient.put(`appointments/${rescheduleDialogue}`, 
+        {
+          appointment_date: rescheduleDate,
+          appointment_time: rescheduleTime
+        } 
+      )
+      console.log('res: ', res)
+    } catch (error) {
+      console.log('error fetching appointment: ', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  console.log('appointment id', rescheduleDialogue)
+
 
   return (
     <div className="w-screen h-screen">
     {rescheduleDialogue && 
-      <section className="fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black">
-        <p className="text-white">hello world</p>
+      <section className="fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-gray-800 bg-opacity-95 z-50">
+        <div className="w-3/5 h-2/5 bg-white bg-opacity-90 rounded-md flex flex-col items-center p-5">
+          <span className="text-xl text-center" >You can reschedule your appointment upto one week from now</span>
+          <form className="w-full flex flex-col items-center justify-center" onSubmit={handleRescheduleForm} >
+            <div className="my-5 w-full flex flex-col gap-1 items-center justify-center">
+              <label htmlFor="dateAppointment" className="block w-fit mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                Appointment Date
+              </label>
+              <input 
+                type="date"
+                id="dateAppointment"
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-2/5 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                min={new Date().toISOString().split("T")[0]} // Disables past dates
+                max={maxDateFormatted} // Disables dates beyond 7 days from now
+
+                value={rescheduleDate} 
+                onChange={(e) => setRescheduleDate(e.target.value) } 
+                required 
+              />
+            </div>
+            <div className="my-5 w-full flex flex-col gap-1 items-center justify-center">
+              <label htmlFor="timeAppointment" className="block w-fit mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                Appointment Time
+              </label>
+              <input 
+                type="time"
+                id="timeAppointment"
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-2/5 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                onChange={handleTimeChange}
+                value={rescheduleTime}
+                step="900" 
+              />
+            </div>
+            <Button            
+              variant="contained"
+              color="primary"
+              size="small"
+              type="submit"
+            >
+              Reschedule
+            </Button>
+          </form>
+        </div>
       </section>
     }
 
@@ -132,25 +218,27 @@ const AppointmentPage = () => {
                   </span>
                 </TableCell>
                 <TableCell>
-                  <span>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      size="small"
-                      disabled={appointment.status === "cancelled"}
-                      onClick={() => setSelectedAppointment(appointment)} // ✅ Store selected appointment
-                    >
-                      View
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      size="small"
-                      // disabled={appointment.status === "cancelled"}                      
-                      onClick={() => setRescheduleDialogue(appointment)}
-                    >
-                      Reschedule
-                    </Button>
+                  <div>
+                    <span className="flex gap-1 items-center">
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        size="small"
+                        disabled={appointment.status === "cancelled"}
+                        onClick={() => setSelectedAppointment(appointment)} // ✅ Store selected appointment
+                      >
+                        View
+                      </Button>
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        size="small"
+                        // disabled={appointment.status === "cancelled"}                      
+                        onClick={() => setRescheduleDialogue(appointment.id)}
+                      >
+                        Reschedule
+                      </Button>
+                    </span>
                     <Dialog
                       header="Appointment Details"
                       visible={!!selectedAppointment}
@@ -197,7 +285,7 @@ const AppointmentPage = () => {
                         </div>
                       )}
                     </Dialog>
-                  </span>
+                  </div>
                 </TableCell>
               </TableRow>
             ))

@@ -26,6 +26,19 @@ const TableAppointment = ({ showAnnuler, setShowAnnuler, setIdAppointment }) => 
       .finally(() => setIsLoading(false))
   }, [])
 
+  console.log('appointments', appointments);
+
+  const handleAcceptReschedule = async (e) => {
+    try {
+      const res = await axiosClient.patch(`/appointments/${e}/handleAcceptReschedule`, { accept_reschedule: true });
+      if (res.status === 200) {
+        console.log("Reschedule Accepted");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <>
       <div className="flex flex-col">
@@ -200,6 +213,23 @@ const TableAppointment = ({ showAnnuler, setShowAnnuler, setIdAppointment }) => 
                 </span>
               )}
             </div>
+            {(selectedAppointment.reschedule_requested || selectedAppointment.reschedule_requested == '1')
+              && <div className="w-full my-5 flex flex-col gap-1">
+                <h1 className="font-semibold"> A Reschedule is requested.. </h1>
+                <p>Reschedule Date: {selectedAppointment?.rescheduled_date || "N/A"} </p>
+                <p>Reschedule Time: {selectedAppointment?.rescheduled_time || "N/A"} </p>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  type="button"
+                  className="w-fit"
+                  onClick={() => handleAcceptReschedule(selectedAppointment?.id)}
+                >
+                  Accept Reschedule
+                </Button>
+              </div>
+            }
             {(selectedAppointment?.status === "confirmed" || selectedAppointment?.status === "completed") && 
               <section className="mt-20 w-full">
                 <Chat doctor_id={selectedAppointment?.doctor_id} user_id={selectedAppointment?.user_id} appointmentId={selectedAppointment?.id} />
