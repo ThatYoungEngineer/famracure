@@ -30,7 +30,7 @@ const TableAppointment = ({ showAnnuler, setShowAnnuler, setIdAppointment }) => 
 
   const handleAcceptReschedule = async (e) => {
     try {
-      const res = await axiosClient.patch(`/appointments/${e}/handleAcceptReschedule`, { accept_reschedule: true });
+      const res = await axiosClient.post(`/appointments/${e}/approve-reschedule`, { accept_reschedule: true });
       if (res.status === 200) {
         console.log("Reschedule Accepted");
       }
