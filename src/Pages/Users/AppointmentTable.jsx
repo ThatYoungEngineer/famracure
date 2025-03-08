@@ -100,7 +100,7 @@ const AppointmentPage = () => {
     try {
       setIsLoading(true)
       setError("")
-      const res = await axiosClient.put(`appointments/${rescheduleDialogue}`, 
+      const res = await axiosClient.post(`appointments/${rescheduleDialogue}/reschedule`, 
         {
           appointment_date: rescheduleDate,
           appointment_time: rescheduleTime

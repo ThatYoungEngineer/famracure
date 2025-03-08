@@ -48,7 +48,7 @@ const HandleSubmit = (e) => {
         if (res.statusText === "OK" || res.status === 200) {
           dispatch(loginSuccess(res.data.user));
           storeInLocalStorage("TOKEN_USER", res.data.token);
-          navigate("/user/profile");
+          navigate("/user/verifeyemail");
         }
       }
     })

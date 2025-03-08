@@ -5,13 +5,79 @@ import Chat from "../../Chat";
 import { useNavigate } from "react-router";
 import { Dialog } from "primereact/dialog";
 import { Button } from "@mui/material";
+import MedicationsInput from "./MedicationsInput";
 
 const TableAppointment = ({ showAnnuler, setShowAnnuler, setIdAppointment }) => {
   const doctorData = useSelector((state) => state.AuthDoctor);
   const [appointments, setAppointments] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isPrescriptionOpen, setPrescriptionOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
+  const [prescriptionError, setPrescriptionError] = useState("")
   const navigate = useNavigate();
+
+  const [prescriptionFormData, setPrescriptionFormData] = useState({
+    user_id: "", doctor_id: "", 
+    appointment_id: "",
+    prescription_date: "",
+    content: "",
+    medications: [], // Initialize as empty JSON object
+    notes: "",
+    expiry_date: "",
+    signature: "",
+    pharmacy_name: "",
+    pharmacy_address: "",
+    refill_count: 0,
+    refill_remaining: 0,
+    status: "pending",
+  });
+  const [creating, setCreating] = useState(false);
+
+  console.log('prescriptionFormData: ', prescriptionFormData)
+
+  useEffect(() => {
+    if (selectedAppointment) {
+      setPrescriptionFormData((prevData) => ({
+        ...prevData,
+        user_id: selectedAppointment.user_id,
+        doctor_id: selectedAppointment.doctor_id,
+        appointment_id: selectedAppointment.id
+      }));
+    }
+  }, [selectedAppointment]);
+
+  console.log('selectedAppointment: ', selectedAppointment)
+  console.log('prescriptionFormData: ', prescriptionFormData)
+
+
+  const handlePrescriptionChange = (e) => {
+    setPrescriptionFormData({ ...prescriptionFormData, [e.target.name]: e.target.value });
+  };
+
+  const handlePrescriptionSubmit = (e) => {
+    e.preventDefault();
+
+    const dataToSubmit = {
+      ...prescriptionFormData,
+      refill_count: parseInt(prescriptionFormData.refill_count, 10),
+      refill_remaining: parseInt(prescriptionFormData.refill_remaining, 10),
+    };
+    
+    setCreating(true);
+    axiosClient
+    .post("/prescriptions", dataToSubmit)
+    .then(res => {
+      console.log('prescription api response: ', res)
+      alert("Prescription Created Successfully!");
+      setCreating(false);
+    })
+    .catch(err => {
+      const errorMessage = err.response.data.message
+      setPrescriptionError(errorMessage)
+      console.error("Error creating prescription:", errorMessage);
+      setCreating(false);
+    });
+  };
 
   useEffect(() => {
     setIsLoading(true);
@@ -25,8 +91,6 @@ const TableAppointment = ({ showAnnuler, setShowAnnuler, setIdAppointment }) => 
       .catch((err) => console.log(err))
       .finally(() => setIsLoading(false))
   }, [])
-
-  console.log('appointments', appointments);
 
   const handleAcceptReschedule = async (e) => {
     try {
@@ -174,8 +238,11 @@ const TableAppointment = ({ showAnnuler, setShowAnnuler, setIdAppointment }) => 
                   <h2 className="flex-1 text-left">Appointment Type:</h2>
                   <h2 className="flex-1 text-left">Appointment Status:</h2>
                   <h2 className="flex-1 text-center">Appointment Fee</h2>
-                  {selectedAppointment?.appointment_type === "video" && (selectedAppointment?.status === "confirmed" || selectedAppointment?.status === "completed" ) && (
-                    <h2 className="flex-1 text-center">Join Call</h2>
+                  {(selectedAppointment?.status === "confirmed" || selectedAppointment?.status === "completed" ) && (
+                    <>
+                      <h2 className="flex-1 text-center">Join Call</h2>
+                      <h2 className="flex-1 text-center">Create Prescription</h2>
+                    </>
                   )}
                 </div>
               </section>
@@ -212,6 +279,19 @@ const TableAppointment = ({ showAnnuler, setShowAnnuler, setIdAppointment }) => 
                   </Button>
                 </span>
               )}
+              {(selectedAppointment?.status === "confirmed" || selectedAppointment?.status === "completed" ) && (
+                <span className="flex-1 flex items-center justify-center">
+                  <Button 
+                    variant="contained"
+                    color="secondary"
+                    size="small"
+                    disabled={selectedAppointment?.status === "cancelled"}
+                    onClick={() => {setSelectedAppointment(null); setPrescriptionOpen(true)} }
+                  >
+                    Create Prescription
+                  </Button>
+                </span>
+              )}
             </div>
             {(selectedAppointment.reschedule_requested || selectedAppointment.reschedule_requested == '1')
               && <div className="w-full my-5 flex flex-col gap-1">
@@ -238,6 +318,189 @@ const TableAppointment = ({ showAnnuler, setShowAnnuler, setIdAppointment }) => 
           </div>
         </Dialog>
       )}
+      
+      {/* Prescription Dialog */}
+      <Dialog 
+        header=""
+        visible={!!isPrescriptionOpen}
+        maximized
+        style={{ width: "50vw" }}
+        onHide={() => setPrescriptionOpen(false)}
+        open={isPrescriptionOpen} onOpenChange={setPrescriptionOpen}
+      >
+        <div className="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl w-full space-y-8 bg-white p-8 rounded-lg shadow-lg">
+            <h2 className="text-3xl font-extrabold text-center text-gray-900">Create Prescription</h2>
+            <form onSubmit={handlePrescriptionSubmit} className="mt-8 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="prescription_date" className="block text-sm font-medium text-gray-700">Prescription Date</label>
+                  <input
+                    type="date"
+                    id="prescription_date"
+                    name="prescription_date"
+                    value={prescriptionFormData.prescription_date}
+                    onChange={handlePrescriptionChange}
+                    required
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="expiry_date" className="block text-sm font-medium text-gray-700">Expiry Date</label>
+                  <input
+                    type="date"
+                    id="expiry_date"
+                    name="expiry_date"
+                    value={prescriptionFormData.expiry_date}
+                    onChange={handlePrescriptionChange}
+                    required
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  />
+                </div>
+              </div>
+
+              {/* Content and Notes */}
+              <div>
+                <label htmlFor="content" className="block text-sm font-medium text-gray-700">Prescription Content</label>
+                <textarea
+                  id="content"
+                  name="content"
+                  value={prescriptionFormData.content}
+                  onChange={handlePrescriptionChange}
+                  required
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  rows="4"
+                  placeholder="Enter prescription details..."
+                />
+              </div>
+              <div>
+                <label htmlFor="notes" className="block text-sm font-medium text-gray-700">Notes</label>
+                <textarea
+                  id="notes"
+                  name="notes"
+                  value={prescriptionFormData.notes}
+                  onChange={handlePrescriptionChange}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  rows="2"
+                  placeholder="Additional notes..."
+                />
+              </div>
+
+              {/* Medications (JSON) */}
+              <div>
+                <label htmlFor="medications" className="block text-sm font-medium text-gray-700">
+                  Medications
+                </label>
+                <MedicationsInput
+                  value={prescriptionFormData.medications}
+                  onChange={(value) =>
+                    setPrescriptionFormData((prevData) => ({
+                      ...prevData,
+                      medications: value,
+                    }))
+                  }
+                />
+              </div>
+
+              {/* Pharmacy Details */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="pharmacy_name" className="block text-sm font-medium text-gray-700">Pharmacy Name</label>
+                  <input
+                    type="text"
+                    id="pharmacy_name"
+                    name="pharmacy_name"
+                    value={prescriptionFormData.pharmacy_name}
+                    onChange={handlePrescriptionChange}
+                    required
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="pharmacy_address" className="block text-sm font-medium text-gray-700">Pharmacy Address</label>
+                  <input
+                    type="text"
+                    id="pharmacy_address"
+                    name="pharmacy_address"
+                    value={prescriptionFormData.pharmacy_address}
+                    onChange={handlePrescriptionChange}
+                    required
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  />
+                </div>
+              </div>
+
+              {/* Refill Count and Refill Remaining */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="refill_count" className="block text-sm font-medium text-gray-700">Refill Count</label>
+                  <input
+                    type="number"
+                    id="refill_count"
+                    name="refill_count"
+                    value={prescriptionFormData.refill_count}
+                    onChange={handlePrescriptionChange}
+                    required
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="refill_remaining" className="block text-sm font-medium text-gray-700">Refill Remaining</label>
+                  <input
+                    type="number"
+                    id="refill_remaining"
+                    name="refill_remaining"
+                    value={prescriptionFormData.refill_remaining}
+                    onChange={handlePrescriptionChange}
+                    required
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  />
+                </div>
+              </div>
+
+              {/* Signature and Status */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="signature" className="block text-sm font-medium text-gray-700">Signature</label>
+                  <input
+                    type="text"
+                    id="signature"
+                    name="signature"
+                    value={prescriptionFormData.signature}
+                    onChange={handlePrescriptionChange}
+                    required
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="status" className="block text-sm font-medium text-gray-700">Status</label>
+                  <select
+                    id="status"
+                    name="status"
+                    value={prescriptionFormData.status}
+                    onChange={handlePrescriptionChange}
+                    required
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  >
+                    <option value="pending">Pending</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              <div>
+                <button
+                  type="submit"
+                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                  Create Prescription
+                </button>
+              </div>
+              {prescriptionError && <p className="text-red-400 text-sm">{prescriptionError}</p>}
+            </form>
+          </div>
+        </div>
+      </Dialog>
     </>
   );
 };

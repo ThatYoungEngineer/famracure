@@ -46,6 +46,7 @@ import Payments from "../Pages/Admin/Payments";
 import AdminAppointments from "../Pages/Admin/AdminAppointments";
 import ForgotPassword from "../Pages/ForgotPassword";
 import DoctorForgotPassword from "../Pages/AuthDoctors/ForgotPassword";
+import Prescriptions from "../Pages/Users/Prescriptions";
 
 const { createBrowserRouter } = require("react-router-dom");
 
@@ -141,6 +142,15 @@ const router = createBrowserRouter([
     element: (
       <AuthGuard>
         <AppointmentTable/>
+      </AuthGuard>
+    )
+  },
+
+  {
+    path: "/user/prescriptions",
+    element: (
+      <AuthGuard>
+        <Prescriptions/>
       </AuthGuard>
     )
   },

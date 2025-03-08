@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
-import { get, remove } from "../Services/LocalStorageService";
-import { addDoctorData } from "../Redux/SliceAuthDoctor";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router";
+import { useEffect } from "react";
 import axiosClient from "../AxiosClient";
+import { useNavigate } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import { addDoctorData } from "../Redux/SliceAuthDoctor";
+import { get, remove } from "../Services/LocalStorageService";
 
 const DoctorEmailVerification = ({ children }) => {
   const AuthDoctorData = useSelector((state) => state.AuthDoctor);
@@ -33,7 +33,7 @@ const DoctorEmailVerification = ({ children }) => {
   }, [dispatch, navigate, AuthDoctorData]);
 
   if (AuthDoctorData.doctor) {
-    if (AuthDoctorData.doctor.email_verified_at) {
+    if (AuthDoctorData.doctor.email_verified_at !== null) {
       return navigate("/doctor/dashboard");
     } else {
       return children;

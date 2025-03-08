@@ -33,7 +33,7 @@ const DoctorsConfirmationGuard = ({children}) => {
   }, [dispatch, navigate, AuthDoctorData]);
 
   if (AuthDoctorData.doctor) {
-    if (AuthDoctorData.doctor.verified === 1) {
+    if (AuthDoctorData.doctor.email_verified_at !== null) {
       return navigate("/doctor/dashboard");
     } else {
       return children;

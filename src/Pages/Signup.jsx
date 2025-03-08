@@ -22,6 +22,7 @@ const Signup = () => {
   const [DataForm, setData] = useState({
     firstname: "",
     lastname: "",
+    country_code: prefix,
     cin: "",
     email: "",
     password: "",
@@ -29,7 +30,6 @@ const Signup = () => {
     date_of_birth: "",
     phone_number: "",
     gender: "",
-    country_code: prefix,
   });
   const [error, setError] = useState({
     firstname: "",
@@ -67,7 +67,7 @@ const Signup = () => {
         dispatch(signUpSuccess(data));
         storeInLocalStorage("TOKEN_USER", data.token);
         setLoading(false);
-        navigate("/user/profile");
+        navigate("/user/verifeyemail");
       })
       .catch((er) => {
         setLoading(false);
