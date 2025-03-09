@@ -47,6 +47,8 @@ import AdminAppointments from "../Pages/Admin/AdminAppointments";
 import ForgotPassword from "../Pages/ForgotPassword";
 import DoctorForgotPassword from "../Pages/AuthDoctors/ForgotPassword";
 import Prescriptions from "../Pages/Users/Prescriptions";
+import DoctorDashboard from "../Pages/Admin/DoctorDashboard";
+import UserDashboard from "../Pages/Admin/UserDashboard";
 
 const { createBrowserRouter } = require("react-router-dom");
 
@@ -270,6 +272,22 @@ const router = createBrowserRouter([
     element: (
       <GuardAdmin>
         <Payments />
+      </GuardAdmin>
+    ),
+  },
+  {
+    path: "/admin/doctor-dashboard",
+    element: (
+      <GuardAdmin>
+        <DoctorDashboard />
+      </GuardAdmin>
+    ),
+  },
+  {
+    path: "/admin/user-dashboard",
+    element: (
+      <GuardAdmin>
+        <UserDashboard />
       </GuardAdmin>
     ),
   },
