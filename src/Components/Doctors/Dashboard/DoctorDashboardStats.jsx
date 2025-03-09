@@ -54,7 +54,7 @@ const DoctorDashboardStats = () => {
                 :
                 <>
                     <h2> Total Earnings </h2>
-                    <p> {earnings[0] ? earnings : 0} </p>
+                    <p> {earnings && earnings[0] ? earnings : 0} </p>
                 </>
             }
         </section>

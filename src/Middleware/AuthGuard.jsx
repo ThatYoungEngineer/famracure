@@ -73,7 +73,7 @@ const AuthGuard = ({ children }) => {
   if (
     AuthUserData.isAuthenticated &&
     get("TOKEN_USER") &&
-    AuthUserData.user?.email_verified_at === null
+    !AuthUserData.user?.email_verified_at
   ) {
     return <Navigate to="/user/verifeyemail" replace />;
   }
