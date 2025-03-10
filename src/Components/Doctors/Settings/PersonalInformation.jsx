@@ -20,6 +20,11 @@ const PersonalInformation = () => {
     address_cabinet: "",
     available: false,
     about: "",
+    experience_years: "",
+    experience_institute: "",
+    experience_start_date: "",
+    experience_end_date: "",
+    experience_detail: "",
   });
 
   GetAuthDoctor();
@@ -39,6 +44,12 @@ const PersonalInformation = () => {
         address_cabinet: doctorData.doctor.address_cabinet || "",
         available: doctorData.doctor.available==="1" ? true :false ,
         about: doctorData.doctor.about || "",
+        experience_years: doctorData.doctor.experience_years || "",
+        experience_institute: doctorData.doctor.experience_institute || "",
+        experience_start_date: doctorData.doctor.experience_start_date || "",
+        experience_end_date: doctorData.doctor.experience_end_date || "",
+        experience_detail: doctorData.doctor.experience_detail || "",
+
       });
     }
   }, [doctorData ]);
@@ -67,6 +78,9 @@ const PersonalInformation = () => {
         setLoading(false);
       });
   };
+
+  const ttype = typeof(DataForm.verified)
+  console.log("form data: ", ttype);
 
   return (
     <>
@@ -268,9 +282,104 @@ const PersonalInformation = () => {
             </div>
           </div>
 
+          <div className="grid mt-3 grid-cols-6 gap-6">
+            <div className="col-span-6 sm:col-span-3">
+              <label
+                htmlFor="experience_years"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                Experience Years
+              </label>
+              <input
+                type="number"
+                name="experience_years"
+                id="experience_years"
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                placeholder="Enter you experience years"
+                required
+                value={DataForm.experience_years}
+                onChange={HandelChange}
+              />
+            </div>
+            <div className="col-span-6 sm:col-span-3">
+              <label
+                htmlFor="experience_institute"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                Experience Institute
+              </label>
+              <input
+                type="text"
+                name="experience_institute"
+                id="experience_institute"
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                placeholder="Enter you experience years"
+                required
+                value={DataForm.experience_institute}
+                onChange={HandelChange}
+              />
+            </div>
+          </div>
+          <div className="grid mt-3 grid-cols-6 gap-6">
+            <div className="col-span-6 sm:col-span-3">
+              <label
+                htmlFor="experience_start_date"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                Experience Start Date
+              </label>
+              <input
+                type="date"
+                name="experience_start_date"
+                id="experience_start_date"
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                placeholder="Enter you experience years"
+                required
+                value={DataForm.experience_start_date}
+                onChange={HandelChange}
+              />
+            </div>
+            <div className="col-span-6 sm:col-span-3">
+              <label
+                htmlFor="experience_end_date"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                Experience End Date
+              </label>
+              <input
+                type="date"
+                name="experience_end_date"
+                id="experience_end_date"
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                placeholder="Enter you experience years"
+                required
+                value={DataForm.experience_end_date}
+                onChange={HandelChange}
+              />
+            </div>
+          </div>
+
+            <div className="w-full my-4">
+              <label
+                htmlFor="experience_detail"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                Experience Detail
+              </label>
+              <textarea
+                id="experience_detail"
+                rows="5"
+                name="experience_detail"
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                placeholder="Enter your experience details"
+                value={DataForm.experience_detail}
+                onChange={HandelChange}
+              ></textarea>
+            </div>
+
           <div className="grid mt-3 grid-cols-6 gap-6  w-[100%]">
             <div className="col-span-6 sm:col-full  w-[20%]">
-              <AuthButton Text="Save all" Loading={loading} />
+              <AuthButton Text="Save all" Loading={loading} isDisabled={doctorData.doctor.verified} />
             </div>
           </div>
         </form>

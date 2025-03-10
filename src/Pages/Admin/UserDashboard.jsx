@@ -1,20 +1,28 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import axiosClient from '../../AxiosClient'
 import { NavBarAdmin, SidebarAdmin } from '../../Components'
+import { useParams } from 'react-router'
+import { Spinner } from 'flowbite-react'
 
 const UserDashboard = () => {
 
   const [error, setError] = useState(null)
-  const [userId, setUserId] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
   const [userDashboardData, setUserDashboardData] = useState(null)
+
+  const {id} = useParams()
+
+  useEffect(() => {
+    fetchUserDashboard()
+  }, [id])
+
 
   const fetchUserDashboard = async () => {
     setUserDashboardData(null)
     setError(null)
     setIsLoading(true)
     try {
-      const response = await axiosClient.get(`admin/user-dashboard/${userId}`);
+      const response = await axiosClient.get(`admin/user-dashboard/${id}`);
       if (response.status === 200) {
         setUserDashboardData(response.data);
       }
@@ -27,8 +35,6 @@ const UserDashboard = () => {
     }
   };
 
-  console.log('user DashboardData response: ', userDashboardData)
-
   return (
     <>
       <NavBarAdmin />
@@ -38,23 +44,7 @@ const UserDashboard = () => {
           id="main-content"
           className="relative w-full h-full overflow-y-auto bg-gray-50 lg:ml-64 dark:bg-gray-900"
         >
-          <section className="w-full p-5 flex flex-col gap-1">
-            <h1>Fetch doctor by id</h1>
-            <input
-              type="number"
-              placeholder="Enter user id"
-              value={userId} onChange={e => setUserId(e.target.value)}
-              className="w-full rounded-md border p-5"
-            />
-            <button
-              type="button"
-              className="p-3 bg-blue-500 text-white rounded-md disabled:opacity-50"
-              disabled={isLoading}
-              onClick={fetchUserDashboard}
-            >
-              {isLoading ? "Loading..." : "Fetch"}
-            </button>
-          </section>
+          {isLoading && <div className="w-[85vw] h-screen flex items-center justify-center"> <Spinner size={'xl'} /> </div> }
           {error && <div className="text-red-500 text-center">{error}</div>}
           {userDashboardData && 
             <section className="w-full p-6 bg-white shadow-lg rounded-lg">
@@ -63,13 +53,13 @@ const UserDashboard = () => {
               <div className="space-y-4">
                 <div className="bg-gray-100 p-4 rounded-lg">
                   <h2 className="text-xl font-semibold text-gray-700">User Details</h2>
-                  <p className="text-gray-600"><span className="font-medium">ID:</span> {userDashboardData?.user.id}</p>
-                  <p className="text-gray-600"><span className="font-medium">Name:</span> {userDashboardData?.user.firstname} {userDashboardData?.user.lastname}</p>
-                  <p className="text-gray-600"><span className="font-medium">Email:</span> {userDashboardData?.user.email}</p>
-                  <p className="text-gray-600"><span className="font-medium">Gender:</span> {userDashboardData?.user.gender || "Other"}</p>
-                  <p className="text-gray-600"><span className="font-medium">Phone:</span> {userDashboardData?.user.phone_number}</p>
-                  <p className="text-gray-600"><span className="font-medium">CIN:</span> {userDashboardData?.user.cin}</p>
-                  <p className="text-gray-600"><span className="font-medium">Created At:</span> {userDashboardData?.user.created_at}</p>
+                  <p className="text-gray-600"><span className="font-medium">ID:</span> {userDashboardData?.user.id || "N/A"}</p>
+                  <p className="text-gray-600"><span className="font-medium">Name:</span> {userDashboardData?.user.firstname || "N/A"} {userDashboardData?.user.lastname || "N/A"}</p>
+                  <p className="text-gray-600"><span className="font-medium">Email:</span> {userDashboardData?.user.email || "N/A"}</p>
+                  <p className="text-gray-600"><span className="font-medium">Gender:</span> {userDashboardData?.user.gender || "N/A" || "Other"}</p>
+                  <p className="text-gray-600"><span className="font-medium">Phone:</span> {userDashboardData?.user.phone_number || "N/A"}</p>
+                  <p className="text-gray-600"><span className="font-medium">CIN:</span> {userDashboardData?.user.cin || "N/A"}</p>
+                  <p className="text-gray-600"><span className="font-medium">Created At:</span> {userDashboardData?.user.created_at || "N/A"}</p>
                 </div>
               </div>
               <div className="space-y-4">

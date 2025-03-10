@@ -276,7 +276,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/admin/doctor-dashboard",
+    path: "/admin/doctor-dashboard/:id",
     element: (
       <GuardAdmin>
         <DoctorDashboard />
@@ -284,7 +284,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/admin/user-dashboard",
+    path: "/admin/user-dashboard/:id",
     element: (
       <GuardAdmin>
         <UserDashboard />

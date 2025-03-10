@@ -47,7 +47,7 @@ const DoctorEmailVerification = ({ children }) => {
   if (AuthDoctorData.doctor) {
     // Redirect to dashboard if email is verified
     if (AuthDoctorData.doctor.email_verified_at) {
-      navigate("/doctor/dashboard");
+      navigate("/doctor/settings");
       return null;
     } else {
       // Render children (e.g., email verification page) if email is not verified

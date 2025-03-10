@@ -2,8 +2,12 @@ import { XCircleIcon } from "@heroicons/react/20/solid";
 import React, { useEffect, useState } from "react";
 import axiosClient from "../../../AxiosClient";
 import { Button, Spinner } from "flowbite-react";
+import { useNavigate } from "react-router";
 
 const TablePatient = () => {
+  
+  const navigate = useNavigate()
+
   const [patients, setPatients] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -90,6 +94,7 @@ const TablePatient = () => {
                       <th className="p-4 text-[14px] font-medium text-left text-gray-500 uppercase">Phone Number</th>
                       <th className="p-4 text-[14px] font-medium text-left text-gray-500 uppercase">Active</th>
                       <th className="p-4 text-[14px] font-medium text-left text-gray-500 uppercase">Created At</th>
+                      <th className="p-4 text-[14px] font-medium text-left text-gray-500 uppercase">Action</th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
@@ -113,6 +118,26 @@ const TablePatient = () => {
                           </td>
                           <td className="p-4 text-[14px] font-medium text-gray-900 whitespace-nowrap">
                             {new Date(el?.created_at).toLocaleString()}
+                          </td>
+                          <td>
+                            <button
+                              type="button"
+                              className="flex items-center justify-center gap-2 p-2 text-[14px] font-medium text-yellow-100 rounded-lg bg-yellow-600 hover:bg-yellow-800"
+                              onClick={() => navigate(`/admin/user-dashboard/${el.id}`)}
+                              
+                            >
+                              <svg
+                                aria-hidden="true"
+                                className="w-[1.3rem] h-[1.3rem] text-yellow-100 transition duration-75  group-hover:text-yellow-900 "
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
+                                <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
+                              </svg>
+                              Dashboard
+                            </button>
                           </td>
                         </tr>
                       ))

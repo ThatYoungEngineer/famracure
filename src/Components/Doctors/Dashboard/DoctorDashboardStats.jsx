@@ -2,12 +2,15 @@ import React, { useState } from 'react'
 import { useEffect } from 'react'
 import axiosClient from '../../../AxiosClient'
 import { Spinner } from 'flowbite-react'
+import { useLocation } from 'react-router'
 
 const DoctorDashboardStats = () => {
 
     const [isLoading, setIsLoading] = useState(false)
     const [appointments, setAppointments] = useState(null)
     const [earnings, setEarnings] = useState(null)
+    const location = useLocation()
+    console.log("location: ", location)
 
     useEffect(() => {
         setIsLoading(true)
