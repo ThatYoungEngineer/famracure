@@ -5,7 +5,11 @@ import axiosClient from "../../../AxiosClient";
 import AuthButton from "../../AuthButton";
 const PersonalInformation = () => {
   const doctorData = useSelector((state) => state.AuthDoctor);  
+  
   const [loading, setLoading] = useState(false);
+  const [experienceList, setExperienceList] = useState([
+    { years: "", institute: "", start_date: "", end_date: "" },
+  ]);
 
   const [DataForm, setDataForm] = useState({
     id: "",
@@ -20,11 +24,6 @@ const PersonalInformation = () => {
     address_cabinet: "",
     available: false,
     about: "",
-    experience_years: "",
-    experience_institute: "",
-    experience_start_date: "",
-    experience_end_date: "",
-    experience_detail: "",
   });
 
   GetAuthDoctor();
@@ -58,10 +57,23 @@ const PersonalInformation = () => {
     setDataForm({ ...DataForm, available: e.target.checked });
   };
 
-  const HandelChange = (e) => {
+  const HandelChange = (e, index) => {
     const { name, value } = e.target;
     setDataForm({ ...DataForm, [name]: value });
+    const newExperienceList = [...experienceList];
+    newExperienceList[index][name] = value;
+    setExperienceList(newExperienceList);
   };
+
+  const addExperience = () => {
+    setExperienceList([...experienceList, { years: "", institute: "", start_date: "", end_date: "" }]);
+  };
+
+  const removeExperience = (index) => {
+    const newExperienceList = experienceList.filter((_, i) => i !== index);
+    setExperienceList(newExperienceList);
+  };
+
 
   const HandelSubmit = (e) => {
     setLoading(true);
@@ -78,9 +90,6 @@ const PersonalInformation = () => {
         setLoading(false);
       });
   };
-
-  const ttype = typeof(DataForm.verified)
-  console.log("form data: ", ttype);
 
   return (
     <>
@@ -282,82 +291,88 @@ const PersonalInformation = () => {
             </div>
           </div>
 
+          
+          {experienceList.map((experience, index) => (
+        <div key={index} className="border p-4 rounded-lg mb-4">
           <div className="grid mt-3 grid-cols-6 gap-6">
             <div className="col-span-6 sm:col-span-3">
-              <label
-                htmlFor="experience_years"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
+              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                 Experience Years
               </label>
               <input
                 type="number"
-                name="experience_years"
-                id="experience_years"
-                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                placeholder="Enter you experience years"
+                name="years"
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
+                placeholder="Enter experience years"
+                value={experience.years}
+                onChange={(e) => HandelChange(e, index)}
                 required
-                value={DataForm.experience_years}
-                onChange={HandelChange}
               />
             </div>
+
             <div className="col-span-6 sm:col-span-3">
-              <label
-                htmlFor="experience_institute"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
+              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                 Experience Institute
               </label>
               <input
                 type="text"
-                name="experience_institute"
-                id="experience_institute"
-                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                placeholder="Enter you experience years"
+                name="institute"
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
+                placeholder="Enter institute name"
+                value={experience.institute}
+                onChange={(e) => HandelChange(e, index)}
                 required
-                value={DataForm.experience_institute}
-                onChange={HandelChange}
               />
             </div>
           </div>
+
           <div className="grid mt-3 grid-cols-6 gap-6">
             <div className="col-span-6 sm:col-span-3">
-              <label
-                htmlFor="experience_start_date"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
+              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                 Experience Start Date
               </label>
               <input
                 type="date"
-                name="experience_start_date"
-                id="experience_start_date"
-                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                placeholder="Enter you experience years"
+                name="start_date"
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
+                value={experience.start_date}
+                onChange={(e) => HandelChange(e, index)}
                 required
-                value={DataForm.experience_start_date}
-                onChange={HandelChange}
               />
             </div>
+
             <div className="col-span-6 sm:col-span-3">
-              <label
-                htmlFor="experience_end_date"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
+              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                 Experience End Date
               </label>
               <input
                 type="date"
-                name="experience_end_date"
-                id="experience_end_date"
-                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                placeholder="Enter you experience years"
+                name="end_date"
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
+                value={experience.end_date}
+                onChange={(e) => HandelChange(e, index)}
                 required
-                value={DataForm.experience_end_date}
-                onChange={HandelChange}
               />
             </div>
           </div>
+
+          {index > 0 && (
+            <button
+              onClick={() => removeExperience(index)}
+              className="mt-3 bg-red-500 text-white px-3 py-2 rounded-lg"
+            >
+              Remove Experience
+            </button>
+          )}
+        </div>
+      ))}
+
+      <button
+        onClick={addExperience}
+        className="bg-blue-500 text-white px-4 py-2 rounded-lg mt-4"
+      >
+        Add More Experiences
+      </button>
 
             <div className="w-full my-4">
               <label
