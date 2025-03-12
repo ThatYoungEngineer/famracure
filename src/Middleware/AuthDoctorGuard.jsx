@@ -13,6 +13,19 @@ const AuthDoctorGuard = ({ children }) => {
   const [Loading, setLoading] = useState(false);
 
   useEffect(() => {
+    console.log("Loading")
+          axiosClient
+        .get("/doctor")
+        .then((re) => {
+          console.log('doctor re: ', re);
+        })
+        .catch((er) => {
+          console.log('doctor er: ', er);
+        })
+
+  }, [])
+
+  useEffect(() => {
     if (
       AuthDoctorData.isAuthenticated &&
       get("TOKEN_DOCTOR") &&

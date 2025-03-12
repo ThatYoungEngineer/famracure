@@ -8,8 +8,10 @@ const PersonalInformation = () => {
   
   const [loading, setLoading] = useState(false);
   const [experienceList, setExperienceList] = useState([
-    { years: "", institute: "", start_date: "", end_date: "" },
+    { experience_years: "", experience_institute: "", experience_start_date: "", experience_end_date: "", experience_certificates: [], experience_detail: "" },
   ]);
+  const [certificates, setCertificates] = useState([])
+  const [successMessage, setSuccessMessage] = useState("")
 
   const [DataForm, setDataForm] = useState({
     id: "",
@@ -22,7 +24,7 @@ const PersonalInformation = () => {
     specialite: "",
     nom_cabinet: "",
     address_cabinet: "",
-    available: false,
+    available: "0",
     about: "",
   });
 
@@ -91,11 +93,40 @@ const PersonalInformation = () => {
   const HandelSubmit = (e) => {
     setLoading(true);
     e.preventDefault();
+    
+    const formData = new FormData();
+    formData.append("id", DataForm.id);
+    formData.append("firstname", DataForm.firstname);
+    formData.append("lastname", DataForm.lastname);
+    formData.append("cin", DataForm.cin);
+    formData.append("phoneNumber", DataForm.phoneNumber);
+    formData.append("email", DataForm.email);
+    formData.append("Matricule", DataForm.Matricule);
+    formData.append("specialite", DataForm.specialite);
+    formData.append("nom_cabinet", DataForm.nom_cabinet);
+    formData.append("address_cabinet", DataForm.address_cabinet);
+    formData.append("available", DataForm.available ? "1" : "0");
+    formData.append("about", DataForm.about);
+    experienceList.forEach((experience, index) => {
+      formData.append(`experience_years[${index}]`, experience.experience_years);
+      formData.append(`experience_institute[${index}]`, experience.experience_institute);
+      formData.append(`experience_start_date[${index}]`, experience.experience_start_date);
+      formData.append(`experience_end_date[${index}]`, experience.experience_end_date);
+      formData.append(`experience_detail[${index}]`, experience.experience_detail);
+      experience.experience_certificates.forEach((certificate, i) => {
+        formData.append(`experience_certificates[${index}][${i}]`, certificate);
+      });
+    })
+
+
     console.log(DataForm);
+    setSuccessMessage("");
     axiosClient
-      .post("/doctor/update/info", DataForm)
+      .post("/doctor/update/info", formData)
       .then((res) => {
         console.log(res);
+        const success = res?.data?.updated 
+        setSuccessMessage(success ? "Doctor information updated successfully" : "");
         setLoading(false);
       })
       .catch((err) => {
@@ -308,7 +339,7 @@ const PersonalInformation = () => {
 
           
           {experienceList.map((experience, index) => (
-        <div key={index} className="border p-4 rounded-lg mb-4">
+        <div key={index} className="border p-4 rounded-lg mt-10">
           <div className="grid mt-3 grid-cols-6 gap-6">
             <div className="col-span-6 sm:col-span-3">
               <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -316,12 +347,12 @@ const PersonalInformation = () => {
               </label>
               <input
                 type="number"
-                name="years"
+                name="experience_years"
                 className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
                 placeholder="Enter experience years"
-                value={experience.years}
+                value={experience.experience_years}
                 onChange={(e) => handleChangeInExperience(e, index)}
-                required
+                
               />
             </div>
 
@@ -331,12 +362,12 @@ const PersonalInformation = () => {
               </label>
               <input
                 type="text"
-                name="institute"
+                name="experience_institute"
                 className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
                 placeholder="Enter institute name"
-                value={experience.institute}
+                value={experience.experience_institute}
                 onChange={(e) => handleChangeInExperience(e, index)}
-                required
+                
               />
             </div>
           </div>
@@ -348,11 +379,11 @@ const PersonalInformation = () => {
               </label>
               <input
                 type="date"
-                name="start_date"
+                name="experience_start_date"
                 className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
-                value={experience.start_date}
+                value={experience.experience_start_date}
                 onChange={(e) => handleChangeInExperience(e, index)}
-                required
+                
               />
             </div>
 
@@ -362,12 +393,38 @@ const PersonalInformation = () => {
               </label>
               <input
                 type="date"
-                name="end_date"
+                name="experience_end_date"
                 className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
-                value={experience.end_date}
+                value={experience.experience_end_date}
                 onChange={(e) => handleChangeInExperience(e, index)}
-                required
+                
               />
+            </div>
+            <div className="col-span-6 flex flex-col gap-2">
+              <label
+                htmlFor="experience_certificates"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                Experience Certificates
+              </label>
+              <input type="file" multiple onChange={e => handleChangeInExperience(e, index)} />
+            </div>
+             <div className="col-span-6">
+              <label
+                htmlFor="experience_detail"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                Experience Detail
+              </label>
+              <textarea
+                id="experience_detail"
+                rows="5"
+                name="experience_detail"
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                placeholder="Enter your experience details"
+                onChange={(e) => handleChangeInExperience(e, index)}                
+                value={DataForm.experience_detail}
+              ></textarea>
             </div>
           </div>
 
@@ -384,34 +441,16 @@ const PersonalInformation = () => {
 
       <button
         onClick={addExperience}
-        className="bg-blue-500 text-white px-4 py-2 rounded-lg mt-4"
+        className="bg-yellow-400 text-white px-4 py-2 rounded-lg mt-4"
       >
         Add More Experiences
       </button>
-
-            <div className="w-full my-4">
-              <label
-                htmlFor="experience_detail"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
-                Experience Detail
-              </label>
-              <textarea
-                id="experience_detail"
-                rows="5"
-                name="experience_detail"
-                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                placeholder="Enter your experience details"
-                value={DataForm.experience_detail}
-                onChange={HandelChange}
-              ></textarea>
-            </div>
-
           <div className="grid mt-3 grid-cols-6 gap-6  w-[100%]">
             <div className="col-span-6 sm:col-full  w-[20%]">
               <AuthButton Text="Save all" Loading={loading} isDisabled={doctorData.doctor.verified} />
             </div>
           </div>
+          {successMessage && <p className="text-green-500">{successMessage}</p>}
         </form>
       </div>
     </>
