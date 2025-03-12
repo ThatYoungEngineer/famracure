@@ -60,14 +60,27 @@ const PersonalInformation = () => {
   const HandelChange = (e, index) => {
     const { name, value } = e.target;
     setDataForm({ ...DataForm, [name]: value });
-    const newExperienceList = [...experienceList];
-    newExperienceList[index][name] = value;
-    setExperienceList(newExperienceList);
+    // const newExperienceList = [...experienceList];
+    // console.log('newExperienceList', newExperienceList)
+    // newExperienceList[index][name] = value;
+    // setExperienceList(newExperienceList);
   };
 
   const addExperience = () => {
     setExperienceList([...experienceList, { years: "", institute: "", start_date: "", end_date: "" }]);
   };
+
+  const handleChangeInExperience = (e, index) => {
+    const { name, value } = e.target;
+
+    setExperienceList((prev) => {
+      const newState = [...prev];
+
+      newState[index][name] = value;
+
+      return newState;
+    })
+  }
 
   const removeExperience = (index) => {
     const newExperienceList = experienceList.filter((_, i) => i !== index);
@@ -90,6 +103,8 @@ const PersonalInformation = () => {
         setLoading(false);
       });
   };
+
+  console.log('experience list', experienceList)
 
   return (
     <>
@@ -305,7 +320,7 @@ const PersonalInformation = () => {
                 className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
                 placeholder="Enter experience years"
                 value={experience.years}
-                onChange={(e) => HandelChange(e, index)}
+                onChange={(e) => handleChangeInExperience(e, index)}
                 required
               />
             </div>
@@ -320,7 +335,7 @@ const PersonalInformation = () => {
                 className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
                 placeholder="Enter institute name"
                 value={experience.institute}
-                onChange={(e) => HandelChange(e, index)}
+                onChange={(e) => handleChangeInExperience(e, index)}
                 required
               />
             </div>
@@ -336,7 +351,7 @@ const PersonalInformation = () => {
                 name="start_date"
                 className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
                 value={experience.start_date}
-                onChange={(e) => HandelChange(e, index)}
+                onChange={(e) => handleChangeInExperience(e, index)}
                 required
               />
             </div>
@@ -350,7 +365,7 @@ const PersonalInformation = () => {
                 name="end_date"
                 className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
                 value={experience.end_date}
-                onChange={(e) => HandelChange(e, index)}
+                onChange={(e) => handleChangeInExperience(e, index)}
                 required
               />
             </div>
