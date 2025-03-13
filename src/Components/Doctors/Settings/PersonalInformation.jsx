@@ -109,17 +109,12 @@ const PersonalInformation = () => {
     formData.append("about", DataForm.about);
     experienceList.forEach((experience, index) => {
       formData.append(`experience_years[${index}]`, experience.experience_years);
-      formData.append(`experience_institute[${index}]`, experience.experience_institute);
+      formData.append(`institute[${index}]`, experience.experience_institute);
       formData.append(`experience_start_date[${index}]`, experience.experience_start_date);
       formData.append(`experience_end_date[${index}]`, experience.experience_end_date);
       formData.append(`experience_detail[${index}]`, experience.experience_detail);
-      experience.experience_certificates.forEach((certificate, i) => {
-        formData.append(`experience_certificates[${index}][${i}]`, certificate);
-      });
+      formData.append(`degree_certificates[${index}]`, experience.experience_certificates);
     })
-
-
-    console.log(DataForm);
     setSuccessMessage("");
     axiosClient
       .post("/doctor/update/info", formData)
@@ -407,7 +402,7 @@ const PersonalInformation = () => {
               >
                 Experience Certificates
               </label>
-              <input type="file" multiple onChange={e => handleChangeInExperience(e, index)} />
+              <input type="file" name="experience_certificates" multiple onChange={e => handleChangeInExperience(e, index)} />
             </div>
              <div className="col-span-6">
               <label
