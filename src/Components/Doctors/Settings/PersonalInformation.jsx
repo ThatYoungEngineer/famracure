@@ -60,7 +60,7 @@ const PersonalInformation = () => {
   };
 
   const addExperience = () => {
-    setExperienceList([...experienceList, { years: "", institute: "", start_date: "", end_date: "", degree_certificates: [] }]);
+    setExperienceList([...experienceList, {institute: "", start_date: "", end_date: "", degree_certificates: [] }]);
   };
 
   const handleChangeInExperience = (e, index) => {

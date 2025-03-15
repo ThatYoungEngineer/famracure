@@ -55,14 +55,14 @@ const DoctorDashboard = () => {
                 experience_years: doctorDashboardData?.doctor.experience_years || "",
                 experience: doctorDashboardData?.doctor.experience || [],
             })
-            // if (doctorDashboardData.doctor.experience.length > 0) {
-            //     setExperienceList(doctorDashboardData.doctor.experience); // Ensure it's updated
-            // }
+            if (doctorDashboardData?.doctor?.experience?.length > 0) {
+                setExperienceList(doctorDashboardData?.doctor?.experience); // Ensure it's updated
+            }
             setPreview(doctorDashboardData?.doctor.avatar_doctor || "/img/Rectangle 4.jpg"); // Default if no avatar
         }
     }, [doctorDashboardData])
 
-    console.log("doctorDashboardData: ", doctorDashboardData)
+    console.log("exp list: ", experienceList)
 
     const fetchDoctorDashboard = async () => {
         setDoctorDashboardData(null)
@@ -447,9 +447,9 @@ const DoctorDashboard = () => {
                                                                 </label>
                                                                 <input
                                                                     type="date"
-                                                                    name="experience_start_date"
+                                                                    name="start_date"
                                                                     className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
-                                                                    value={experience.experience_start_date ? JSON.parse(experience.experience_start_date)[index] : ""}
+                                                                    value={experience.start_date}
                                                                     onChange={(e) => handleChangeInExperience(e, index)}
                                                                 />
                                                             </div>
@@ -460,9 +460,9 @@ const DoctorDashboard = () => {
                                                                 </label>
                                                                 <input
                                                                     type="date"
-                                                                    name="experience_end_date"
+                                                                    name="end_date"
                                                                     className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
-                                                                    value={experience.experience_end_date ? JSON.parse(experience.experience_end_date)[index] : ""}
+                                                                    value={experience.end_date}
                                                                     onChange={(e) => handleChangeInExperience(e, index)}
                                                                 />
                                                             </div>
@@ -475,14 +475,14 @@ const DoctorDashboard = () => {
                                                                 </label>
                                                                 <input
                                                                     type="text"
-                                                                    name="experience_institute"
+                                                                    name="institute"
                                                                     className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
                                                                     placeholder="Enter institute name"
-                                                                    value={experience.experience_institute ? JSON.parse(experience.experience_institute)[index] : ""}
+                                                                    value={experience.institute}
                                                                     onChange={(e) => handleChangeInExperience(e, index)}
                                                                 />
                                                             </div>
-                                                            <div className="col-span-6 sm:col-span-3">
+                                                            {/* <div className="col-span-6 sm:col-span-3">
                                                                 <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                                                     Experience Years
                                                                 </label>
@@ -496,7 +496,7 @@ const DoctorDashboard = () => {
                                                                     value={experience.experience_years}
                                                                     onChange={(e) => handleChangeInExperience(e, index)}
                                                                 />
-                                                            </div>
+                                                            </div> */}
                                                             <div className="col-span-6">
                                                                 <label
                                                                     htmlFor="experience_detail"
@@ -507,22 +507,47 @@ const DoctorDashboard = () => {
                                                                 <textarea
                                                                     id="experience_detail"
                                                                     rows="5"
-                                                                    name="experience_detail"
+                                                                    name="detail"
                                                                     className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                                                     placeholder="Enter your experience details"
                                                                     onChange={(e) => handleChangeInExperience(e, index)}
-                                                                    value={experience.experience_detail ? JSON.parse(experience.experience_detail)[index] : ''}
+                                                                    value={experience.detail}
                                                                 ></textarea>
                                                             </div>
                                                             <div className="col-span-6 flex flex-col gap-2">
                                                                 <label
-                                                                    htmlFor="experience_certificates"
+                                                                    htmlFor="degree_certificates"
                                                                     className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                                                 >
                                                                     Experience Certificates
                                                                 </label>
-                                                                <input type="file" name="experience_certificates" multiple onChange={e => handleChangeInExperience(e, index)} />
+                                                                <input
+                                                                    type="file"
+                                                                    name="degree_certificates"
+                                                                    accept="image/png, image/jpeg, image/gif"
+                                                                    multiple
+                                                                    onChange={e => handleChangeInExperience(e, index)}
+                                                                />
                                                             </div>
+                                                            <div className="col-span-6 flex flex-col gap-2">
+                                                                {experience?.degree_certificates?.length > 0 &&
+                                                                    experience.degree_certificates.map((certificate, certificateIndex) => (
+                                                                        <div key={certificateIndex} className="w-full flex-1">
+                                                                            {typeof certificate === "string" ? (
+                                                                                // Existing file (URL)
+                                                                                <a href={certificate} target="_blank" rel="noopener noreferrer" className=" text-blue-500 underline">
+                                                                                    {certificate}
+                                                                                </a>
+                                                                            ) : (
+                                                                                // New file (File object)
+                                                                                <span className="flex-1 text-gray-700">{certificate.name}</span>
+                                                                            )}
+                                                                        </div>
+                                                                    ))
+                                                                }
+                                                            </div>
+
+
                                                         </div>
 
                                                     </div>
