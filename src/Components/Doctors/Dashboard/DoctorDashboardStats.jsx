@@ -1,5 +1,4 @@
 import { useEffect } from 'react'
-import Calendar from 'react-calendar'
 import React, { useState } from 'react'
 import { Spinner } from 'flowbite-react'
 import 'react-calendar/dist/Calendar.css'
@@ -12,8 +11,6 @@ const DoctorDashboardStats = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [appointments, setAppointments] = useState(null)
     
-    const [calendarAppointments, setCalendarAppointments] = useState(null)
-
     useEffect(() => {
         setIsLoading(true)
         axiosClient
@@ -21,7 +18,6 @@ const DoctorDashboardStats = () => {
             .then((res) => {
             if (res.status === 200) {
                 setAppointments(res.data);
-                // setCalendarAppointments(appointments.filter(appoint => appoint))
             }
             })
             .catch((err) => console.log(err))
@@ -71,15 +67,11 @@ const DoctorDashboardStats = () => {
                     :
                     <>
                         <h2> Pending Appointments </h2>
-                        <p> {appointments?.filter((e) => e.status == "pending")?.length } </p>
+                        <p> {appointments?.filter((e) => e.status === "pending")?.length } </p>
                     </>
                 }
             </section>
         </main>
-        <div className='p-10 flex flex-col gap-2 items-center'>
-            <h1 className='text-2xl'>See all of your appointments here..</h1>
-            <Calendar value={new Date()} />
-        </div>
     </div>
   )
 }

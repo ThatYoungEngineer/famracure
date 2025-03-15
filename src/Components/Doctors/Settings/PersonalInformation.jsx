@@ -43,7 +43,7 @@ const PersonalInformation = () => {
         experience_years: doctorData.doctor.experience_years || "",
         experience: doctorData.doctor.experience || [],
       })
-      if (doctorData.doctor.experience.length > 0) {
+      if (doctorData?.doctor?.experience?.length > 0) {
         setExperienceList(doctorData.doctor.experience); // Ensure it's updated
       }
       setPreview(doctorData.doctor.avatar_doctor || "/img/Rectangle 4.jpg"); // Default if no avatar

@@ -2,6 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../Assets/Css/HomeCss/TimeSlots.css";
+import axiosClient from "../AxiosClient";
+
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 function TimeSlots({ doctorId, doctorDetails, feeType, setSelectedTime, setSelectedDate }) {
   const currentDate = new Date().toISOString().split("T")[0];
@@ -10,6 +14,22 @@ function TimeSlots({ doctorId, doctorDetails, feeType, setSelectedTime, setSelec
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+
+
+const [availableDates, setAvailableDates] = useState(null)
+
+const fetchAvailableDates = () => {
+  axiosClient
+  .get(`/doctors/${doctorId}/available-dates`)
+   .then(response => {
+      console.log('available dates from the new api: ', response.data.available_dates)
+      setAvailableDates(response?.data?.available_dates)
+    })
+   .catch(err => {
+      console.error('Error fetching available dates: ', err)
+    })
+}
+
 
   // Handle date change
   const handleDateChange = (e) => {
@@ -21,6 +41,7 @@ function TimeSlots({ doctorId, doctorDetails, feeType, setSelectedTime, setSelec
 
   // Fetch available slots when the date changes
   useEffect(() => {
+    fetchAvailableDates()
     const fetchSlots = async () => {
       if (!selectedDateState) return;
 
@@ -84,17 +105,34 @@ function TimeSlots({ doctorId, doctorDetails, feeType, setSelectedTime, setSelec
   
   return (
     <div className="available-slots">
-      <h2>Select Date to View Available Slots</h2>
-      <input
+      <h2 className="my-5 text-lg">Select highlighted date to view available slots</h2>
+      {/* <input
         type="date"
         onChange={handleDateChange}
         value={selectedDateState}
         className="date-input"
         min={currentDate} // Prevent selecting past dates
-      />
+      /> */}
 
-      {loading && <p className="text-center text-gray-500">Loading slots...</p>}
-      {error && <p className="error">{error}</p>}
+      <div className="flex w-full">
+        <DatePicker
+          selected={selectedDateState}
+          onChange={(date) => {
+            if (!date) return; // Ensure date is valid
+            const formattedDate = date.toISOString().split("T")[0]; // Convert to 'YYYY-MM-DD'
+            setSelectedDateState(formattedDate);
+            setSelectedDate(formattedDate);
+            setSlots([]);
+          }}
+          includeDates={availableDates?.map(date => new Date(date))} // Convert available dates to Date objects
+          minDate={new Date()} // Prevent selecting past dates
+          dateFormat="yyyy-MM-dd"
+          className="flex-1 !w-[33vw] cursor-pointer"
+        />
+      </div>
+
+      {loading && <p className="my-5 text-center text-gray-500">Loading slots...</p>}
+      {error && <p className="error my-5">{error}</p>}
 
       <div className="slots-container">
         {slots?.length > 0 && <h3>Available Slots</h3> }
