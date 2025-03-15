@@ -42,11 +42,11 @@ const Prescriptions = () => {
         <div className="p-6">
           {loading ? (
             <p className="text-center text-gray-600">Loading...</p>
-          ) : prescriptions.length === 0 ? (
+          ) : prescriptions?.length === 0 ? (
             <p className="text-center text-gray-600">No prescriptions found.</p>
           ) : (
             <ul className="space-y-6">
-              {prescriptions.map((prescription) => (
+              {prescriptions?.map((prescription) => (
                 <li
                   key={prescription.id}
                   className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow"
@@ -61,7 +61,7 @@ const Prescriptions = () => {
                     <div>
                       <h3 className="font-semibold text-gray-800">Medications:</h3>
                       <ul className="list-disc list-inside text-gray-600">
-                        {prescription.medications.map((medication, index) => (
+                        {prescription?.medications?.map((medication, index) => (
                           <li key={index}>
                             {medication.name}: {medication.dosage}
                           </li>
@@ -76,7 +76,7 @@ const Prescriptions = () => {
                           Prescription Date:
                         </h3>
                         <p className="text-gray-600">
-                          {new Date(prescription.prescription_date).toLocaleDateString()}
+                          {new Date(prescription?.prescription_date).toLocaleDateString()}
                         </p>
                       </div>
                       <div>
@@ -84,7 +84,7 @@ const Prescriptions = () => {
                           Expiry Date:
                         </h3>
                         <p className="text-gray-600">
-                          {new Date(prescription.expiry_date).toLocaleDateString()}
+                          {new Date(prescription?.expiry_date).toLocaleDateString()}
                         </p>
                       </div>
                     </div>
@@ -96,7 +96,7 @@ const Prescriptions = () => {
                           Refill Count:
                         </h3>
                         <p className="text-gray-600">
-                          {prescription.refill_count}
+                          {prescription?.refill_count}
                         </p>
                       </div>
                       <div>
@@ -104,7 +104,7 @@ const Prescriptions = () => {
                           Refill Remaining:
                         </h3>
                         <p className="text-gray-600">
-                          {prescription.refill_remaining}
+                          {prescription?.refill_remaining}
                         </p>
                       </div>
                     </div>
@@ -113,14 +113,14 @@ const Prescriptions = () => {
                     <div>
                       <h3 className="font-semibold text-gray-800">Pharmacy:</h3>
                       <p className="text-gray-600">
-                        {prescription.pharmacy_name} - {prescription.pharmacy_address}
+                        {prescription?.pharmacy_name} - {prescription?.pharmacy_address}
                       </p>
                     </div>
 
                     {/* Download PDF Link */}
                     <div className="mt-4">
                       <a
-                        href={prescription.file_path}
+                        href={prescription?.file_path}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center text-blue-600 hover:text-blue-800 hover:underline"

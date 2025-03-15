@@ -81,9 +81,9 @@ const Setttings = () => {
           </h1>
         </div>
 
-        <ProfileUploadImg />
+        {/* <ProfileUploadImg /> */}
 
-        <div className="col-span-2">
+        <div className="col-span-6">
           <Tabs.Group aria-label="Default tabs" >
             <Tabs.Item
               active={true}

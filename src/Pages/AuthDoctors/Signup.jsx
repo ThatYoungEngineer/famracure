@@ -261,9 +261,32 @@ const Signup = () => {
                       >
                         <option value="+92">+92 (PK)</option>
                         <option value="+1">+1 (USA)</option>
-                        <option value="+91">+91 (IN)</option>
+                        <option value="+91">+91 (India)</option>
                         <option value="+44">+44 (UK)</option>
-                        {/* Add more country codes */}
+                        <option value="+61">+61 (Australia)</option>
+                        <option value="+81">+81 (Japan)</option>
+                        <option value="+49">+49 (Germany)</option>
+                        <option value="+33">+33 (France)</option>
+                        <option value="+39">+39 (Italy)</option>
+                        <option value="+86">+86 (China)</option>
+                        <option value="+7">+7 (Russia)</option>
+                        <option value="+34">+34 (Spain)</option>
+                        <option value="+55">+55 (Brazil)</option>
+                        <option value="+27">+27 (South Africa)</option>
+                        <option value="+82">+82 (South Korea)</option>
+                        <option value="+31">+31 (Netherlands)</option>
+                        <option value="+46">+46 (Sweden)</option>
+                        <option value="+45">+45 (Denmark)</option>
+                        <option value="+47">+47 (Norway)</option>
+                        <option value="+48">+48 (Poland)</option>
+                        <option value="+90">+90 (Turkey)</option>
+                        <option value="+52">+52 (Mexico)</option>
+                        <option value="+63">+63 (Philippines)</option>
+                        <option value="+60">+60 (Malaysia)</option>
+                        <option value="+65">+65 (Singapore)</option>
+                        <option value="+20">+20 (Egypt)</option>
+                        <option value="+966">+966 (Saudi Arabia)</option>
+                        <option value="+971">+971 (UAE)</option>
                       </select>
                       <input
                         type="number"
@@ -300,6 +323,7 @@ const Signup = () => {
                       <option value="#" selected disabled  >--Select Gender--</option>
                       <option value="male">Male</option>
                       <option value="female">Female</option>
+                      <option value="transgender">Transgender</option>
                     </select>
                     {getErrorMessage('gender') && (
                       <p className="mt-2 text-xs text-red-600 dark:text-red-500">
