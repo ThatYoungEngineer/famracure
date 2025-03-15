@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { Footer, Header, UserNavSettings } from "../../Components";
 import { Typography } from "@mui/material";
+import axiosClient from "../../AxiosClient";
 
 // User Prescription Component
 const Prescriptions = () => {
@@ -9,7 +9,7 @@ const Prescriptions = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios
+      axiosClient
       .get("/prescriptions")
       .then((res) => {
         setPrescriptions(res.data);
@@ -20,6 +20,9 @@ const Prescriptions = () => {
         setLoading(false);
       });
   }, []);
+
+
+  console.log('prescriptions: ', prescriptions)
 
   return (
     <div className="w-screen h-screen">
