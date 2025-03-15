@@ -176,8 +176,6 @@ const DoctorDashboard = () => {
         }
     }
 
-
-
     return (
         <>
             <NavBarAdmin />
