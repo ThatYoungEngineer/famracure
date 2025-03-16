@@ -49,104 +49,32 @@ const Prescriptions = () => {
             <p className="text-center text-gray-600">No prescriptions found.</p>
           ) : (
             <ul className="space-y-6">
-              {prescriptions?.map((prescription) => (
-                <li
-                  key={prescription.id}
-                  className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow"
-                >
-                  <div className="space-y-4">
-                    {/* Prescription Content */}
-                    <p className="text-gray-700 text-lg">
-                      {prescription.content}
-                    </p>
-
-                    {/* Medications */}
-                    <div>
-                      <h3 className="font-semibold text-gray-800">Medications:</h3>
-                      <ul className="list-disc list-inside text-gray-600">
-                        {prescription?.medications?.map((medication, index) => (
-                          <li key={index}>
-                            {medication.name}: {medication.dosage}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    {/* Prescription Date and Expiry Date */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <h3 className="font-semibold text-gray-800">
-                          Prescription Date:
-                        </h3>
-                        <p className="text-gray-600">
-                          {new Date(prescription?.prescription_date).toLocaleDateString()}
-                        </p>
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-gray-800">
-                          Expiry Date:
-                        </h3>
-                        <p className="text-gray-600">
-                          {new Date(prescription?.expiry_date).toLocaleDateString()}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Refill Information */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <h3 className="font-semibold text-gray-800">
-                          Refill Count:
-                        </h3>
-                        <p className="text-gray-600">
-                          {prescription?.refill_count}
-                        </p>
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-gray-800">
-                          Refill Remaining:
-                        </h3>
-                        <p className="text-gray-600">
-                          {prescription?.refill_remaining}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Pharmacy Information */}
-                    <div>
-                      <h3 className="font-semibold text-gray-800">Pharmacy:</h3>
-                      <p className="text-gray-600">
-                        {prescription?.pharmacy_name} - {prescription?.pharmacy_address}
-                      </p>
-                    </div>
-
-                    {/* Download PDF Link */}
-                    <div className="mt-4">
-                      <a
-                        href={prescription?.file_path}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center text-blue-600 hover:text-blue-800 hover:underline"
-                      >
-                        <span>Download PDF</span>
-                        <svg
-                          className="w-4 h-4 ml-2"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                          />
-                        </svg>
-                      </a>
-                    </div>
+              {prescriptions?.map((prescription, idx) => (
+                <li key={prescription.id} className="w-full flex flex-wrap justify-between border p-4 rounded-lg shadow-md">
+                  <div className="w-full p-5">
+                    <p className="flex items-center justify-center font-semibold h-10 w-10 rounded-full bg-gray-300">{idx+1}</p>
                   </div>
-                </li>
+      <h3 className="text-lg"> <strong>Prescription ID:</strong> {prescription.id}</h3>
+      <p><strong>Doctor ID:</strong> {prescription.doctor_id}</p>
+      <p><strong>User ID:</strong> {prescription.user_id}</p>
+      <p><strong>Appointment ID:</strong> {prescription.appointment_id}</p>
+      <p><strong>Date:</strong> {prescription.prescription_date}</p>
+      <p><strong>Expiry Date:</strong> {prescription.expiry_date}</p>
+      <p><strong>Notes:</strong> {prescription.notes}</p>
+      <p><strong>Pharmacy:</strong> {prescription.pharmacy_name}, {prescription.pharmacy_address}</p>
+      <p><strong>Refill:</strong> {prescription.refill_remaining} remaining</p>
+      <p><strong>Status:</strong> <span className={`px-2 py-1 rounded ${prescription.status === 'pending' ? 'bg-yellow-200' : 'bg-green-200'}`}>{prescription.status}</span></p>
+      {prescription.file_path && (
+        <a
+          href={prescription.file_path}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-500 underline"
+        >
+          View Prescription
+        </a>
+      )}
+    </li>
               ))}
             </ul>
           )}

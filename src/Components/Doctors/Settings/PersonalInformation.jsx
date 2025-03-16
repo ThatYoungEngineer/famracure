@@ -40,6 +40,7 @@ const PersonalInformation = () => {
         available: doctorData.doctor.available==="1" ? true :false ,
         verified: doctorData.doctor.verified==="1" ? true :false ,
         about: doctorData.doctor.about || "",
+        cin: doctorData.doctor.cin || "",
         experience_years: doctorData.doctor.experience_years || "",
         experience: doctorData.doctor.experience || [],
       })
@@ -49,6 +50,8 @@ const PersonalInformation = () => {
       setPreview(doctorData.doctor.avatar_doctor || "/img/Rectangle 4.jpg"); // Default if no avatar
     }
   }, [doctorData]);
+
+  console.log('avatar_doctor: ', doctorData.doctor.avatar_doctor)
 
   const HandelChangeCheckbox = (e) => {
     setDataForm({ ...DataForm, available: e.target.checked })
@@ -110,6 +113,7 @@ const PersonalInformation = () => {
     formData.append("address_cabinet", DataForm.address_cabinet);
     formData.append("available", DataForm.available ? 1 : 0);
     formData.append("about", DataForm.about);
+    formData.append("cin", DataForm.cin);
 
     if (selectedFile) {
       formData.append("avatar_doctor", selectedFile); // Fix: Send a file, not a URL
@@ -385,6 +389,24 @@ const PersonalInformation = () => {
               />
             </div>
           </div>
+          <div className="col-span-6 sm:col-span-3">
+              <label
+                htmlFor="cin"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                CIN
+              </label>
+              <input
+                type="text"
+                name="cin"
+                id="cin"
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                placeholder="cin"
+                required
+                value={DataForm.cin}
+                onChange={HandelChange}
+              />
+            </div>
           <h1 className="text-2xl mt-5 font-semibold">Experience Fields</h1>
           <div className="w-44 mt-5 sm:col-span-3">
                     <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
