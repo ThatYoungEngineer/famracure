@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useReducer } from "react";
 import { useSelector } from "react-redux";
 import axiosClient from "../../../AxiosClient";
 import Chat from "../../Chat";
@@ -6,8 +6,9 @@ import { useNavigate } from "react-router";
 import { Dialog } from "primereact/dialog";
 import { Button } from "@mui/material";
 import MedicationsInput from "./MedicationsInput";
+import AlertSucces from "../../Alert/AlertSucces";
 
-const TableAppointment = ({ showAnnuler, setShowAnnuler, setIdAppointment }) => {
+const TableAppointment = ({ refreshApp, showAnnuler, setShowAnnuler, setIdAppointment }) => {
   const doctorData = useSelector((state) => state.AuthDoctor);
   const [appointments, setAppointments] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -15,6 +16,15 @@ const TableAppointment = ({ showAnnuler, setShowAnnuler, setIdAppointment }) => 
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [prescriptionError, setPrescriptionError] = useState("")
   const navigate = useNavigate();
+
+
+  const [openUpdateAppointment, setOpenUpdateAppointment] = useState(null)
+
+  console.log('openUpdateAppointment: ', openUpdateAppointment)
+
+  const [refresh, setRefresh] = useState(false)
+
+  const [invoiceError, setInvoiceError] = useState(null)
 
   const [prescriptionFormData, setPrescriptionFormData] = useState({
     user_id: "", doctor_id: "", 
@@ -46,8 +56,6 @@ const TableAppointment = ({ showAnnuler, setShowAnnuler, setIdAppointment }) => 
     }
   }, [selectedAppointment]);
 
-  console.log('selectedAppointment: ', selectedAppointment)
-  console.log('prescriptionFormData: ', prescriptionFormData)
 
 
   const handlePrescriptionChange = (e) => {
@@ -90,7 +98,7 @@ const TableAppointment = ({ showAnnuler, setShowAnnuler, setIdAppointment }) => 
       })
       .catch((err) => console.log(err))
       .finally(() => setIsLoading(false))
-  }, [])
+  }, [refresh, refreshApp])
 
   const handleAcceptReschedule = async (e) => {
     try {
@@ -102,6 +110,159 @@ const TableAppointment = ({ showAnnuler, setShowAnnuler, setIdAppointment }) => 
       console.log(error);
     }
   }
+
+  const generateInvoice = (id) => {
+    setInvoiceError(null)
+    axiosClient
+    .post(`/appointments/${id}/generate-invoice`)
+    .then((res) => { 
+      console.log('response', res)
+
+     })
+    .catch((err) => 
+      setInvoiceError(err?.response?.data?.error)
+    )
+
+  }
+  const downloadInvoice = (id) => {
+    setInvoiceError(null)
+    axiosClient
+    .get(`/appointments/${id}/invoice`)
+    .then((res) => { 
+const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `invoice_${id}.pdf`); // Set file name
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+     })
+    .catch((err) => 
+      setInvoiceError(err?.response?.data?.message)
+    )
+
+  }
+
+  const deleteApp = (id) => {
+    axiosClient
+    .delete(`/appointments/${id}`)
+    .then((res) => { 
+      console.log('response', res)
+    })
+    .catch((err) => console.log(err))
+    .finally(() => {
+      setRefresh(prev => !prev)
+    })
+  }
+
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "SET_DATE":
+      return { ...state, dateAppointment: action.payload };
+    case "SET_TIME_SLOT":
+      return { ...state, timeSlot: { ...state.timeSlot, [action.field]: action.payload } };
+    case "ADD_SELECTED_TIME":
+      return { ...state, selectedTimes: [...state.selectedTimes, action.payload] };
+    case "REMOVE_SELECTED_TIME":
+      return { ...state, selectedTimes: state.selectedTimes.filter((_, index) => index !== action.payload) };
+    case "SET_LOADING":
+      return { ...state, isLoading: action.payload };
+    case "SET_SUCCESS_MESSAGE":
+      return { ...state, successMessage: action.payload };
+    case "RESET":
+      return getInitialState(); // Reset properly
+    default:
+      return state;
+  }
+};
+
+// 🛠️ Function to generate initial state dynamically
+const getInitialState = () => ({
+  dateAppointment: openUpdateAppointment?.appointment_date || "",
+  timeSlot: {
+    appointment_time: openUpdateAppointment?.appointment_time || "",
+    video_fee: openUpdateAppointment?.video_fee || "",
+    clinic_fee: openUpdateAppointment?.clinic_fee || "",
+    appointment_type: openUpdateAppointment?.appointment_type || "",
+  },
+  selectedTimes: [],
+  isLoading: false,
+  successMessage: ""
+});
+
+// ✅ Use `useReducer` properly
+const [state, dispatch] = useReducer(reducer, getInitialState());
+
+// ✅ Update state when `openUpdateAppointment` changes
+useEffect(() => {
+  dispatch({ type: "RESET" });
+}, [openUpdateAppointment]);
+
+
+  console.log("state: ", state)
+
+  const postAppointment = async () => {
+    dispatch({ type: "SET_LOADING", payload: true });
+    dispatch({ type: "SET_SUCCESS_MESSAGE", payload: "" });
+    try {
+      // Prepare time slots with shared details
+      const timeSlots = state.selectedTimes.map((time) => ({
+        appointment_time: time,
+        video_fee: state.timeSlot.video_fee,
+        clinic_fee: state.timeSlot.clinic_fee,
+        appointment_type: state.timeSlot.appointment_type
+      }));
+
+      const response = await axiosClient.put(`/appointments/${openUpdateAppointment.id}`, {
+         appointment_date: state.dateAppointment,
+      appointment_time: state.timeSlot.appointment_time ? state.timeSlot.appointment_time : state.selectedTimes[0] , // Send only the first selected time
+      video_fee: state.timeSlot.video_fee,
+      clinic_fee: state.timeSlot.clinic_fee,
+      appointment_type: state.timeSlot.appointment_type,
+      });
+      
+      if (response?.data?.message) {
+        dispatch({ type: "SET_SUCCESS_MESSAGE", payload: response.data.message });
+        refreshApp(prev => !prev)
+      }
+    } catch (error) {
+      console.error("Error posting appointment:", error);
+    } finally {
+      dispatch({ type: "SET_LOADING", payload: false });
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!state.dateAppointment || (!state.timeSlot.appointment_time )) {
+      alert("Please enter a date and at least one time.");
+      return;
+    }
+    postAppointment();
+  };
+
+  const handleTimeChange = (e) => {
+    let [hours, minutes] = e.target.value.split(":").map(Number);
+    minutes = Math.round(minutes / 15) * 15;
+    if (minutes === 60) {
+      minutes = 0;
+      hours += 1;
+    }
+    const formattedTime = `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+    dispatch({ type: "SET_TIME_SLOT", field: "appointment_time", payload: formattedTime });
+  };
+
+  const handleAddTime = () => {
+    if (state.timeSlot.appointment_time && !state.selectedTimes.includes(state.timeSlot.appointment_time)) {
+      dispatch({ type: "ADD_SELECTED_TIME", payload: state.timeSlot.appointment_time });
+      dispatch({ type: "SET_TIME_SLOT", field: "appointment_time", payload: "" }); // Clear the input
+    }
+  };
+
+  const handleRemoveTime = (index) => {
+    dispatch({ type: "REMOVE_SELECTED_TIME", payload: index });
+  };
 
   return (
     <>
@@ -151,6 +312,27 @@ const TableAppointment = ({ showAnnuler, setShowAnnuler, setIdAppointment }) => 
                             <path fillRule="evenodd" d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 0 1 0-1.113ZM17.25 12a5.25 5.25 0 1 1-10.5 0 5.25 5.25 0 0 1 10.5 0Z" clipRule="evenodd" />
                           </svg>
                           View
+                        </button>
+                       
+                        <button
+                          onClick={() => setOpenUpdateAppointment(el)}
+                          className="flex items-center gap-2 px-2 py-[8px] text-[14px] text-white rounded-lg bg-yellow-600 hover:bg-yellow-800"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
+                            <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                            <path fillRule="evenodd" d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 0 1 0-1.113ZM17.25 12a5.25 5.25 0 1 1-10.5 0 5.25 5.25 0 0 1 10.5 0Z" clipRule="evenodd" />
+                          </svg>
+                          Update
+                        </button>
+                        <button
+                          onClick={() => deleteApp(el.id)}
+                          className="flex items-center gap-2 px-2 py-[8px] text-[14px] text-white rounded-lg bg-red-600 hover:bg-red-800"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
+                            <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                            <path fillRule="evenodd" d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 0 1 0-1.113ZM17.25 12a5.25 5.25 0 1 1-10.5 0 5.25 5.25 0 0 1 10.5 0Z" clipRule="evenodd" />
+                          </svg>
+                          Delete
                         </button>
                       </td>
                     </tr>
@@ -202,6 +384,30 @@ const TableAppointment = ({ showAnnuler, setShowAnnuler, setIdAppointment }) => 
           onHide={() => setSelectedAppointment(null)}
         >
           <div className="w-full m-0 flex flex-col gap-1">
+          <div className="w-full flex flex-col items-center justify-center">
+            <Button 
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={(e) => generateInvoice(selectedAppointment.id)}
+              className="w-fit p-2"
+            >
+              Generate Invoice
+            </Button>
+          </div>
+          <div className="w-full flex flex-col items-center justify-center">
+            <Button 
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={(e) => downloadInvoice(selectedAppointment.id)}
+              className="w-fit p-2"
+            >
+              Download Invoice
+            </Button>
+            {invoiceError && <p className="w-full text-center text-red-500">{invoiceError}</p>}
+          </div>
+
             <div className="w-full flex items-center justify-between">
               <section className="w-full flex flex-col gap-2">
                 {(selectedAppointment.status === "confirmed" || selectedAppointment.status === "completed")
@@ -307,12 +513,12 @@ const TableAppointment = ({ showAnnuler, setShowAnnuler, setIdAppointment }) => 
         visible={!!isPrescriptionOpen}
         maximized
         style={{ width: "50vw" }}
-        onHide={() => setPrescriptionOpen(false)}
-        open={isPrescriptionOpen} onOpenChange={setPrescriptionOpen}
+        open={isPrescriptionOpen}
+        onHide={() => setPrescriptionOpen(null)}
       >
         <div className="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl w-full space-y-8 bg-white p-8 rounded-lg shadow-lg">
-            <h2 className="text-3xl font-extrabold text-center text-gray-900">Create Prescription</h2>
+            <h2 className="text-3xl font-extrabold text-center text-gray-900">Update App</h2>
             <form onSubmit={handlePrescriptionSubmit} className="mt-8 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -480,6 +686,112 @@ const TableAppointment = ({ showAnnuler, setShowAnnuler, setIdAppointment }) => 
               </div>
               {prescriptionError && <p className="text-red-400 text-sm">{prescriptionError}</p>}
             </form>
+          </div>
+        </div>
+      </Dialog>
+
+
+      {/* Update Prescription */}
+
+      <Dialog 
+        header=""
+        visible={!!openUpdateAppointment}
+        maximized
+        style={{ width: "50vw" }}
+        onHide={() => setOpenUpdateAppointment(null)}
+        open={openUpdateAppointment}
+      >
+        <div className="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl w-full space-y-8 bg-white p-8 rounded-lg shadow-lg">
+            <h2 className="text-3xl font-extrabold text-center text-gray-900">Update Appointment</h2>
+
+
+
+
+
+      <div className="fixed top-0 left-0 h-screen w-screen flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+        <div className="bg-white rounded-lg shadow-lg dark:bg-gray-800 w-96 p-6 relative">
+          <div className="w-full flex items-center justify-between ">
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Update Appointment - id ({openUpdateAppointment?.id})</h3>
+          </div>
+          <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+            <label htmlFor="dateAppointment" className="block w-fit mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              Appointment Date
+            </label>
+            <input 
+              type="date"
+              className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              min={new Date().toISOString().split("T")[0]} // Disables past dates
+              value={state.dateAppointment || openUpdateAppointment?.appointment_date} 
+              onChange={(e) => dispatch({ type: "SET_DATE", payload: e.target.value })} required 
+            />
+
+            <label htmlFor="timeAppointment" className="block w-fit mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              Select Time
+            </label>
+            <div className="flex gap-2">
+              <input 
+                type="time" 
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                value={state.timeSlot.appointment_time || openUpdateAppointment?.appointment_time} 
+                onChange={handleTimeChange} step="1800" 
+              />
+            </div>
+
+            <label htmlFor="timeAppointment" className="block w-fit mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              Video Fee
+            </label>
+            <input 
+              type="number" 
+              className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              placeholder="Video Fee"
+              value={state.timeSlot.video_fee || openUpdateAppointment?.video_fee} 
+              onChange={(e) => dispatch({ type: "SET_TIME_SLOT", field: "video_fee", payload: e.target.value })} 
+              required 
+            />
+
+            <label htmlFor="timeAppointment" className="block w-fit mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              Clinic Fee
+            </label>
+            <input 
+              type="number" 
+              className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              placeholder="Clinic Fee" 
+              value={state.timeSlot.clinic_fee || openUpdateAppointment?.clinic_fee} 
+              onChange={(e) => dispatch({ type: "SET_TIME_SLOT", field: "clinic_fee", payload: e.target.value })} 
+              required 
+            />
+
+            <label htmlFor="timeAppointment" className="block w-fit mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              Appointment Type
+            </label>
+            <select
+              value={state.timeSlot.appointment_type || openUpdateAppointment?.appointment_type} 
+              className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              onChange={(e) => dispatch({ type: "SET_TIME_SLOT", field: "appointment_type", payload: e.target.value })} 
+              required
+            >
+              <option value="">--Select--</option>
+              <option value="video">Video</option>
+              <option value="clinic">Clinic</option>
+            </select>
+
+            <button 
+              type="submit" 
+              className="w-full disabled:opacity-30 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+              disabled={state.isLoading}
+            >
+              {state.isLoading ? "Loading..." : "Confirm Appointment"}
+            </button>
+          </form>
+          {state.successMessage && <AlertSucces Message={state.successMessage} />}
+        </div>
+      </div>
+
+
+
+
+
           </div>
         </div>
       </Dialog>

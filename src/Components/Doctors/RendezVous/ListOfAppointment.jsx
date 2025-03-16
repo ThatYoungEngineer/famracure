@@ -8,6 +8,9 @@ const ListOfAppointment = () => {
   const [show, setShow] = useState(false);
   const [showAnnuler, setShowAnnuler] = useState(false);
   const [idAppointment, setIdAppointment] = useState(null);
+  
+  
+  const [refreshApp, setRefreshApp] = useState(false);
 
   const AnnulerAppointment = (idAppointment) => {
     console.log(idAppointment);
@@ -127,10 +130,11 @@ const ListOfAppointment = () => {
         setShowAnnuler={setShowAnnuler}
         setIdAppointment={setIdAppointment}
         AnnulerAppointment={AnnulerAppointment}
+        refreshApp={refreshApp}
       />
 
       {/* Component Add New Appointment */}
-      <AjouterModel show={show} setShow={setShow} />
+      <AjouterModel show={show} setShow={setShow} refreshApp={setRefreshApp} />
 
       {/* Component Annuler Apointment */}
       <AnnulerModel

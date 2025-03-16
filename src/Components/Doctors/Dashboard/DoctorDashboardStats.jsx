@@ -30,6 +30,7 @@ const DoctorDashboardStats = () => {
         axiosClient
             .get('/doctor/earnings')
             .then((res) => {
+                console.log('doctor earnings', res)
                 setEarnings(res.data)
             })
             .catch((err) => console.log(err))

@@ -36,7 +36,7 @@ const reducer = (state, action) => {
   }
 };
 
-const AjouterModel = ({ show, setShow }) => {
+const AjouterModel = ({ show, setShow, refreshApp }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const postAppointment = async () => {
@@ -58,6 +58,7 @@ const AjouterModel = ({ show, setShow }) => {
       
       if (response?.data?.message) {
         dispatch({ type: "SET_SUCCESS_MESSAGE", payload: response.data.message });
+        refreshApp(prev => !prev)
       }
     } catch (error) {
       console.error("Error posting appointment:", error);
