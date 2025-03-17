@@ -4,6 +4,7 @@ import axiosClient from "../../AxiosClient";
 import { useParams } from 'react-router-dom';
 import GetAuthAdmin from "../../hooks/GetAuthAdmin";
 import { AuthButton, NavBarAdmin, SidebarAdmin } from "../../Components";
+import { Button } from "@mui/material";
 
 const DoctorDashboard = () => {
     document.title = "Payments";
@@ -49,8 +50,8 @@ const DoctorDashboard = () => {
                 specialite: doctorDashboardData?.doctor.specialite || "",
                 nom_cabinet: doctorDashboardData?.doctor.nom_cabinet || "",
                 address_cabinet: doctorDashboardData?.doctor.address_cabinet || "",
-                available: doctorDashboardData?.doctor.available === "1" ? true : false,
-                verified: doctorDashboardData?.doctor.verified === "1" ? true : false,
+                available: doctorDashboardData?.doctor.available == "1" ? true : false,
+                verified: doctorDashboardData?.doctor.verified == "1" ? true : false,
                 about: doctorDashboardData?.doctor.about || "",
                 experience_years: doctorDashboardData?.doctor.experience_years || "",
                 experience: doctorDashboardData?.doctor.experience || [],
@@ -174,6 +175,23 @@ const DoctorDashboard = () => {
             setSelectedFile(file);
             setPreview(URL.createObjectURL(file)); // Show image preview
         }
+    }
+
+    const handleApproveDoctor = () => {
+        axiosClient
+           .post(`/admin/approve-doctor/${doctorDashboardData?.doctor.id}`, {
+                verified: DataForm.verified ? 1 : 0
+           })
+           .then((res) => {
+                console.log(res);
+                const success = res?.data?.message;
+                if (success) {
+                    setSuccessMessage(success);
+                }
+            })
+           .catch((err) => {
+                console.log(err);
+            })
     }
 
     return (
@@ -551,10 +569,18 @@ const DoctorDashboard = () => {
                                                     </div>
                                                 ))}
 
-                                                <div className="grid mt-3 grid-cols-6 gap-6  w-[100%]">
+                                                <div className="w-full flex items-center gap-5 mt-10">
                                                     <div className="col-span-6 sm:col-full  w-[20%]">
                                                         <AuthButton Text="Save all" Loading={loading} isDisabled={DataForm.verified} />
                                                     </div>
+                                                    <Button
+                                                        type="button"
+                                                        variant="contained"
+                                                        color="secondary"
+                                                        onClick={handleApproveDoctor}
+                                                    >   
+                                                        Approve Doctor
+                                                    </Button>
                                                 </div>
                                                 {successMessage && <p className="text-green-500">{successMessage}</p>}
                                             </form>

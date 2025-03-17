@@ -3,6 +3,7 @@ import GetAuthDoctor from "../../../hooks/GetAuthDoctor";
 import { useSelector } from "react-redux";
 import axiosClient from "../../../AxiosClient";
 import AuthButton from "../../AuthButton";
+import { Button } from "@mui/material";
 const PersonalInformation = () => {
   const doctorData = useSelector((state) => state.AuthDoctor);  
 
@@ -37,8 +38,9 @@ const PersonalInformation = () => {
         specialite: doctorData.doctor.specialite || "",
         nom_cabinet: doctorData.doctor.nom_cabinet || "",
         address_cabinet: doctorData.doctor.address_cabinet || "",
-        available: doctorData.doctor.available==="1" ? true :false ,
-        verified: doctorData.doctor.verified==="1" ? true :false ,
+        available: doctorData.doctor.available == "1" ? true :false ,
+        verified: doctorData.doctor.verified == "1" ? true :false ,
+        is_approved: doctorData.doctor.is_approved == "1" ? true :false ,
         about: doctorData.doctor.about || "",
         cin: doctorData.doctor.cin || "",
         experience_years: doctorData.doctor.experience_years || "",
@@ -153,6 +155,19 @@ const PersonalInformation = () => {
       console.log(err);
       setLoading(false);
     })
+  }
+
+  const handleApprovalClick = () => {
+    axiosClient
+    .post("/doctor/request-approval")
+    .then((res) => {
+       console.log(res);
+      const success = res?.data?.message;
+      setSuccessMessage(success? "Doctor approved successfully" : "Your request for approval has been sent");
+     })
+    .catch((err) => {
+       setSuccessMessage(err?.response?.data?.message);
+     })
   }
 
 
@@ -418,7 +433,7 @@ const PersonalInformation = () => {
                       readOnly
                       disabled
                       className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 disabled:opacity-80"
-                      value={DataForm.experience_years}
+                      value={doctorData?.doctor?.experience_years}
                     />
                   </div>
           
@@ -534,9 +549,19 @@ const PersonalInformation = () => {
           >
             Add More Experiences
           </button>
-          <div className="grid mt-3 grid-cols-6 gap-6  w-[100%]">
+          <div className="flex items-center gap-5 w-full mt-10">
             <div className="col-span-6 sm:col-full  w-[20%]">
-              <AuthButton Text="Save all" Loading={loading} isDisabled={DataForm.verified} />
+              <AuthButton Text="Save all" Loading={loading} isDisabled={DataForm.is_approved} />
+            </div>
+            <div className="col-span-6 sm:col-full ">
+            <Button
+              type="button"
+              variant="contained"
+              color="secondary"
+              onClick={handleApprovalClick}
+            >
+              Request for Approval
+            </Button>
             </div>
           </div>
           {successMessage && <p className="text-green-500">{successMessage}</p>}

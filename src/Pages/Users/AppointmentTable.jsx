@@ -30,6 +30,8 @@ const AppointmentPage = () => {
     const [rescheduleDate, setRescheduleDate] = useState(null)
     const [rescheduleTime, setRescheduleTime] = useState(null)
 
+    const [rescheduleSuccess, setRescheduleSuccess] = useState(null)
+
     const navigate = useNavigate()
 
     const fetchAppointments = async () => {
@@ -100,13 +102,13 @@ const AppointmentPage = () => {
     try {
       setIsLoading(true)
       setError("")
-      const res = await axiosClient.post(`appointments/${rescheduleDialogue}/reschedule`, 
+      const res = await axiosClient.post(`appointments/${rescheduleDialogue}/request-reschedule`, 
         {
-          appointment_date: rescheduleDate,
-          appointment_time: rescheduleTime
+          new_date: rescheduleDate,
+          new_time: rescheduleTime
         } 
       )
-      console.log('res: ', res)
+      setRescheduleSuccess(res?.data?.message)
     } catch (error) {
       console.log('error fetching appointment: ', error)
     } finally {
@@ -122,6 +124,15 @@ const AppointmentPage = () => {
     {rescheduleDialogue && 
       <section className="fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-gray-800 bg-opacity-95 z-50">
         <div className="w-3/5 h-2/5 bg-white bg-opacity-90 rounded-md flex flex-col items-center p-5">
+          <div className="w-full flex justify-end"> 
+            <button
+              type="button" 
+              className="cursor-pointer w-7 h-7 rounded-full bg-red-500 text-black flex items-center justify-center"
+              onClick={() => setRescheduleDialogue(null)}
+            >
+              X
+            </button>
+          </div>
           <span className="text-xl text-center" >You can reschedule your appointment upto one week from now</span>
           <form className="w-full flex flex-col items-center justify-center" onSubmit={handleRescheduleForm} >
             <div className="my-5 w-full flex flex-col gap-1 items-center justify-center">
@@ -161,6 +172,7 @@ const AppointmentPage = () => {
             >
               Reschedule
             </Button>
+            {rescheduleSuccess && <p className="w-full py-3 text-green-600 text-center">{rescheduleSuccess}</p>}
           </form>
         </div>
       </section>

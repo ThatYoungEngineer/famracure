@@ -17,10 +17,10 @@ const TableAppointment = ({ refreshApp, showAnnuler, setShowAnnuler, setIdAppoin
   const [prescriptionError, setPrescriptionError] = useState("")
   const navigate = useNavigate();
 
+  const [rescheduleSuccess, setRescheduleSuccess] = useState(null)
+
 
   const [openUpdateAppointment, setOpenUpdateAppointment] = useState(null)
-
-  console.log('openUpdateAppointment: ', openUpdateAppointment)
 
   const [refresh, setRefresh] = useState(false)
 
@@ -101,10 +101,14 @@ const TableAppointment = ({ refreshApp, showAnnuler, setShowAnnuler, setIdAppoin
   }, [refresh, refreshApp])
 
   const handleAcceptReschedule = async (e) => {
+    setRescheduleSuccess(null)
     try {
-      const res = await axiosClient.post(`/appointments/${e}/approve-reschedule`, { accept_reschedule: true });
-      if (res.status === 200) {
-        console.log("Reschedule Accepted");
+      const res = await axiosClient.post(`/appointments/${e}/approve-reschedule`, { 
+        new_date: selectedAppointment?.rescheduled_date,
+        new_time: selectedAppointment?.rescheduled_time ? selectedAppointment?.rescheduled_time : "05:00",
+      });
+      if (res.status == 200) {
+        setRescheduleSuccess(res?.data?.message)
       }
     } catch (error) {
       console.log(error);
@@ -251,17 +255,6 @@ useEffect(() => {
     }
     const formattedTime = `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
     dispatch({ type: "SET_TIME_SLOT", field: "appointment_time", payload: formattedTime });
-  };
-
-  const handleAddTime = () => {
-    if (state.timeSlot.appointment_time && !state.selectedTimes.includes(state.timeSlot.appointment_time)) {
-      dispatch({ type: "ADD_SELECTED_TIME", payload: state.timeSlot.appointment_time });
-      dispatch({ type: "SET_TIME_SLOT", field: "appointment_time", payload: "" }); // Clear the input
-    }
-  };
-
-  const handleRemoveTime = (index) => {
-    dispatch({ type: "REMOVE_SELECTED_TIME", payload: index });
   };
 
   return (
@@ -496,6 +489,7 @@ useEffect(() => {
                 >
                   Accept Reschedule
                 </Button>
+                {rescheduleSuccess && <p className="w-full my-5 text-green-600">{rescheduleSuccess}</p>}
               </div>
             }
             {(selectedAppointment?.status === "confirmed" || selectedAppointment?.status === "completed") && 
@@ -691,7 +685,7 @@ useEffect(() => {
       </Dialog>
 
 
-      {/* Update Prescription */}
+      {/* Update Prescription */}      
 
       <Dialog 
         header=""
@@ -713,6 +707,11 @@ useEffect(() => {
         <div className="bg-white rounded-lg shadow-lg dark:bg-gray-800 w-96 p-6 relative">
           <div className="w-full flex items-center justify-between ">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Update Appointment - id ({openUpdateAppointment?.id})</h3>
+             <button 
+              onClick={() => setOpenUpdateAppointment(null)} className="text-2xl bg-transparent rounded-lg p-0 ml-auto inline-flex items-center dark:hover:text-white text-gray-500 hover:text-gray-700"
+            >
+              &times;
+            </button>
           </div>
           <form onSubmit={handleSubmit} className="space-y-4 mt-4">
             <label htmlFor="dateAppointment" className="block w-fit mb-2 text-sm font-medium text-gray-900 dark:text-white">
