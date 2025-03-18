@@ -551,7 +551,7 @@ const PersonalInformation = () => {
           </button>
           <div className="flex items-center gap-5 w-full mt-10">
             <div className="col-span-6 sm:col-full  w-[20%]">
-              <AuthButton Text="Save all" Loading={loading} isDisabled={DataForm.is_approved} />
+              <AuthButton Text="Save all" Loading={loading} isDisabled={DataForm.verified} />
             </div>
             <div className="col-span-6 sm:col-full ">
             <Button
