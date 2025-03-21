@@ -13,10 +13,11 @@ const TablePatient = () => {
   const [lastPage, setLastPage] = useState(1);
   const [totalPatients, setTotalPatients] = useState(null);
   const [searchQuery, setSearchQuery] = useState(""); // State for search query
+  const [deleteSuccess, setDeleteSuccess] = useState(null)
+
 
   useEffect(() => {
     fetchPatients(currentPage);
-    fetchPatientStatus();
   }, [currentPage]);
 
   const fetchPatients = async (page) => {
@@ -33,15 +34,6 @@ const TablePatient = () => {
     }
   };
 
-  const fetchPatientStatus = async () => {
-    try {
-      const response = await axiosClient.get(`/admin/appointments`);
-      console.log("patient status: " + response);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   // Function to filter patients based on search query
   const filteredPatients = patients.filter((patient) => {
     const searchLower = searchQuery.toLowerCase();
@@ -54,6 +46,17 @@ const TablePatient = () => {
       new Date(patient.created_at).toLocaleString().toLowerCase().includes(searchLower)
     );
   })
+  
+  const deletePatient = id => {
+    setDeleteSuccess(null)
+    axiosClient
+    .delete(`user/delete`, {id})
+    .then(e => {
+      setDeleteSuccess(e?.data?.message)
+      fetchPatients(currentPage);
+    })
+    .catch(e => console.log('error delete doc: ', e))
+  }
 
   return (
     <>
@@ -136,6 +139,16 @@ const TablePatient = () => {
                                 <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
                               </svg>
                               Dashboard
+                            </button>
+                            <button
+                              onClick={() => deletePatient(el.id)}
+                              className="flex items-center gap-2 px-2 py-[8px] text-[14px] text-white rounded-lg bg-red-600 hover:bg-red-800"
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
+                                <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                                <path fillRule="evenodd" d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 0 1 0-1.113ZM17.25 12a5.25 5.25 0 1 1-10.5 0 5.25 5.25 0 0 1 10.5 0Z" clipRule="evenodd" />
+                              </svg>
+                              Delete
                             </button>
                           </td>
                         </tr>
