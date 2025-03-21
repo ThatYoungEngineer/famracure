@@ -39,10 +39,12 @@ const SearchDoctorCard = ({
     clinic_fee
 });
 
+console.log("avatar_doctor: ", avatar_doctor);
+
   return (
     <>
       <div className="border_card mx-auto p-4 w-[372px]  relative text-center  capitalize">
-
+      
       {/* <div className="absolute top-[12px] right-0 flex items-center b-card">
   <Link to={`/bookingappointment/${id}`}>
     <button className="mr-3 px-[32px] py-[9px] text-white  font-medium text-[13px] flex items-center"
@@ -107,7 +109,7 @@ const SearchDoctorCard = ({
        
         <div style={{ marginTop: '-116px' }} className="card-img">
           <img
-            src={avatar_doctor !== null ? avatar_doctor : "/img/doc-listing.jpg"}
+            src={avatar_doctor !== null ? `https://backend.famracure.com/images/doctors/${avatar_doctor}` : "/img/doc-listing.jpg"}
             className="h-[110px] w-[131px] rounded-[10px]"
             alt=""
           />

@@ -257,7 +257,7 @@ const Signup = () => {
                         name="country_code"
                         id="country_code"
                         onChange={HandleChangeData}
-                        className={`bg-gray-50 !border !border-r-transparent text-xs rounded-lg rounded-r-none block !w-fit py-2 px-3 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${getErrorMessage('country_code') ? 'border-red-500 bg-red-50 text-red-900 placeholder-red-700' : 'border-gray-300 text-gray-900'}`}
+                        className={`w-24 !text-[.5rem] leading-4 bg-gray-50 !border !border-r-transparent text-xs rounded-lg rounded-r-none block py-2 px-3 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${getErrorMessage('country_code') ? 'border-red-500 bg-red-50 text-red-900 placeholder-red-700' : 'border-gray-300 text-gray-900'}`}
                       >
                         <option value="+92">+92 (PK)</option>
                         <option value="+1">+1 (USA)</option>

@@ -131,9 +131,9 @@ const TableAppointment = ({ refreshApp, showAnnuler, setShowAnnuler, setIdAppoin
   const downloadInvoice = (id) => {
     setInvoiceError(null)
     axiosClient
-    .get(`/appointments/${id}/invoice`)
-    .then((res) => { 
-const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
+    .get(`/appointments/${id}/invoice`, { responseType: "blob" })
+    .then((res) => {
+      const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
       const link = document.createElement('a');
       link.href = url;
       link.setAttribute('download', `invoice_${id}.pdf`); // Set file name
@@ -141,9 +141,10 @@ const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application
       link.click();
       document.body.removeChild(link);
      })
-    .catch((err) => 
-      setInvoiceError(err?.response?.data?.message)
-    )
+    .catch((err) => {
+      console.log('err download: ', err)
+      err?.response?.data && setInvoiceError("Invoice not found")
+    })
 
   }
 
@@ -297,6 +298,7 @@ useEffect(() => {
                       <td className="p-4 text-[14px] text-gray-500">{el?.appointment_time}</td>
                       <td className="p-4 flex gap-2">
                         <button
+                          type="button"
                           onClick={() => setSelectedAppointment(el)}
                           className="flex items-center gap-2 px-2 py-[8px] text-[14px] text-white rounded-lg bg-primary-600 hover:bg-primary-800"
                         >
@@ -308,6 +310,7 @@ useEffect(() => {
                         </button>
                        
                         <button
+                          type="button"
                           onClick={() => setOpenUpdateAppointment(el)}
                           className="flex items-center gap-2 px-2 py-[8px] text-[14px] text-white rounded-lg bg-yellow-600 hover:bg-yellow-800"
                         >
@@ -318,6 +321,7 @@ useEffect(() => {
                           Update
                         </button>
                         <button
+                          type="button"
                           onClick={() => deleteApp(el.id)}
                           className="flex items-center gap-2 px-2 py-[8px] text-[14px] text-white rounded-lg bg-red-600 hover:bg-red-800"
                         >

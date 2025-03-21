@@ -32,6 +32,8 @@ const AppointmentPage = () => {
 
     const [rescheduleSuccess, setRescheduleSuccess] = useState(null)
 
+    const [invoiceError, setInvoiceError] = useState(null)
+
     const navigate = useNavigate()
 
     const fetchAppointments = async () => {
@@ -116,13 +118,43 @@ const AppointmentPage = () => {
     }
   }
 
-  console.log('appointment id', rescheduleDialogue)
 
+const generateInvoice = (id) => {
+    setInvoiceError(null)
+    axiosClient
+    .post(`/appointments/${id}/generate-invoice`)
+    .then((res) => { 
+      console.log('response', res)
+
+     })
+    .catch((err) => 
+      setInvoiceError(err?.response?.data?.error)
+    )
+
+  }
+  const downloadInvoice = (id) => {
+    setInvoiceError(null)
+    axiosClient
+    .get(`/appointments/${id}/invoice`, { responseType: "blob" })
+    .then((res) => {
+      const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `invoice_${id}.pdf`); // Set file name
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+     })
+    .catch((err) => {
+      console.log('err download: ', err)
+      err?.response?.data && setInvoiceError("Invoice not found")
+    })
+  }
 
   return (
     <div className="w-screen h-screen">
     {rescheduleDialogue && 
-      <section className="fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-gray-800 bg-opacity-95 z-50">
+      <section className="fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-gray-800 bg-opacity-95 z-50">      
         <div className="w-3/5 h-2/5 bg-white bg-opacity-90 rounded-md flex flex-col items-center p-5">
           <div className="w-full flex justify-end"> 
             <button
@@ -260,6 +292,29 @@ const AppointmentPage = () => {
                     >
                       {selectedAppointment && (
                         <div className="m-0 flex flex-col gap-1">
+                        <div className="w-full flex flex-col items-center justify-center">
+            <Button 
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={(e) => generateInvoice(selectedAppointment.id)}
+              className="w-fit p-2"
+            >
+              Generate Invoice
+            </Button>
+          </div>
+          <div className="w-full flex flex-col items-center justify-center">
+            <Button 
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={(e) => downloadInvoice(selectedAppointment.id)}
+              className="w-fit p-2"
+            >
+              Download Invoice
+            </Button>
+            {invoiceError && <p className="w-full text-center text-red-500">{invoiceError}</p>}
+          </div>
                           <div className="flex items-center justify-between">
                             <h2 className="flex-1 text-left">Appointment Type:</h2>
                             <h2 className="flex-1 text-center">Appointment Fee</h2>

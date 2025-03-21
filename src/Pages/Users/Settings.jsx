@@ -12,6 +12,8 @@ const Settings = () => {
   const [UserAvatar, setUserAvatar] = useState(null);
 
   const [GetUserAvatar, setGetUserAvatar] = useState(null);
+  
+  const [preview, setPreview] = useState(null);
 
   const [DataForm, setDataForm] = useState({
     id: 0,
@@ -19,6 +21,7 @@ const Settings = () => {
     lastname: "",
     email: "",
     cin: "",
+    user_avatar: "/img/Rectangle 4.jpg"
   });
 
   GetAuthUser();
@@ -35,9 +38,11 @@ const Settings = () => {
         lastname: UserData.user.lastname,
         email: UserData.user.email,
         cin: UserData.user.cin,
+        user_avatar: UserData.user.user_avatar ? UserData.user.user_avatar : "/img/Rectangle 4.jpg"
       });
     }
   }, [UserData]);
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -45,29 +50,40 @@ const Settings = () => {
   };
 
   const handleFile = (e) => {
-    setUserAvatar(e.target.files[0]);
+    const file = e.target.files[0];
+    if (file) {
+      setUserAvatar(file);
+      setPreview(URL.createObjectURL(file)); // ✅ Use 'file' directly
+    }
   };
 
   console.log(UserData);
-  console.log(UserAvatar);
+  console.log("UserAvatar: ", UserAvatar)
   console.log(DataForm);
 
+  
   const HandleSubmit = (e) => {
-    e.preventDefault();
-    console.log("inside");
-    let DataSend = {};
-    if (UserAvatar !== null && UserAvatar !== UserData.user.user_avatar) {
-      DataSend = { ...DataForm, user_avatar: UserAvatar };
-    } else {
-      DataSend = { ...DataForm };
-    }
+  e.preventDefault();
+  
+  console.log("DataForm---------: ", DataForm);
 
-    console.log(DataSend);
-    axiosClient
-      .put("/user/update", DataSend)
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
-  };
+  const formData = new FormData();
+  formData.append("id", DataForm.id);
+  formData.append("firstname", DataForm.firstname);
+  formData.append("lastname", DataForm.lastname);
+  formData.append("email", DataForm.email);
+  formData.append("cin", DataForm.cin);
+
+  if (UserAvatar !== null && UserAvatar !== DataForm.user_avatar) {
+    formData.append("user_avatar", UserAvatar);
+  }
+
+  axiosClient
+    .put("/user/update", formData)
+    .then((res) => console.log(res))
+    .catch((err) => console.log(err));
+};
+
 
   return (
     <>
@@ -81,12 +97,7 @@ const Settings = () => {
                 <div className="items-center sm:flex xl:block 2xl:flex sm:space-x-4 xl:space-x-0 2xl:space-x-4">
                   <img
                     className="mb-4 rounded-lg w-28 h-28 sm:mb-0 xl:mb-4 2xl:mb-0"
-                    src={
-                      GetUserAvatar == null
-                        ? "/img/Rectangle 4.jpg"
-                        : "http://localhost:8000/storage/images/users/" +
-                          GetUserAvatar
-                    }
+                    src={preview ? preview : DataForm.user_avatar }
                     alt=""
                   />
                   <div>

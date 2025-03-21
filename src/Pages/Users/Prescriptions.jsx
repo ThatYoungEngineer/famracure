@@ -6,7 +6,10 @@ import axiosClient from "../../AxiosClient";
 // User Prescription Component
 const Prescriptions = () => {
   const [prescriptions, setPrescriptions] = useState([]);
+  const [prescriptionError, setPrescriptionError] = useState("");
   const [loading, setLoading] = useState(true);
+
+  console.log('prescriptions: ', prescriptions)
 
   useEffect(() => {
     axiosClient
@@ -23,10 +26,10 @@ const Prescriptions = () => {
 
   const handlePrescriptionDownload = id => {
     axiosClient
-      .get(`/prescriptions/${id}/download`)
+      .get(`/prescriptions/${id}/download`, { responseType: "blob" })
       .then((res) => {
 
-        const url = window.URL.createObjectURL(new Blob([res.data]));
+        const url = window.URL.createObjectURL(new Blob([res.data]),  { type: 'application/pdf' }  );
       const link = document.createElement("a");
       link.href = url;
       link.setAttribute("download", `prescription_${id}.pdf`); // Set file name
@@ -37,6 +40,7 @@ const Prescriptions = () => {
 
       })
       .catch((err) => {
+        setPrescriptionError("File not found.");
         console.error("Error downloading:", err);
       });
 
@@ -92,7 +96,7 @@ const Prescriptions = () => {
                             color="secondary"
                           >
                             <a
-                              href={prescription.file_path}
+                              href={`https://backend.famracure.com/${prescription.file_path}`}
                               target="_blank"
                               rel="noopener noreferrer"
                             >

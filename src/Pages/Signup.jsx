@@ -292,7 +292,7 @@ const Signup = () => {
                       name="country_code"
                       id="country_code"
                       onChange={e=>setPrefix(e.target.value)}
-                      className={`bg-gray-50 !border !border-r-transparent text-xs rounded-lg rounded-r-none block !w-fit py-2 px-3 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500  border-gray-300 `}
+                      className={`w-24 bg-gray-50 !border !border-r-transparent !text-[.5rem] leading-4 rounded-lg rounded-r-none block py-2 px-3 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500  border-gray-300 `}
                     >
                       <option value="+92">+92 (PK)</option>
                       <option value="+1">+1 (USA)</option>

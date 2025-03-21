@@ -42,7 +42,6 @@ const PersonalInformation = () => {
         verified: doctorData.doctor.verified == "1" ? true :false ,
         is_approved: doctorData.doctor.is_approved == "1" ? true :false ,
         about: doctorData.doctor.about || "",
-        cin: doctorData.doctor.cin || "",
         experience_years: doctorData.doctor.experience_years || "",
         experience: doctorData.doctor.experience || [],
       })
@@ -122,6 +121,8 @@ const PersonalInformation = () => {
     }
 
     experienceList.forEach((experience, index) => {
+    console.log('experience.degree_certificates: ', experience.degree_certificates)
+
       formData.append(`institute[${index}]`, experience.institute);
       formData.append(`experience_start_date[${index}]`, experience.start_date);
       formData.append(`experience_end_date[${index}]`, experience.end_date);
@@ -133,7 +134,7 @@ const PersonalInformation = () => {
             formData.append(`existing_degree_certificates[]`, file);
           } else {
             // If it's a new file (File object), add it to FormData
-            formData.append(`degree_certificates[${index}]`, file);
+            formData.append(`degree_certificates[${fileIndex}]`, file);
           }
         });
       }
@@ -146,9 +147,10 @@ const PersonalInformation = () => {
       },
     })
     .then((res) => {
-      console.log(res);
+      console.log('updated res : ', res);
       const success = res?.data?.updated;
       setSuccessMessage(success ? "Doctor information updated successfully" : "");
+      setExperienceList(res.data.doctor.experience)
       setLoading(false);
     })
     .catch((err) => {
@@ -339,6 +341,8 @@ const PersonalInformation = () => {
                 className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                 placeholder="tt"
                 required
+                disabled
+                readOnly
                 value={DataForm.email}
                 onChange={HandelChange}
               />
@@ -404,7 +408,7 @@ const PersonalInformation = () => {
               />
             </div>
           </div>
-          <div className="col-span-6 sm:col-span-3">
+          <div className="col-span-6 sm:col-span-3 mt-5">
               <label
                 htmlFor="cin"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -501,9 +505,10 @@ const PersonalInformation = () => {
                   <div className="col-span-6 flex flex-col gap-2">
                     <label
                       htmlFor="degree_certificates"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      className="block mb-2 text-lg font-medium text-gray-900 dark:text-white"
                     >
                       Experience Certificates
+                      <p className="text-sm font-light">Upload Education/Experience/Degree (documents)</p>
                     </label>
                     <input
                       type="file" 
@@ -544,6 +549,7 @@ const PersonalInformation = () => {
             ))}
 
           <button
+            type="button"
             onClick={addExperience}
             className="bg-yellow-400 text-white px-4 py-2 rounded-lg mt-4"
           >
