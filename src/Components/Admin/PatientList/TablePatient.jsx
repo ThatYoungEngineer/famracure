@@ -2,6 +2,7 @@ import { useNavigate } from "react-router";
 import axiosClient from "../../../AxiosClient";
 import { Button, Spinner } from "flowbite-react";
 import React, { useEffect, useState } from "react";
+import AlertSucces from "../../Alert/AlertSucces";
 
 const TablePatient = () => {
   
@@ -49,13 +50,19 @@ const TablePatient = () => {
   
   const deletePatient = id => {
     setDeleteSuccess(null)
+    
+    console.log('delete id: ', id)
+
     axiosClient
-    .delete(`user/delete`, {id})
+    .delete(`user/delete`, {
+      data: { id: id }, // ✅ Pass 'id' inside 'data'
+    })
     .then(e => {
-      setDeleteSuccess(e?.data?.message)
+      setDeleteSuccess(e?.data?.deleted)
       fetchPatients(currentPage);
     })
     .catch(e => console.log('error delete doc: ', e))
+
   }
 
   return (
@@ -169,6 +176,7 @@ const TablePatient = () => {
           </div>
         </div>
       </div>
+      {deleteSuccess && <AlertSucces Message={deleteSuccess} />}  
 
       {/* Pagination Controls */}
       <div className="flex justify-center items-center gap-4 mt-6">
