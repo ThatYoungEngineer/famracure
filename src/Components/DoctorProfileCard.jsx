@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import '../Assets/Css/HomeCss/DoctorProfileCard.css'; // Import the CSS file
 import { Link } from "react-router-dom";
 
-const DoctorPage = ({feeType}) => {
+const DoctorPage = ({feeType, avatar_doctor }) => {
   const { t } = useTranslation();
   const { id } = useParams();
   const [doctor, setDoctor] = useState(null);
@@ -24,15 +24,23 @@ const DoctorPage = ({feeType}) => {
     fetchDoctorProfile();
   }, [id]);
 
+  console.log("doctor profile: ", doctor)
+
   return (
     <div className="container-c">
       <div className="doctor-profile-card">
-        {/* <img src={doctor.avatar_doctor} alt="" className="doctor-avatar" /> */}
-        <img
-            src="/img/doc-listing.jpg"
+        
+        <img 
+          src={`https://backend.famracure.com/images/doctors/${avatar_doctor}` || "/img/doc-listing.jpg" } 
+          alt="profile" 
+          className="h-[110px] w-[131px] rounded-[10px]"
+        />
+        
+        {/* <img
+            src={"/img/doc-listing.jpg"}
             className="h-[110px] w-[131px] rounded-[10px]"
             alt=""
-          />
+          /> */}
 
         <h2>{`Dr. ${doctor?.firstname} ${doctor?.lastname}`}</h2>
         <p>{doctor?.specialite}</p>

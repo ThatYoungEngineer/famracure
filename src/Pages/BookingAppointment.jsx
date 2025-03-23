@@ -65,6 +65,7 @@ const BookingAppointment = () => {
           id: doctorData.id,
           name: `Dr. ${doctorData.firstname} ${doctorData.lastname}`,
           specialite: doctorData.specialite,
+          avatar_doctor: doctorData.avatar_doctor,
           clinicFee: doctorData.clinic_fee,
           videoFee: doctorData.video_fee,
           available: doctorData.available,
@@ -115,8 +116,7 @@ const BookingAppointment = () => {
         paymentMethod
       }
     });
-  };  
-  
+  };    
 
   if (!loading) {
     return (

@@ -15,6 +15,7 @@ const TableAppointment = ({ refreshApp, showAnnuler, setShowAnnuler, setIdAppoin
   const [isPrescriptionOpen, setPrescriptionOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [prescriptionError, setPrescriptionError] = useState("")
+  const [completeAppointment, setCompleteAppointment] = useState("")
   const navigate = useNavigate();
 
   const [rescheduleSuccess, setRescheduleSuccess] = useState(null)
@@ -258,6 +259,19 @@ useEffect(() => {
     dispatch({ type: "SET_TIME_SLOT", field: "appointment_time", payload: formattedTime });
   };
 
+  const handleCompleteAppointment = (id) => {
+    console.log("handleCompleteAppointment: ", id)
+    axiosClient
+    .patch(`/appointments/${id}/complete`)
+     .then((res) => {
+      setCompleteAppointment(res.data.message)
+      // window.open(`https://backend.famracure.com/${res.data.invoice_path}`)
+      })
+     .catch((error) => {
+        console.error("Error completing appointment:", error);
+      });
+  }
+
   return (
     <>
       <div className="flex flex-col">
@@ -419,6 +433,11 @@ useEffect(() => {
                       </div>
                     </section>
                 }
+                {completeAppointment &&
+                  <div className="w-full flex items-center justify-center text-green-400">
+                    {completeAppointment}
+                  </div>
+                }
                 <div className="w-full flex items-center justify-between">
                   <h2 className="flex-1 text-left">Appointment Type:</h2>
                   <h2 className="flex-1 text-left">Appointment Status:</h2>
@@ -427,6 +446,7 @@ useEffect(() => {
                     <>
                       <h2 className="flex-1 text-center">Join Call</h2>
                       <h2 className="flex-1 text-center">Create Prescription</h2>
+                      <h2 className="flex-1 text-center">Complete Appointment</h2>
                     </>
                   )}
                 </div>
@@ -465,17 +485,31 @@ useEffect(() => {
                 </span>
               )}
               {(selectedAppointment?.status === "confirmed" || selectedAppointment?.status === "completed" ) && (
-                <span className="flex-1 flex items-center justify-center">
-                  <Button 
-                    variant="contained"
-                    color="secondary"
-                    size="small"
-                    disabled={selectedAppointment?.status === "cancelled"}
-                    onClick={() => {setSelectedAppointment(null); setPrescriptionOpen(true)} }
-                  >
-                    Create Prescription
-                  </Button>
-                </span>
+                <>
+                  <span className="flex-1 flex items-center justify-center">
+                    <Button 
+                      variant="contained"
+                      color="secondary"
+                      size="small"
+                      disabled={selectedAppointment?.status === "cancelled"}
+                      onClick={() => {setSelectedAppointment(null); setPrescriptionOpen(true)} }
+                    >
+                      Create Prescription
+                    </Button>
+                  </span>
+                  <span className="flex-1 flex items-center justify-center">
+                    <Button 
+                      type="button"
+                      variant="contained"
+                      color="success"
+                      size="small"
+                      disabled={selectedAppointment?.status === "cancelled" || selectedAppointment?.status === "completed" }
+                      onClick={() => {handleCompleteAppointment(selectedAppointment.id)} }
+                    >
+                      Complete Appointment
+                    </Button>
+                  </span>
+                </>
               )}
             </div>
             {(selectedAppointment.reschedule_requested || selectedAppointment.reschedule_requested == '1')

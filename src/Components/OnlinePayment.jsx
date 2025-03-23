@@ -123,7 +123,7 @@ const PaymentPage = () => {
                 <img
                   alt="Doctor's profile"
                   className="rounded-full mr-4 w-16 h-16 object-cover"
-                  src="https://static.vecteezy.com/system/resources/previews/035/326/727/large_2x/ai-generated-a-female-doctor-in-uniform-standing-with-folded-arms-and-stethoscope-free-photo.jpg"
+                  src={`https://backend.famracure.com/images/doctors/${persistedData.doctorDetails.avatar_doctor}` || "/img/doc-listing.jpg" } 
                 />
                 <div>
                   <h3 className="text-lg font-semibold">{persistedData?.doctorDetails?.name || "Unknown" }</h3>

@@ -254,7 +254,7 @@ const PersonalInformation = () => {
                 htmlFor="lastname"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
               >
-                lastname
+                Last Name
               </label>
               <input
                 type="text"
@@ -293,7 +293,7 @@ const PersonalInformation = () => {
                 htmlFor="specialite"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
               >
-                specialite
+                Specialite
               </label>
               <input
                 type="text"
@@ -314,7 +314,7 @@ const PersonalInformation = () => {
                 htmlFor="phoneNumber"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
               >
-                phoneNumber
+                Phone Number
               </label>
               <input
                 type="text"
@@ -332,7 +332,7 @@ const PersonalInformation = () => {
                 htmlFor="email"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
               >
-                email
+                Email
               </label>
               <input
                 type="email"
@@ -355,8 +355,7 @@ const PersonalInformation = () => {
                 htmlFor="phoneNumber"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
               >
-                {" "}
-                about{" "}
+                About
               </label>
               <textarea
                 id="chat"
@@ -376,7 +375,7 @@ const PersonalInformation = () => {
                 htmlFor="nom_cabinet"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
               >
-                nom cabinet
+                Name of clinic
               </label>
               <input
                 type="text"
@@ -394,7 +393,7 @@ const PersonalInformation = () => {
                 htmlFor="address_cabinet"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
               >
-                address cabinet
+                Address of clinic
               </label>
               <input
                 type="text"
