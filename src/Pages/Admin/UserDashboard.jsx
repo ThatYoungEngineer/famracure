@@ -229,43 +229,38 @@ const UserDashboard = () => {
                   <h3 className="text-lg font-semibold">Total Appointments</h3>
                   <p className="text-2xl font-semibold">{userDashboardData?.appointments.length}</p>
                 </div>
-                {userDashboardData?.appointments.length > 0 ?
-                  userDashboardData?.appointments.map((appointment, index) => (
-                    <div key={index} className="flex gap-10">
-                      <div className="flex gap-2">
-                        <p className="font-semibold">ID:</p>
-                        <p>{appointment.id}</p>
-                      </div>
-                      <div className="flex gap-2">
-                        <p className="font-semibold">Status:</p>
-                        <p>{appointment.status}</p>
-                      </div>
-                      <div className="flex gap-2">
-                        <p className="font-semibold">User ID:</p>
-                        <p>{appointment.user_id || 'NULL'}</p>
-                      </div>
-                      <div className="flex gap-2">
-                        <p className="font-semibold">Doctor ID:</p>
-                        <p>{appointment.doctor_id || 'NULL'}</p>
-                      </div>
-                      <div className="flex gap-2">
-                        <p className="font-semibold">Appointment Type:</p>
-                        <p>{appointment.appointment_type}</p>
-                      </div>
-                      <div className="flex gap-2">
-                        <p className="font-semibold">Appointment Date:</p>
-                        <p>{appointment.appointment_date}</p>
-                      </div>
-                      <div className="flex gap-2">
-                        <p className="font-semibold">Appointment Time:</p>
-                        <p>{appointment.appointment_time}</p>
-                      </div>
-                    </div>
-                  ))
-                  : <div>
-                    No Appointments Found
-                  </div>
-                }
+                 <div className="overflow-x-auto">
+            {userDashboardData?.appointments.length > 0 ? (
+                <table className="min-w-full border-collapse border border-gray-200">
+                    <thead>
+                        <tr className="bg-gray-100">
+                            <th className="border p-2">ID</th>
+                            <th className="border p-2">Status</th>
+                            <th className="border p-2">User ID</th>
+                            <th className="border p-2">Doctor ID</th>
+                            <th className="border p-2">Appointment Type</th>
+                            <th className="border p-2">Appointment Date</th>
+                            <th className="border p-2">Appointment Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {userDashboardData?.appointments.map((appointment, index) => (
+                            <tr key={index} className="odd:bg-white even:bg-gray-50">
+                                <td className="border p-2">{appointment.id}</td>
+                                <td className="border p-2">{appointment.status}</td>
+                                <td className="border p-2">{appointment.user_id || 'NULL'}</td>
+                                <td className="border p-2">{appointment.doctor_id || 'NULL'}</td>
+                                <td className="border p-2">{appointment.appointment_type}</td>
+                                <td className="border p-2">{appointment.appointment_date}</td>
+                                <td className="border p-2">{appointment.appointment_time}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            ) : (
+                <div className="p-4 text-center text-gray-500">No Appointments Found</div>
+            )}
+        </div>
               </div>
               <div className="space-y-4">
                 <div className="my-10 border bg-yellow-200 text-yellow-700 p-5 rounded-md flex flex-col items-center justify-center gap-2">
