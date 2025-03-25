@@ -11,15 +11,15 @@ const DoctorDashboard = () => {
 
     const { id } = useParams()
 
-    const [error, setError] = useState(null)
-    const [DataForm, setDataForm] = useState({})
-    const [isLoading, setIsLoading] = useState(false)
-    const [doctorDashboardData, setDoctorDashboardData] = useState(null)
+    const [ error, setError ] = useState(null)
+    const [ DataForm, setDataForm ] = useState({})
+    const [ isLoading, setIsLoading ] = useState(false)
+    const [ doctorDashboardData, setDoctorDashboardData ] = useState(null)
 
 
-    const [successMessage, setSuccessMessage] = useState("")
-    const [loading, setLoading] = useState(false);
-    const [experienceList, setExperienceList] = useState([
+    const [ successMessage, setSuccessMessage ] = useState("")
+    const [ loading, setLoading ] = useState(false);
+    const [ experienceList, setExperienceList ] = useState([
         {
             institute: '',
             start_date: '',
@@ -28,14 +28,14 @@ const DoctorDashboard = () => {
             degree_certificates: [],
         }
     ])
-    const [selectedFile, setSelectedFile] = useState(null);
-    const [preview, setPreview] = useState(null); // Default profile picture
+    const [ selectedFile, setSelectedFile ] = useState(null);
+    const [ preview, setPreview ] = useState(null); // Default profile picture
 
     GetAuthAdmin()
 
     useEffect(() => {
         fetchDoctorDashboard()
-    }, [id])
+    }, [ id ])
 
     useEffect(() => {
         if (doctorDashboardData?.doctor !== null) {
@@ -61,7 +61,7 @@ const DoctorDashboard = () => {
             }
             setPreview(doctorDashboardData?.doctor.avatar_doctor || "/img/Rectangle 4.jpg"); // Default if no avatar
         }
-    }, [doctorDashboardData])
+    }, [ doctorDashboardData ])
 
     console.log("exp list: ", experienceList)
 
@@ -90,7 +90,7 @@ const DoctorDashboard = () => {
 
     const HandelChange = (e, index) => {
         const { name, value } = e.target;
-        setDataForm({ ...DataForm, [name]: value });
+        setDataForm({ ...DataForm, [ name ]: value });
     };
 
     const handleChangeInExperience = (e, index) => {
@@ -101,8 +101,8 @@ const DoctorDashboard = () => {
                 i === index
                     ? {
                         ...item,
-                        [name]: name === "degree_certificates"
-                            ? [...(item[name] ? [...item[name]] : []), ...Array.from(files)] // Prevent mutation
+                        [ name ]: name === "degree_certificates"
+                            ? [ ...(item[ name ] ? [ ...item[ name ] ] : []), ...Array.from(files) ] // Prevent mutation
                             : value
                     }
                     : item
@@ -170,7 +170,7 @@ const DoctorDashboard = () => {
     }
 
     const handleFileChange = (e) => {
-        const file = e.target.files[0];
+        const file = e.target.files[ 0 ];
         if (file) {
             setSelectedFile(file);
             setPreview(URL.createObjectURL(file)); // Show image preview
@@ -179,17 +179,17 @@ const DoctorDashboard = () => {
 
     const handleApproveDoctor = () => {
         axiosClient
-           .post(`/admin/approve-doctor/${doctorDashboardData?.doctor.id}`, {
+            .post(`/admin/approve-doctor/${doctorDashboardData?.doctor.id}`, {
                 verified: DataForm.verified ? 1 : 0
-           })
-           .then((res) => {
+            })
+            .then((res) => {
                 console.log(res);
                 const success = res?.data?.message;
                 if (success) {
                     setSuccessMessage(success);
                 }
             })
-           .catch((err) => {
+            .catch((err) => {
                 console.log(err);
             })
     }
@@ -301,7 +301,7 @@ const DoctorDashboard = () => {
                                                             htmlFor="lastname"
                                                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                                         >
-                                                            lastname
+                                                            Last Name
                                                         </label>
                                                         <input
                                                             type="text"
@@ -340,7 +340,7 @@ const DoctorDashboard = () => {
                                                             htmlFor="specialite"
                                                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                                         >
-                                                            specialite
+                                                            Specialite
                                                         </label>
                                                         <input
                                                             type="text"
@@ -361,7 +361,7 @@ const DoctorDashboard = () => {
                                                             htmlFor="phoneNumber"
                                                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                                         >
-                                                            phoneNumber
+                                                            Phone Number
                                                         </label>
                                                         <input
                                                             type="text"
@@ -379,7 +379,7 @@ const DoctorDashboard = () => {
                                                             htmlFor="email"
                                                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                                         >
-                                                            email
+                                                            Email
                                                         </label>
                                                         <input
                                                             type="email"
@@ -401,7 +401,7 @@ const DoctorDashboard = () => {
                                                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                                         >
                                                             {" "}
-                                                            about{" "}
+                                                            About{" "}
                                                         </label>
                                                         <textarea
                                                             id="chat"
@@ -421,7 +421,7 @@ const DoctorDashboard = () => {
                                                             htmlFor="nom_cabinet"
                                                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                                         >
-                                                            nom cabinet
+                                                            Name of clinic
                                                         </label>
                                                         <input
                                                             type="text"
@@ -439,7 +439,7 @@ const DoctorDashboard = () => {
                                                             htmlFor="address_cabinet"
                                                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                                         >
-                                                            address cabinet
+                                                            Address of clinic
                                                         </label>
                                                         <input
                                                             type="text"
@@ -498,7 +498,7 @@ const DoctorDashboard = () => {
                                                                     onChange={(e) => handleChangeInExperience(e, index)}
                                                                 />
                                                             </div>
-                                                            {/* <div className="col-span-6 sm:col-span-3">
+                                                            <div className="col-span-6 sm:col-span-3">
                                                                 <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                                                     Experience Years
                                                                 </label>
@@ -512,7 +512,7 @@ const DoctorDashboard = () => {
                                                                     value={experience.experience_years}
                                                                     onChange={(e) => handleChangeInExperience(e, index)}
                                                                 />
-                                                            </div> */}
+                                                            </div>
                                                             <div className="col-span-6">
                                                                 <label
                                                                     htmlFor="experience_detail"
@@ -578,7 +578,7 @@ const DoctorDashboard = () => {
                                                         variant="contained"
                                                         color="secondary"
                                                         onClick={handleApproveDoctor}
-                                                    >   
+                                                    >
                                                         Approve Doctor
                                                     </Button>
                                                 </div>
@@ -593,45 +593,72 @@ const DoctorDashboard = () => {
                                     <h3 className="text-lg font-semibold">Total Appointments</h3>
                                     <p className="text-2xl font-semibold">{doctorDashboardData?.appointments.length}</p>
                                 </div>
-                               <div className="overflow-x-auto">
-            {doctorDashboardData?.appointments.length > 0 ? (
-                <table className="min-w-full border-collapse border border-gray-200">
-                    <thead>
-                        <tr className="bg-gray-100">
-                            <th className="border p-2">ID</th>
-                            <th className="border p-2">Status</th>
-                            <th className="border p-2">User ID</th>
-                            <th className="border p-2">Doctor ID</th>
-                            <th className="border p-2">Appointment Type</th>
-                            <th className="border p-2">Appointment Date</th>
-                            <th className="border p-2">Appointment Time</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {doctorDashboardData?.appointments.map((appointment, index) => (
-                            <tr key={index} className="odd:bg-white even:bg-gray-50">
-                                <td className="border p-2">{appointment.id}</td>
-                                <td className="border p-2">{appointment.status}</td>
-                                <td className="border p-2">{appointment.user_id || 'NULL'}</td>
-                                <td className="border p-2">{appointment.doctor_id || 'NULL'}</td>
-                                <td className="border p-2">{appointment.appointment_type}</td>
-                                <td className="border p-2">{appointment.appointment_date}</td>
-                                <td className="border p-2">{appointment.appointment_time}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            ) : (
-                <div className="p-4 text-center text-gray-500">No Appointments found</div>
-            )}
-        </div>
+                                <div className="overflow-x-auto">
+                                    {doctorDashboardData?.appointments.length > 0 ? (
+                                        <table className="min-w-full border-collapse border border-gray-200">
+                                            <thead>
+                                                <tr className="bg-gray-100">
+                                                    <th className="border p-2">ID</th>
+                                                    <th className="border p-2">Status</th>
+                                                    <th className="border p-2">User ID</th>
+                                                    <th className="border p-2">Doctor ID</th>
+                                                    <th className="border p-2">Appointment Type</th>
+                                                    <th className="border p-2">Appointment Date</th>
+                                                    <th className="border p-2">Appointment Time</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {doctorDashboardData?.appointments.map((appointment, index) => (
+                                                    <tr key={index} className="odd:bg-white even:bg-gray-50">
+                                                        <td className="border p-2">{appointment.id}</td>
+                                                        <td className="border p-2">{appointment.status}</td>
+                                                        <td className="border p-2">{appointment.user_id || 'NULL'}</td>
+                                                        <td className="border p-2">{appointment.doctor_id || 'NULL'}</td>
+                                                        <td className="border p-2">{appointment.appointment_type}</td>
+                                                        <td className="border p-2">{appointment.appointment_date}</td>
+                                                        <td className="border p-2">{appointment.appointment_time}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    ) : (
+                                        <div className="p-4 text-center text-gray-500">No Appointments found</div>
+                                    )}
+                                </div>
                             </div>
                             <div className="space-y-4">
                                 <div className="my-10 border bg-yellow-200 text-yellow-700 p-5 rounded-md flex flex-col items-center justify-center gap-2">
                                     <h3 className="text-lg font-semibold">Total Reviews</h3>
                                     <p className="text-2xl font-semibold">{doctorDashboardData?.reviews.length}</p>
                                 </div>
-                                {doctorDashboardData?.reviews.length === 0 && <div >No Reviews Found</div>}
+                                {doctorDashboardData?.reviews.length > 0 ?
+                                    <table className="min-w-full border-collapse border border-gray-200">
+                                        <thead>
+                                            <tr className="bg-gray-100">
+                                                <th className="border p-2">ID</th>
+                                                <th className="border p-2">User ID</th>
+                                                <th className="border p-2">Doctor ID</th>
+                                                <th className="border p-2">Rating</th>
+                                                <th className="border p-2">Comments</th>
+                                                <th className="border p-2">Created At</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {doctorDashboardData?.reviews.map((review, index) => (
+                                                <tr key={index} className="odd:bg-white even:bg-gray-50">
+                                                    <td className="border p-2">{review.id}</td>
+                                                    <td className="border p-2">{review.user_id || 'NULL'}</td>
+                                                    <td className="border p-2">{review.doctor_id || 'NULL'}</td>
+                                                    <td className="border p-2">{review.rating}</td>
+                                                    <td className="border p-2">{review.comments}</td>
+                                                    <td className="border p-2">{new Date(review.created_at).toLocaleDateString('en-CA')}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                    : (
+                                        <div className="p-4 text-center text-gray-500">No Reviews found</div>
+                                    )}
                             </div>
                         </section>
                     }

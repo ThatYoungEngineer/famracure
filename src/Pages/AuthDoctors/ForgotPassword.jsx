@@ -38,10 +38,12 @@ const DoctorForgotPassword = () => {
     const handleFormSubmit = (e) => {
         e.preventDefault();
         setIsLoading(true)
+        setMessage('')
         axiosClient
         .post("forgot-password/doctor", {email})
         .then((res) => {
-            console.log(res.response)
+            console.log('res: ', res)
+            alert(res?.data?.message)
         })
         .catch((error) => {
             const errorMessage = error.response.data.message
@@ -152,7 +154,7 @@ const DoctorForgotPassword = () => {
                                 onChange={(e) => setEmail(e.target.value)}
                                 className='w-full px-5 py-2 border border-gray-400 rounded-md' 
                             />
-                            {message && <p className='text-gray-400'>{message}</p>}
+                            {message && <p className='text-center text-gray-400'>{message}</p>}
                             <button
                                 type='submit'
                                 className='px-5 w-fit mx-auto py-2 rounded-md text-white bg-[#587FD9] disabled:opacity-50'

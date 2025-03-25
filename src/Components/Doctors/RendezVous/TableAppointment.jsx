@@ -264,8 +264,9 @@ useEffect(() => {
     axiosClient
     .patch(`/appointments/${id}/complete`)
      .then((res) => {
-      setCompleteAppointment(res.data.message)
-      // window.open(`https://backend.famracure.com/${res.data.invoice_path}`)
+        console.log("Appointment complete res: ", res)
+        setCompleteAppointment(res.data.message)
+        refreshApp(prev => !prev)
       })
      .catch((error) => {
         console.error("Error completing appointment:", error);

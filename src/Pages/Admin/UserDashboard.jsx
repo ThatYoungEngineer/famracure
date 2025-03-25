@@ -6,16 +6,16 @@ import { Spinner } from 'flowbite-react'
 
 const UserDashboard = () => {
 
-  const [error, setError] = useState(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const [updatedFields, setUpdatedFields] = useState({});
-  const [userDashboardData, setUserDashboardData] = useState(null)
+  const [ error, setError ] = useState(null)
+  const [ isLoading, setIsLoading ] = useState(false)
+  const [ updatedFields, setUpdatedFields ] = useState({});
+  const [ userDashboardData, setUserDashboardData ] = useState(null)
 
-   const [selectedAvatar, setSelectedAvatar] = useState(null);
-  const [previewAvatar, setPreviewAvatar] = useState(userDashboardData?.user.user_avatar);
+  const [ selectedAvatar, setSelectedAvatar ] = useState(null);
+  const [ previewAvatar, setPreviewAvatar ] = useState(userDashboardData?.user.user_avatar);
 
   const handleAvatarChange = (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files[ 0 ];
     if (file) {
       setSelectedAvatar(file);
       setPreviewAvatar(URL.createObjectURL(file)); // Show preview
@@ -26,14 +26,14 @@ const UserDashboard = () => {
 
   useEffect(() => {
     fetchUserDashboard()
-  }, [id])
+  }, [ id ])
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
     setUpdatedFields((prev) => ({
       ...prev,
-      [name]: value,  // Track only the changed field
+      [ name ]: value,  // Track only the changed field
     }));
   };
 
@@ -65,13 +65,15 @@ const UserDashboard = () => {
     }
 
     const formData = new FormData();
+    formData.append("user_avatar", selectedAvatar);
 
-    Object.entries(updatedFields).forEach(([key, value]) => {
-      formData.append(key, value);
-    });
-    if (selectedAvatar) {
-      formData.append("user_avatar", selectedAvatar);
-    }
+
+    // Object.entries(updatedFields).forEach(([ key, value ]) => {
+    //   formData.append(key, value);
+    // });
+    // if (selectedAvatar) {
+    //   formData.append("user_avatar", selectedAvatar);
+    // }
 
     try {
       const response = await axiosClient.put(`/user/dashboard/update/${id}`, formData, {
@@ -82,10 +84,13 @@ const UserDashboard = () => {
 
       // Reset state after successful update
       setUpdatedFields({});
+      alert(response.data.message)
     } catch (error) {
       console.error("Error updating user:", error);
     }
   };
+
+  console.log('userDashboardData: ', userDashboardData)
 
 
   return (
@@ -114,26 +119,26 @@ const UserDashboard = () => {
                   </div>
                   <div>
                     <label htmlFor="firstname">First Name</label>
-                    <input 
-                      type="text" name='firstname' id='firstname' className='w-full p-2 border rounded-md' 
+                    <input
+                      type="text" name='firstname' id='firstname' className='w-full p-2 border rounded-md'
                       value={updatedFields.firstname ?? userDashboardData?.user.firstname ?? ""}
-                      onChange={handleInputChange} 
+                      onChange={handleInputChange}
                     />
                   </div>
                   <div>
                     <label htmlFor="lastname">Last Name</label>
-                    <input 
+                    <input
                       type="text" name='lastname' id='lastname' className='w-full p-2 border rounded-md'
                       value={updatedFields.lastname ?? userDashboardData?.user.lastname ?? ""}
-                      onChange={handleInputChange} 
+                      onChange={handleInputChange}
                     />
                   </div>
                   <div>
                     <label htmlFor="email">Email</label>
-                    <input 
-                      type="text" name='email' id='email' className='w-full p-2 border rounded-md' 
+                    <input
+                      type="email" disabled readOnly name='email' id='email' className='w-full p-2 border rounded-md disabled:opacity-60'
                       value={updatedFields.email ?? userDashboardData?.user.email ?? ""}
-                      onChange={handleInputChange} />
+                    />
                   </div>
                   <div>
                     <label htmlFor="gender">Gender</label>
@@ -151,10 +156,10 @@ const UserDashboard = () => {
                   </div>
                   <div>
                     <label htmlFor="phone_number">Phone Number</label>
-                    <input 
-                      type="text" name='phone_number' id='phone_number' className='w-full p-2 border rounded-md' 
+                    <input
+                      type="text" name='phone_number' id='phone_number' className='w-full p-2 border rounded-md'
                       value={updatedFields.phone_number ?? userDashboardData?.user.phone_number ?? ""}
-                      onChange={handleInputChange} 
+                      onChange={handleInputChange}
                     />
                   </div>
                   <div>
@@ -197,26 +202,33 @@ const UserDashboard = () => {
                     </select>
                   </div>
                   <div>
+                    <label htmlFor="date_of_birth">Date of birth</label>
+                    <input
+                      type="date" name='date_of_birth' id='date_of_birth' className='w-full p-2 border rounded-md'
+                      value={updatedFields.date_of_birth ?? userDashboardData?.user.date_of_birth ?? ""}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                  <div>
                     <label htmlFor="cin">CIN</label>
-                    <input 
-                      type="text" name='cin' id='cin' className='w-full p-2 border rounded-md' 
+                    <input
+                      type="text" name='cin' id='cin' className='w-full p-2 border rounded-md'
                       value={updatedFields.cin ?? userDashboardData?.user.cin ?? ""}
-                      onChange={handleInputChange} 
+                      onChange={handleInputChange}
                     />
                   </div>
                   <div>
                     <label htmlFor="email_verified_at">Email Verified At</label>
-                    <input 
-                      type="date" name='email_verified_at' id='email_verified_at' className='w-full p-2 border rounded-md'
-                      value={updatedFields.email_verified_at ?? (userDashboardData?.user.email_verified_at ? new Date(userDashboardData.user.email_verified_at).toISOString().split('T')[0] : "")}
-                      onChange={handleInputChange} />
+                    <input
+                      type="text" disabled readOnly name='email_verified_at' id='email_verified_at' className='w-full p-2 border rounded-md disabled:opacity-60'
+                      value={new Date(userDashboardData?.user.email_verified_at).toLocaleDateString('en-CA')}
+                      />
                   </div>
                   <div>
                     <label htmlFor="created_at">Created At</label>
-                    <input 
-                      type="date" name='created_at' id='created_at' className='w-full p-2 border rounded-md' 
-                      value={updatedFields.created_at ?? (userDashboardData?.user.created_at ? new Date(userDashboardData.user.created_at).toISOString().split('T')[0] : "")}
-                      onChange={handleInputChange} 
+                    <input
+                      type="text" disabled readOnly name='created_at' id='created_at' className='w-full p-2 border rounded-md disabled:opacity-60'
+                      value={new Date(userDashboardData?.user.created_at).toLocaleDateString('en-CA')}
                     />
                   </div>
                   <button type='submit' className='mt-5 w-fit px-5 py-3 bg-green-200 text-green-700 rounded-lg focus:outline'>
@@ -229,45 +241,72 @@ const UserDashboard = () => {
                   <h3 className="text-lg font-semibold">Total Appointments</h3>
                   <p className="text-2xl font-semibold">{userDashboardData?.appointments.length}</p>
                 </div>
-                 <div className="overflow-x-auto">
-            {userDashboardData?.appointments.length > 0 ? (
-                <table className="min-w-full border-collapse border border-gray-200">
-                    <thead>
+                <div className="overflow-x-auto">
+                  {userDashboardData?.appointments.length > 0 ? (
+                    <table className="min-w-full border-collapse border border-gray-200">
+                      <thead>
                         <tr className="bg-gray-100">
-                            <th className="border p-2">ID</th>
-                            <th className="border p-2">Status</th>
-                            <th className="border p-2">User ID</th>
-                            <th className="border p-2">Doctor ID</th>
-                            <th className="border p-2">Appointment Type</th>
-                            <th className="border p-2">Appointment Date</th>
-                            <th className="border p-2">Appointment Time</th>
+                          <th className="border p-2">ID</th>
+                          <th className="border p-2">Status</th>
+                          <th className="border p-2">User ID</th>
+                          <th className="border p-2">Doctor ID</th>
+                          <th className="border p-2">Appointment Type</th>
+                          <th className="border p-2">Appointment Date</th>
+                          <th className="border p-2">Appointment Time</th>
                         </tr>
-                    </thead>
-                    <tbody>
+                      </thead>
+                      <tbody>
                         {userDashboardData?.appointments.map((appointment, index) => (
-                            <tr key={index} className="odd:bg-white even:bg-gray-50">
-                                <td className="border p-2">{appointment.id}</td>
-                                <td className="border p-2">{appointment.status}</td>
-                                <td className="border p-2">{appointment.user_id || 'NULL'}</td>
-                                <td className="border p-2">{appointment.doctor_id || 'NULL'}</td>
-                                <td className="border p-2">{appointment.appointment_type}</td>
-                                <td className="border p-2">{appointment.appointment_date}</td>
-                                <td className="border p-2">{appointment.appointment_time}</td>
-                            </tr>
+                          <tr key={index} className="odd:bg-white even:bg-gray-50">
+                            <td className="border p-2">{appointment.id}</td>
+                            <td className="border p-2">{appointment.status}</td>
+                            <td className="border p-2">{appointment.user_id || 'NULL'}</td>
+                            <td className="border p-2">{appointment.doctor_id || 'NULL'}</td>
+                            <td className="border p-2">{appointment.appointment_type}</td>
+                            <td className="border p-2">{appointment.appointment_date}</td>
+                            <td className="border p-2">{appointment.appointment_time}</td>
+                          </tr>
                         ))}
-                    </tbody>
-                </table>
-            ) : (
-                <div className="p-4 text-center text-gray-500">No Appointments Found</div>
-            )}
-        </div>
+                      </tbody>
+                    </table>
+                  ) : (
+                    <div className="p-4 text-center text-gray-500">No Appointments Found</div>
+                  )}
+                </div>
               </div>
               <div className="space-y-4">
                 <div className="my-10 border bg-yellow-200 text-yellow-700 p-5 rounded-md flex flex-col items-center justify-center gap-2">
                   <h3 className="text-lg font-semibold">Total Reviews</h3>
                   <p className="text-2xl font-semibold">{userDashboardData?.reviews.length}</p>
                 </div>
-                {userDashboardData?.reviews.length === 0 && <div >No Reviews Found</div>}
+                {userDashboardData?.reviews.length > 0 ?
+                  <table className="min-w-full border-collapse border border-gray-200">
+                    <thead>
+                      <tr className="bg-gray-100">
+                        <th className="border p-2">ID</th>
+                        <th className="border p-2">User ID</th>
+                        <th className="border p-2">Doctor ID</th>
+                        <th className="border p-2">Rating</th>
+                        <th className="border p-2">Comments</th>
+                        <th className="border p-2">Created At</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {userDashboardData?.reviews.map((review, index) => (
+                        <tr key={index} className="odd:bg-white even:bg-gray-50">
+                          <td className="border p-2">{review.id}</td>
+                          <td className="border p-2">{review.user_id || 'NULL'}</td>
+                          <td className="border p-2">{review.doctor_id || 'NULL'}</td>
+                          <td className="border p-2">{review.rating}</td>
+                          <td className="border p-2">{review.comments}</td>
+                          <td className="border p-2">{new Date(review.created_at).toLocaleDateString('en-CA')}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  : (
+                    <div className="p-4 text-center text-gray-500">No Reviews found</div>
+                  )}
               </div>
             </section>
           }
