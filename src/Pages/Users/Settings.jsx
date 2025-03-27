@@ -80,7 +80,7 @@ const Settings = () => {
 
   axiosClient
     .put("/user/update", formData)
-    .then((res) => console.log(res))
+    .then((res) => alert(res.data.message))
     .catch((err) => console.log(err));
 };
 

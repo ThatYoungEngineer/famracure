@@ -11,8 +11,8 @@ const UserDashboard = () => {
   const [ updatedFields, setUpdatedFields ] = useState({});
   const [ userDashboardData, setUserDashboardData ] = useState(null)
 
+  const [ previewAvatar, setPreviewAvatar ] = useState(null);
   const [ selectedAvatar, setSelectedAvatar ] = useState(null);
-  const [ previewAvatar, setPreviewAvatar ] = useState(userDashboardData?.user.user_avatar);
 
   const handleAvatarChange = (e) => {
     const file = e.target.files[ 0 ];
@@ -45,6 +45,7 @@ const UserDashboard = () => {
       const response = await axiosClient.get(`admin/user-dashboard/${id}`);
       if (response.status === 200) {
         setUserDashboardData(response.data);
+        setPreviewAvatar(userDashboardData?.user?.user_avatar)
         setUpdatedFields(response.data.user); // Correctly initialize updatedFields
       }
 
@@ -56,34 +57,18 @@ const UserDashboard = () => {
     }
   };
 
+
   const handleUserUpdate = async (e) => {
     e.preventDefault();
-
-    if (Object.keys(updatedFields).length === 0) {
-      console.log("No changes detected");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("user_avatar", selectedAvatar);
-
-
-    // Object.entries(updatedFields).forEach(([ key, value ]) => {
-    //   formData.append(key, value);
-    // });
-    // if (selectedAvatar) {
-    //   formData.append("user_avatar", selectedAvatar);
-    // }
+    
+    const { active, ...user } = updatedFields; // Exclude 'active' field
 
     try {
-      const response = await axiosClient.put(`/user/dashboard/update/${id}`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-
-      console.log("User updated successfully:", response.data);
-
-      // Reset state after successful update
-      setUpdatedFields({});
+      const response = await axiosClient.put(`/user/dashboard/update/${id}`, 
+        {
+          user
+        }
+      )
       alert(response.data.message)
     } catch (error) {
       console.error("Error updating user:", error);
