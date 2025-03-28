@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Footer, Header, UserNavSettings } from "../../Components";
-import {  useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import axiosClient from "../../AxiosClient";
 import GetAuthUser from "../../hooks/GetAuthUser";
 
@@ -11,8 +11,6 @@ const Settings = () => {
 
   const [UserAvatar, setUserAvatar] = useState(null);
 
-  const [GetUserAvatar, setGetUserAvatar] = useState(null);
-  
   const [preview, setPreview] = useState(null);
 
   const [DataForm, setDataForm] = useState({
@@ -27,10 +25,6 @@ const Settings = () => {
   GetAuthUser();
 
   useEffect(() => {
-    if (UserData.user && UserData.user.user_avatar !== null) {
-      setGetUserAvatar(UserData.user.user_avatar);
-    }
-
     if (UserData.user) {
       setDataForm({
         id: UserData.user.id,
@@ -61,28 +55,32 @@ const Settings = () => {
   console.log("UserAvatar: ", UserAvatar)
   console.log(DataForm);
 
-  
+
   const HandleSubmit = (e) => {
-  e.preventDefault();
-  
-  console.log("DataForm---------: ", DataForm);
+    e.preventDefault();
 
-  const formData = new FormData();
-  formData.append("id", DataForm.id);
-  formData.append("firstname", DataForm.firstname);
-  formData.append("lastname", DataForm.lastname);
-  formData.append("email", DataForm.email);
-  formData.append("cin", DataForm.cin);
+    console.log("DataForm---------: ", DataForm);
 
-  if (UserAvatar !== null && UserAvatar !== DataForm.user_avatar) {
-    formData.append("user_avatar", UserAvatar);
-  }
+    const formData = new FormData();
+    formData.append("id", DataForm.id);
+    formData.append("firstname", DataForm.firstname);
+    formData.append("lastname", DataForm.lastname);
+    formData.append("email", DataForm.email);
+    formData.append("cin", DataForm.cin);
 
-  axiosClient
-    .put("/user/update", formData)
-    .then((res) => alert(res.data.message))
-    .catch((err) => console.log(err));
-};
+    if (UserAvatar) {
+      formData.append("user_avatar", UserAvatar);
+    }
+
+    axiosClient
+      .post("/user/update", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data", // Ensures form-data format
+        },
+      })
+      .then((res) => alert(res.data.message))
+      .catch((err) => console.log(err));
+  };
 
 
   return (
@@ -97,7 +95,7 @@ const Settings = () => {
                 <div className="items-center sm:flex xl:block 2xl:flex sm:space-x-4 xl:space-x-0 2xl:space-x-4">
                   <img
                     className="mb-4 rounded-lg w-28 h-28 sm:mb-0 xl:mb-4 2xl:mb-0"
-                    src={preview ? preview : DataForm.user_avatar }
+                    src={preview ? preview : DataForm.user_avatar}
                     alt=""
                   />
                   <div>
@@ -177,7 +175,7 @@ const Settings = () => {
                     htmlFor="cin"
                     className="block mb-1 text-[14px]  font-medium text-gray-900 dark:text-white"
                   >
-                    National ID 
+                    National ID
                   </label>
                   <input
                     type="text"

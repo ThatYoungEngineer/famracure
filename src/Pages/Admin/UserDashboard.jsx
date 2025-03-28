@@ -45,7 +45,7 @@ const UserDashboard = () => {
       const response = await axiosClient.get(`admin/user-dashboard/${id}`);
       if (response.status === 200) {
         setUserDashboardData(response.data);
-        setPreviewAvatar(userDashboardData?.user?.user_avatar)
+        setPreviewAvatar(userDashboardData?.user?.user_avatar || '/img/Rectangle 4.jpg')
         setUpdatedFields(response.data.user); // Correctly initialize updatedFields
       }
 
@@ -98,9 +98,9 @@ const UserDashboard = () => {
                   <h2 className="text-xl font-semibold text-gray-700">User Details</h2>
                   <p className="text-gray-600"><span className="font-medium">User ID:</span> {userDashboardData?.user.id || "N/A"}</p>
                   <div className='flex flex-col gap-1 items-center justify-center'>
-                    <label htmlFor="user_avatar">User Avatar</label>
-                    <img src={previewAvatar} name="user_avatar" id='user_avatar' alt="profile_picture" className='w-40 h-40 rounded-md border bg-gray-300' />
-                    <input type="file" name="user_avatar" id="user_avatar" accept="image/*" onChange={handleAvatarChange} className="mt-2" />
+                    <label htmlFor="user_avatar">Profile Photo</label>
+                    <img src={previewAvatar ? previewAvatar : userDashboardData?.user.user_avatar } name="user_avatar" id='user_avatar' alt="profile_picture" className='w-40 h-40 rounded-md border bg-gray-300' />
+                    {/* <input type="file" name="user_avatar" id="user_avatar" accept="image/*" onChange={handleAvatarChange} className="mt-2" /> */}
                   </div>
                   <div>
                     <label htmlFor="firstname">First Name</label>

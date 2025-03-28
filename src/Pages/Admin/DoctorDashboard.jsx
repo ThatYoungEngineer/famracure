@@ -11,15 +11,15 @@ const DoctorDashboard = () => {
 
     const { id } = useParams()
 
-    const [ error, setError ] = useState(null)
-    const [ DataForm, setDataForm ] = useState({})
-    const [ isLoading, setIsLoading ] = useState(false)
-    const [ doctorDashboardData, setDoctorDashboardData ] = useState(null)
+    const [error, setError] = useState(null)
+    const [DataForm, setDataForm] = useState({})
+    const [isLoading, setIsLoading] = useState(false)
+    const [doctorDashboardData, setDoctorDashboardData] = useState(null)
 
 
-    const [ successMessage, setSuccessMessage ] = useState("")
-    const [ loading, setLoading ] = useState(false);
-    const [ experienceList, setExperienceList ] = useState([
+    const [successMessage, setSuccessMessage] = useState("")
+    const [loading, setLoading] = useState(false);
+    const [experienceList, setExperienceList] = useState([
         {
             institute: '',
             start_date: '',
@@ -28,14 +28,14 @@ const DoctorDashboard = () => {
             degree_certificates: [],
         }
     ])
-    const [ selectedFile, setSelectedFile ] = useState(null);
-    const [ preview, setPreview ] = useState(null); // Default profile picture
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [preview, setPreview] = useState(null); // Default profile picture
 
     GetAuthAdmin()
 
     useEffect(() => {
         fetchDoctorDashboard()
-    }, [ id ])
+    }, [id])
 
     useEffect(() => {
         if (doctorDashboardData?.doctor !== null) {
@@ -61,7 +61,7 @@ const DoctorDashboard = () => {
             }
             setPreview(doctorDashboardData?.doctor.avatar_doctor || "/img/Rectangle 4.jpg"); // Default if no avatar
         }
-    }, [ doctorDashboardData ])
+    }, [doctorDashboardData])
 
     const fetchDoctorDashboard = async () => {
         setDoctorDashboardData(null)
@@ -88,7 +88,7 @@ const DoctorDashboard = () => {
 
     const HandelChange = (e, index) => {
         const { name, value } = e.target;
-        setDataForm({ ...DataForm, [ name ]: value });
+        setDataForm({ ...DataForm, [name]: value });
     };
 
     const handleChangeInExperience = (e, index) => {
@@ -99,8 +99,8 @@ const DoctorDashboard = () => {
                 i === index
                     ? {
                         ...item,
-                        [ name ]: name === "degree_certificates"
-                            ? [ ...(item[ name ] ? [ ...item[ name ] ] : []), ...Array.from(files) ] // Prevent mutation
+                        [name]: name === "degree_certificates"
+                            ? [...(item[name] ? [...item[name]] : []), ...Array.from(files)] // Prevent mutation
                             : value
                     }
                     : item
@@ -109,51 +109,40 @@ const DoctorDashboard = () => {
     };
 
 
-    const HandelSubmit = (e) => {
+    const handleSubmit = (e) => {
         setLoading(true);
         e.preventDefault();
 
-        const formData = new FormData();
-        formData.append("id", DataForm.id);
-        formData.append("firstname", DataForm.firstname);
-        formData.append("lastname", DataForm.lastname);
-        formData.append("cin", DataForm.cin);
-        formData.append("phoneNumber", DataForm.phoneNumber);
-        formData.append("email", DataForm.email);
-        formData.append("Matricule", DataForm.Matricule);
-        formData.append("specialite", DataForm.specialite);
-        formData.append("nom_cabinet", DataForm.nom_cabinet);
-        formData.append("address_cabinet", DataForm.address_cabinet);
-        formData.append("available", DataForm.available ? 1 : 0);
-        formData.append("about", DataForm.about);
+        const jsonPayload = {
+            id: DataForm.id,
+            firstname: DataForm.firstname,
+            lastname: DataForm.lastname,
+            cin: DataForm.cin,
+            phoneNumber: DataForm.phoneNumber,
+            email: DataForm.email,
+            Matricule: DataForm.Matricule,
+            specialite: DataForm.specialite,
+            nom_cabinet: DataForm.nom_cabinet,
+            address_cabinet: DataForm.address_cabinet,
+            available: DataForm.available ? 1 : 0,
+            about: DataForm.about,
+            avatar_doctor: selectedFile || null, // Ensure correct handling of file
+            experiences: experienceList.map((experience) => ({
+                institute: experience.institute,
+                start_date: experience.start_date,
+                end_date: experience.end_date,
+                detail: experience.detail,
+                degree_certificates: experience.degree_certificates?.map(file =>
+                    typeof file === "string" ? file : null // Only store existing URLs, ignore new files
+                ).filter(Boolean) // Remove null values
+            })),
+        };
 
-        if (selectedFile) {
-            formData.append("avatar_doctor", selectedFile); // Fix: Send a file, not a URL
-        }
-
-        experienceList.forEach((experience, index) => {
-            formData.append(`institute[${index}]`, experience.institute);
-            formData.append(`experience_start_date[${index}]`, experience.start_date);
-            formData.append(`experience_end_date[${index}]`, experience.end_date);
-            formData.append(`experience_detail[${index}]`, experience.detail);
-            if (experience.degree_certificates) {
-                experience.degree_certificates.forEach((file, fileIndex) => {
-                    if (typeof file === "string") {
-                        // If it's a URL, send it separately (e.g., as JSON or an array field)
-                        formData.append(`existing_degree_certificates[]`, file);
-                    } else {
-                        // If it's a new file (File object), add it to FormData
-                        formData.append(`degree_certificates[${index}]`, file);
-                    }
-                });
-            }
-        })
         setSuccessMessage("");
+
         axiosClient
-            .put(`/doctors/${doctorDashboardData?.doctor.id}/dashboard`, formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
+            .put(`/doctors/${doctorDashboardData?.doctor.id}/dashboard`, {
+                doctor: jsonPayload,
             })
             .then((res) => {
                 console.log('admin ads: ', res);
@@ -163,11 +152,12 @@ const DoctorDashboard = () => {
             .catch((err) => {
                 console.log(err);
                 setLoading(false);
-            })
-    }
+            });
+    };
+
 
     const handleFileChange = (e) => {
-        const file = e.target.files[ 0 ];
+        const file = e.target.files[0];
         if (file) {
             setSelectedFile(file);
             setPreview(URL.createObjectURL(file)); // Show image preview
@@ -210,55 +200,19 @@ const DoctorDashboard = () => {
                                 <div className="bg-gray-100 p-4 rounded-lg">
                                     <h2 className="text-xl font-semibold text-gray-700">Doctor Details</h2>
 
-
                                     <p className="text-gray-600"><span className="font-medium">ID:</span> {doctorDashboardData?.doctor.id || "N/A"}</p>
 
-
-                                    <>
-                                        <div className="w-[50%]">
-                                            <div className="p-4 mb-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
-                                                <div className="items-center sm:flex xl:block 2xl:flex sm:space-x-4 xl:space-x-0 2xl:space-x-4">
-                                                    {/* Display Selected Image Preview */}
-                                                    <img className="mb-4 rounded-lg w-28 h-28 sm:mb-0 xl:mb-4 2xl:mb-0" src={preview} alt="Profile" />
-
-                                                    <div>
-                                                        <h3 className="mb-1 text-xl font-bold text-gray-900 dark:text-white">
-                                                            Profile picture
-                                                        </h3>
-                                                        <div className="mb-4 text-sm text-gray-500 dark:text-gray-400">
-                                                            JPG, GIF, or PNG. Max size: 800KB
-                                                        </div>
-
-                                                        {/* File Input */}
-                                                        <input
-                                                            id="fileInput"
-                                                            type="file"
-                                                            accept="image/png, image/jpeg, image/gif"
-                                                            className="hidden"
-                                                            onChange={handleFileChange}
-                                                        />
-                                                        <label
-                                                            htmlFor="fileInput"
-                                                            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg cursor-pointer hover:bg-blue-700"
-                                                        >
-                                                            Choose Image
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </>
-
-
-
+                                    <div className='flex flex-col gap-1 items-center justify-center mb-5'>
+                                        <label htmlFor="user_avatar">Profile Photo</label>
+                                        <img src={preview} name="user_avatar" id='user_avatar' alt="profile_picture" className='w-40 h-40 rounded-md border bg-gray-300' />
+                                    </div>
 
                                     <>
                                         <div className="p-4 mb-4 bg-white border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
                                             <h3 className="mb-4 text-xl font-semibold dark:text-white">
                                                 General Information
                                             </h3>
-                                            <form onSubmit={HandelSubmit}>
+                                            <form onSubmit={handleSubmit}>
                                                 <label className="relative inline-flex items-center mb-4 cursor-pointer">
                                                     <input
                                                         type="checkbox"
@@ -391,6 +345,25 @@ const DoctorDashboard = () => {
                                                         />
                                                     </div>
                                                 </div>
+
+                                                <div className="col-span-6 sm:col-span-3 mt-3">
+                                                        <label
+                                                            htmlFor="cin"
+                                                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                                        >
+                                                            CIN
+                                                        </label>
+                                                        <input
+                                                            type="number"
+                                                            name="cin"
+                                                            id="cin"
+                                                            className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                                            placeholder="cin"
+                                                            required
+                                                            value={DataForm.cin}
+                                                            onChange={HandelChange}
+                                                        />
+                                                    </div>
 
                                                 <div className="grid grid-cols-6 gap-6">
                                                     <div className="col-span-6 sm:col-full mt-4 mb-4">
@@ -569,7 +542,7 @@ const DoctorDashboard = () => {
 
                                                 <div className="w-full flex items-center gap-5 mt-10">
                                                     <div className="col-span-6 sm:col-full  w-[20%]">
-                                                        <AuthButton Text="Save all" Loading={loading} isDisabled={DataForm.verified} />
+                                                        <AuthButton Text="Save all" Loading={loading} />
                                                     </div>
                                                     <Button
                                                         type="button"
