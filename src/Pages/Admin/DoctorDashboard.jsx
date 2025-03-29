@@ -148,7 +148,7 @@ const DoctorDashboard = () => {
         setSuccessMessage("");
 
         // Send request with FormData
-        axiosClient.put(`/doctors/${doctorDashboardData?.doctor.id}/dashboard`, formData, {
+        axiosClient.post(`/doctors/${doctorDashboardData?.doctor.id}/dashboard`, formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
             },
