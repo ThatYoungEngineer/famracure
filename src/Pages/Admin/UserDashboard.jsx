@@ -45,7 +45,6 @@ const UserDashboard = () => {
       const response = await axiosClient.get(`admin/user-dashboard/${id}`);
       if (response.status === 200) {
         setUserDashboardData(response.data);
-        setPreviewAvatar(userDashboardData?.user?.user_avatar || '/img/Rectangle 4.jpg')
         setUpdatedFields(response.data.user); // Correctly initialize updatedFields
       }
 
@@ -60,15 +59,24 @@ const UserDashboard = () => {
 
   const handleUserUpdate = async (e) => {
     e.preventDefault();
+
+    const formData = new FormData()
+
+    formData.append('firstname', updatedFields.firstname)
+    formData.append('lastname', updatedFields.lastname)
+    formData.append('cin', updatedFields.cin)
+    formData.append('email', userDashboardData?.user.email)
+    if (selectedAvatar) {
+      formData.append('user_avatar', selectedAvatar)
+    }
     
-    const { active, ...user } = updatedFields; // Exclude 'active' field
 
     try {
-      const response = await axiosClient.put(`/user/dashboard/update/${id}`, 
-        {
-          user
+      const response = await axiosClient.post(`/user/dashboard/update/${id}`, formData, {
+        headers: {
+          'Content-Type':'multipart/form-data'
         }
-      )
+      })
       alert(response.data.message)
     } catch (error) {
       console.error("Error updating user:", error);
@@ -100,7 +108,7 @@ const UserDashboard = () => {
                   <div className='flex flex-col gap-1 items-center justify-center'>
                     <label htmlFor="user_avatar">Profile Photo</label>
                     <img src={previewAvatar ? previewAvatar : userDashboardData?.user.user_avatar } name="user_avatar" id='user_avatar' alt="profile_picture" className='w-40 h-40 rounded-md border bg-gray-300' />
-                    {/* <input type="file" name="user_avatar" id="user_avatar" accept="image/*" onChange={handleAvatarChange} className="mt-2" /> */}
+                    <input type="file" name="user_avatar" id="user_avatar" accept="image/*" onChange={handleAvatarChange} className="mt-2" />
                   </div>
                   <div>
                     <label htmlFor="firstname">First Name</label>

@@ -28,8 +28,9 @@ const DoctorDashboard = () => {
             degree_certificates: [],
         }
     ])
-    const [selectedFile, setSelectedFile] = useState(null);
-    const [preview, setPreview] = useState(null); // Default profile picture
+    const [previewAvatar, setPreviewAvatar] = useState(null);
+    const [selectedAvatar, setSelectedAvatar] = useState(null);
+
 
     GetAuthAdmin()
 
@@ -59,7 +60,7 @@ const DoctorDashboard = () => {
             if (doctorDashboardData?.doctor?.experience?.length > 0) {
                 setExperienceList(doctorDashboardData?.doctor?.experience); // Ensure it's updated
             }
-            setPreview(doctorDashboardData?.doctor.avatar_doctor || "/img/Rectangle 4.jpg"); // Default if no avatar
+            setPreviewAvatar(doctorDashboardData?.doctor.avatar_doctor || "/img/Rectangle 4.jpg"); // Default if no avatar
         }
     }, [doctorDashboardData])
 
@@ -113,37 +114,45 @@ const DoctorDashboard = () => {
         setLoading(true);
         e.preventDefault();
 
-        const jsonPayload = {
-            id: DataForm.id,
-            firstname: DataForm.firstname,
-            lastname: DataForm.lastname,
-            cin: DataForm.cin,
-            phoneNumber: DataForm.phoneNumber,
-            email: DataForm.email,
-            Matricule: DataForm.Matricule,
-            specialite: DataForm.specialite,
-            nom_cabinet: DataForm.nom_cabinet,
-            address_cabinet: DataForm.address_cabinet,
-            available: DataForm.available ? 1 : 0,
-            about: DataForm.about,
-            avatar_doctor: selectedFile || null, // Ensure correct handling of file
-            experiences: experienceList.map((experience) => ({
-                institute: experience.institute,
-                start_date: experience.start_date,
-                end_date: experience.end_date,
-                detail: experience.detail,
-                degree_certificates: experience.degree_certificates?.map(file =>
-                    typeof file === "string" ? file : null // Only store existing URLs, ignore new files
-                ).filter(Boolean) // Remove null values
-            })),
-        };
+
+        const formData = new FormData();
+
+        formData.append("doctor[firstname]", DataForm.firstname);
+        formData.append("doctor[lastname]", DataForm.lastname);
+        formData.append("doctor[cin]", DataForm.cin);
+        formData.append("doctor[phoneNumber]", DataForm.phoneNumber);
+        formData.append("doctor[email]", DataForm.email);
+        formData.append("doctor[specialite]", DataForm.specialite);
+
+        // Append avatar file if available
+        if (selectedAvatar) {
+            formData.append("avatar_doctor", selectedAvatar);
+        }
+
+        // Append experiences as a JSON string
+        experienceList.forEach((experience, index) => {
+            formData.append(`experiences[${index}][institute]`, experience.institute);
+            formData.append(`experiences[${index}][start_date]`, experience.start_date);
+            formData.append(`experiences[${index}][end_date]`, experience.end_date);
+            formData.append(`experiences[${index}][detail]`, experience.detail);
+
+            if (experience.degree_certificates) {
+                experience.degree_certificates.forEach((file, fileIndex) => {
+                    if (typeof file !== "string") {
+                        formData.append(`experiences[${index}][degree_certificates][${fileIndex}]`, file);
+                    }
+                });
+            }
+        });
 
         setSuccessMessage("");
 
-        axiosClient
-            .put(`/doctors/${doctorDashboardData?.doctor.id}/dashboard`, {
-                doctor: jsonPayload,
-            })
+        // Send request with FormData
+        axiosClient.put(`/doctors/${doctorDashboardData?.doctor.id}/dashboard`, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        })
             .then((res) => {
                 console.log('admin ads: ', res);
                 setSuccessMessage(res?.data?.message);
@@ -156,13 +165,13 @@ const DoctorDashboard = () => {
     };
 
 
-    const handleFileChange = (e) => {
+    const handleAvatarChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            setSelectedFile(file);
-            setPreview(URL.createObjectURL(file)); // Show image preview
+            setSelectedAvatar(file);
+            setPreviewAvatar(URL.createObjectURL(file)); // Show preview
         }
-    }
+    };
 
     const handleApproveDoctor = () => {
         axiosClient
@@ -199,21 +208,19 @@ const DoctorDashboard = () => {
                             <div className="space-y-4">
                                 <div className="bg-gray-100 p-4 rounded-lg">
                                     <h2 className="text-xl font-semibold text-gray-700">Doctor Details</h2>
-
                                     <p className="text-gray-600"><span className="font-medium">ID:</span> {doctorDashboardData?.doctor.id || "N/A"}</p>
-
                                     <div className='flex flex-col gap-1 items-center justify-center mb-5'>
                                         <label htmlFor="user_avatar">Profile Photo</label>
-                                        <img src={preview} name="user_avatar" id='user_avatar' alt="profile_picture" className='w-40 h-40 rounded-md border bg-gray-300' />
+                                        <img src={previewAvatar ? previewAvatar : doctorDashboardData?.doctor.avatar_doctor} name="user_avatar" id='user_avatar' alt="profile_picture" className='w-40 h-40 rounded-md border bg-gray-300' />
+                                        <input type="file" name="user_avatar" id="user_avatar" accept="image/*" onChange={handleAvatarChange} className="mt-2" />
                                     </div>
-
                                     <>
                                         <div className="p-4 mb-4 bg-white border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
                                             <h3 className="mb-4 text-xl font-semibold dark:text-white">
                                                 General Information
                                             </h3>
                                             <form onSubmit={handleSubmit}>
-                                                <label className="relative inline-flex items-center mb-4 cursor-pointer">
+                                                <label className="relative inline-flex items-center mb-4 cursor-not-allowed">
                                                     <input
                                                         type="checkbox"
                                                         // value={DataForm.available}
@@ -221,6 +228,8 @@ const DoctorDashboard = () => {
                                                         name="available"
                                                         onChange={HandelChangeCheckbox}
                                                         className="sr-only peer"
+                                                        readOnly
+                                                        disabled
                                                     />
                                                     <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all  peer-checked:bg-blue-600"></div>
                                                     <span className="ml-3 text-sm font-medium text-gray-900 ">
@@ -268,7 +277,7 @@ const DoctorDashboard = () => {
                                                 </div>
 
                                                 <div className="grid mt-3 grid-cols-6 gap-6">
-                                                    <div className="col-span-6 sm:col-span-3">
+                                                    <div className="col-span-6 sm:col-span-3 cursor-not-allowed">
                                                         <label
                                                             htmlFor="Matricule"
                                                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -281,7 +290,8 @@ const DoctorDashboard = () => {
                                                             id="Matricule"
                                                             className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                                             placeholder="Matricule"
-                                                            required
+                                                            disabled
+                                                            readOnly
                                                             value={DataForm.Matricule}
                                                             onChange={HandelChange}
                                                         />
@@ -299,7 +309,6 @@ const DoctorDashboard = () => {
                                                             id="specialite"
                                                             className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                                             placeholder="tt"
-                                                            required
                                                             value={DataForm.specialite}
                                                             onChange={HandelChange}
                                                         />
@@ -325,7 +334,7 @@ const DoctorDashboard = () => {
                                                             onChange={HandelChange}
                                                         />
                                                     </div>
-                                                    <div className="col-span-6  sm:col-span-3">
+                                                    <div className="col-span-6 sm:col-span-3">
                                                         <label
                                                             htmlFor="email"
                                                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -347,25 +356,26 @@ const DoctorDashboard = () => {
                                                 </div>
 
                                                 <div className="col-span-6 sm:col-span-3 mt-3">
-                                                        <label
-                                                            htmlFor="cin"
-                                                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                                                        >
-                                                            CIN
-                                                        </label>
-                                                        <input
-                                                            type="number"
-                                                            name="cin"
-                                                            id="cin"
-                                                            className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                                            placeholder="cin"
-                                                            required
-                                                            value={DataForm.cin}
-                                                            onChange={HandelChange}
-                                                        />
-                                                    </div>
+                                                    <label
+                                                        htmlFor="cin"
+                                                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                                    >
+                                                        CIN
+                                                    </label>
+                                                    <input
+                                                        type="number"
+                                                        name="cin"
+                                                        id="cin"
+                                                        className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                                        placeholder="cin"
+                                                        disabled
+                                                        readOnly
+                                                        value={DataForm.cin}
+                                                        onChange={HandelChange}
+                                                    />
+                                                </div>
 
-                                                <div className="grid grid-cols-6 gap-6">
+                                                <div className="grid grid-cols-6 gap-6 cursor-not-allowed">
                                                     <div className="col-span-6 sm:col-full mt-4 mb-4">
                                                         <label
                                                             htmlFor="phoneNumber"

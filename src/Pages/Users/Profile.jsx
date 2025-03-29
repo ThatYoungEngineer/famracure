@@ -28,8 +28,6 @@ const Profile = () => {
       });
   };
 
-  console.log('userData: ', UserData.user);
-
   return (
     <>
       <Header />
@@ -42,7 +40,7 @@ const Profile = () => {
                 <div className="  text-center ">
                   <img
                     className="mb-4 mt-9 rounded-lg w-28 h-28 sm:mb-0 xl:mb-4 2xl:mb-0"
-                    src="/img/Rectangle 4.jpg"
+                    src={UserData?.user?.user_avatar ? UserData?.user?.user_avatar : "/img/Rectangle 4.jpg"}
                     alt=""
                   />
                   <h3 className=" mt-4 font-[600]  mb-5 text-[16px] ">
