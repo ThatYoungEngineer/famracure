@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import GetAuthAdmin from "../../hooks/GetAuthAdmin";
 import { AuthButton, NavBarAdmin, SidebarAdmin } from "../../Components";
 import { Button } from "@mui/material";
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
 
 const DoctorDashboard = () => {
     document.title = "Payments";
@@ -31,6 +32,7 @@ const DoctorDashboard = () => {
     const [previewAvatar, setPreviewAvatar] = useState(null);
     const [selectedAvatar, setSelectedAvatar] = useState(null);
 
+    const [showExpFields, setShowExpFields] = useState(false)
 
     GetAuthAdmin()
 
@@ -44,6 +46,7 @@ const DoctorDashboard = () => {
                 id: doctorDashboardData?.doctor.id,
                 firstname: doctorDashboardData?.doctor.firstname || "",
                 lastname: doctorDashboardData?.doctor.lastname || "",
+                gender: doctorDashboardData?.doctor.gender || "",
                 cin: doctorDashboardData?.doctor.cin || "",
                 phoneNumber: doctorDashboardData?.doctor.phoneNumber || "",
                 email: doctorDashboardData?.doctor.email || "",
@@ -84,7 +87,11 @@ const DoctorDashboard = () => {
     };
 
     const HandelChangeCheckbox = (e) => {
-        setDataForm({ ...DataForm, available: e.target.checked })
+        const isChecked = e.target.checked
+        setDataForm({
+            ...DataForm,
+            available: isChecked
+        })
     };
 
     const HandelChange = (e, index) => {
@@ -123,6 +130,9 @@ const DoctorDashboard = () => {
         formData.append("doctor[phoneNumber]", DataForm.phoneNumber);
         formData.append("doctor[email]", DataForm.email);
         formData.append("doctor[specialite]", DataForm.specialite);
+        formData.append("doctor[gender]", DataForm.gender);
+        formData.append("doctor[dob]", DataForm.dob);
+        formData.append("doctor[available]", DataForm.available ? 1 : 0);
 
         // Append avatar file if available
         if (selectedAvatar) {
@@ -176,7 +186,24 @@ const DoctorDashboard = () => {
     const handleApproveDoctor = () => {
         axiosClient
             .post(`/admin/approve-doctor/${doctorDashboardData?.doctor.id}`, {
-                verified: DataForm.verified ? 1 : 0
+                verified: 1
+            })
+            .then((res) => {
+                console.log(res);
+                const success = res?.data?.message;
+                if (success) {
+                    setSuccessMessage(success);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+    }
+    
+    const handleRejectDoctor = () => {
+        axiosClient
+            .post(`/admin/approve-doctor/${doctorDashboardData?.doctor.id}`, {
+                verified: 0
             })
             .then((res) => {
                 console.log(res);
@@ -220,23 +247,38 @@ const DoctorDashboard = () => {
                                                 General Information
                                             </h3>
                                             <form onSubmit={handleSubmit}>
-                                                <label className="relative inline-flex items-center mb-4 cursor-not-allowed">
-                                                    <input
-                                                        type="checkbox"
-                                                        // value={DataForm.available}
-                                                        checked={doctorDashboardData?.doctor.available}
-                                                        name="available"
-                                                        onChange={HandelChangeCheckbox}
-                                                        className="sr-only peer"
-                                                        readOnly
-                                                        disabled
-                                                    />
-                                                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all  peer-checked:bg-blue-600"></div>
-                                                    <span className="ml-3 text-sm font-medium text-gray-900 ">
-                                                        Doctor Is Present
-                                                    </span>
-                                                </label>
+                                                <div className="w-full flex items-center justify-center">
+                                                    <div className="mb-5">
+                                                        <label className="text-sm font-medium text-gray-900">
+                                                            Doctor Availability
+                                                        </label>
+                                                        <div className="flex items-center space-x-6 mt-2">
+                                                            <label className="flex items-center space-x-2">
+                                                                <input
+                                                                    type="radio"
+                                                                    name="available"
+                                                                    value={1}
+                                                                    checked={DataForm.available}
+                                                                    onChange={(e) => setDataForm({ ...DataForm, available: 1 })}
+                                                                    className="form-radio text-blue-600"
+                                                                />
+                                                                <span className="text-sm text-gray-900">Available</span>
+                                                            </label>
 
+                                                            <label className="flex items-center space-x-2">
+                                                                <input
+                                                                    type="radio"
+                                                                    name="available"
+                                                                    value={0}
+                                                                    checked={!DataForm.available}
+                                                                    onChange={(e) => setDataForm({ ...DataForm, available: 0 })}
+                                                                    className="form-radio text-red-600"
+                                                                />
+                                                                <span className="text-sm text-gray-900">Unavailable</span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                                 <div className="grid grid-cols-6 gap-6">
                                                     <div className="col-span-6 sm:col-span-3">
                                                         <label
@@ -374,8 +416,47 @@ const DoctorDashboard = () => {
                                                         onChange={HandelChange}
                                                     />
                                                 </div>
+                                                <div className="grid mt-3 grid-cols-6 gap-6">
+                                                    <div className="col-span-6 sm:col-span-3">
+                                                        <label
+                                                            htmlFor="dob"
+                                                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                                        >
+                                                            Date of Birth
+                                                        </label>
+                                                        <input
+                                                            type="date"
+                                                            name="dob"
+                                                            id="dob"
+                                                            className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                                            placeholder="dob"
+                                                            value={DataForm.dob}
+                                                            onChange={HandelChange}
+                                                        />
+                                                    </div>
+                                                    <div className="col-span-6  sm:col-span-3">
+                                                        <label
+                                                            htmlFor="gender"
+                                                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                                        >
+                                                            Gender
+                                                        </label>
+                                                        <select
+                                                            name="gender"
+                                                            id="gender"
+                                                            value={DataForm.gender}
+                                                            onChange={HandelChange}
+                                                            className={`bg-gray-50 p-2 !border text-base rounded-lg block w-full py-2 px-3 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 border-gray-300 text-gray-900}`}
+                                                        >
+                                                            <option value="#" selected disabled  >--Select Gender--</option>
+                                                            <option value="male">Male</option>
+                                                            <option value="female">Female</option>
+                                                            <option value="transgender">Transgender</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
 
-                                                <div className="grid grid-cols-6 gap-6 cursor-not-allowed">
+                                                <div className="grid grid-cols-6 gap-6">
                                                     <div className="col-span-6 sm:col-full mt-4 mb-4">
                                                         <label
                                                             htmlFor="phoneNumber"
@@ -435,121 +516,132 @@ const DoctorDashboard = () => {
                                                     </div>
                                                 </div>
 
-                                                {experienceList.map((experience, index) => (
-                                                    <div key={index} className="border p-4 rounded-lg mt-10">
-                                                        <div className="grid mt-3 grid-cols-6 gap-6">
-                                                            <div className="col-span-6 sm:col-span-3">
-                                                                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                                                    Experience Start Date
-                                                                </label>
-                                                                <input
-                                                                    type="date"
-                                                                    name="start_date"
-                                                                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
-                                                                    value={experience.start_date}
-                                                                    onChange={(e) => handleChangeInExperience(e, index)}
-                                                                />
-                                                            </div>
+                                                <div className="w-full flex gap-2 items-center justify-center mt-10">
+                                                    <h1 className="text-2xl font-semibold">Experience Fields</h1>
+                                                    <span className="flex-1 border-t border-black" />
+                                                    <button type="button" onClick={() => setShowExpFields(prev => !prev)}>
+                                                    <ChevronDownIcon className={`w-5 h-5 ${showExpFields ? 'rotate-180' : 'rotate-0'}`} />
+                                                    </button>
+                                                </div>
 
-                                                            <div className="col-span-6 sm:col-span-3">
-                                                                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                                                    Experience End Date
-                                                                </label>
-                                                                <input
-                                                                    type="date"
-                                                                    name="end_date"
-                                                                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
-                                                                    value={experience.end_date}
-                                                                    onChange={(e) => handleChangeInExperience(e, index)}
-                                                                />
-                                                            </div>
-                                                        </div>
+                                                {showExpFields &&
+                                                    <>
+                                                        {experienceList.map((experience, index) => (
+                                                            <div key={index} className="border p-4 rounded-lg mt-10">
+                                                                <div className="grid mt-3 grid-cols-6 gap-6">
+                                                                    <div className="col-span-6 sm:col-span-3">
+                                                                        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                                                            Experience Start Date
+                                                                        </label>
+                                                                        <input
+                                                                            type="date"
+                                                                            name="start_date"
+                                                                            className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
+                                                                            value={experience.start_date}
+                                                                            onChange={(e) => handleChangeInExperience(e, index)}
+                                                                        />
+                                                                    </div>
 
-                                                        <div className="grid mt-3 grid-cols-6 gap-6">
-                                                            <div className="col-span-6 sm:col-span-3">
-                                                                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                                                    Experience Institute
-                                                                </label>
-                                                                <input
-                                                                    type="text"
-                                                                    name="institute"
-                                                                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
-                                                                    placeholder="Enter institute name"
-                                                                    value={experience.institute}
-                                                                    onChange={(e) => handleChangeInExperience(e, index)}
-                                                                />
-                                                            </div>
-                                                            <div className="col-span-6 sm:col-span-3">
-                                                                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                                                    Experience Years
-                                                                </label>
-                                                                <input
-                                                                    type="number"
-                                                                    name="experience_years"
-                                                                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
-                                                                    placeholder="Enter experience years"
-                                                                    readOnly
-                                                                    disabled
-                                                                    value={experience.experience_years}
-                                                                    onChange={(e) => handleChangeInExperience(e, index)}
-                                                                />
-                                                            </div>
-                                                            <div className="col-span-6">
-                                                                <label
-                                                                    htmlFor="experience_detail"
-                                                                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                                                                >
-                                                                    Experience Detail
-                                                                </label>
-                                                                <textarea
-                                                                    id="experience_detail"
-                                                                    rows="5"
-                                                                    name="detail"
-                                                                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                                                    placeholder="Enter your experience details"
-                                                                    onChange={(e) => handleChangeInExperience(e, index)}
-                                                                    value={experience.detail}
-                                                                ></textarea>
-                                                            </div>
-                                                            <div className="col-span-6 flex flex-col gap-2">
-                                                                <label
-                                                                    htmlFor="degree_certificates"
-                                                                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                                                                >
-                                                                    Experience Certificates
-                                                                </label>
-                                                                <input
-                                                                    type="file"
-                                                                    name="degree_certificates"
-                                                                    accept="image/png, image/jpeg, image/gif"
-                                                                    multiple
-                                                                    onChange={e => handleChangeInExperience(e, index)}
-                                                                />
-                                                            </div>
-                                                            <div className="col-span-6 flex flex-col gap-2">
-                                                                {experience?.degree_certificates?.length > 0 &&
-                                                                    experience.degree_certificates.map((certificate, certificateIndex) => (
-                                                                        <div key={certificateIndex} className="w-full flex-1">
-                                                                            {typeof certificate === "string" ? (
-                                                                                // Existing file (URL)
-                                                                                <a href={certificate} target="_blank" rel="noopener noreferrer" className=" text-blue-500 underline">
-                                                                                    {certificate}
-                                                                                </a>
-                                                                            ) : (
-                                                                                // New file (File object)
-                                                                                <span className="flex-1 text-gray-700">{certificate.name}</span>
-                                                                            )}
-                                                                        </div>
-                                                                    ))
-                                                                }
-                                                            </div>
+                                                                    <div className="col-span-6 sm:col-span-3">
+                                                                        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                                                            Experience End Date
+                                                                        </label>
+                                                                        <input
+                                                                            type="date"
+                                                                            name="end_date"
+                                                                            className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
+                                                                            value={experience.end_date}
+                                                                            onChange={(e) => handleChangeInExperience(e, index)}
+                                                                        />
+                                                                    </div>
+                                                                </div>
+
+                                                                <div className="grid mt-3 grid-cols-6 gap-6">
+                                                                    <div className="col-span-6 sm:col-span-3">
+                                                                        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                                                            Experience Institute
+                                                                        </label>
+                                                                        <input
+                                                                            type="text"
+                                                                            name="institute"
+                                                                            className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
+                                                                            placeholder="Enter institute name"
+                                                                            value={experience.institute}
+                                                                            onChange={(e) => handleChangeInExperience(e, index)}
+                                                                        />
+                                                                    </div>
+                                                                    <div className="col-span-6 sm:col-span-3">
+                                                                        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                                                            Experience Years
+                                                                        </label>
+                                                                        <input
+                                                                            type="number"
+                                                                            name="experience_years"
+                                                                            className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
+                                                                            placeholder="Enter experience years"
+                                                                            readOnly
+                                                                            disabled
+                                                                            value={experience.experience_years}
+                                                                            onChange={(e) => handleChangeInExperience(e, index)}
+                                                                        />
+                                                                    </div>
+                                                                    <div className="col-span-6">
+                                                                        <label
+                                                                            htmlFor="experience_detail"
+                                                                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                                                        >
+                                                                            Experience Detail
+                                                                        </label>
+                                                                        <textarea
+                                                                            id="experience_detail"
+                                                                            rows="5"
+                                                                            name="detail"
+                                                                            className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                                                            placeholder="Enter your experience details"
+                                                                            onChange={(e) => handleChangeInExperience(e, index)}
+                                                                            value={experience.detail}
+                                                                        ></textarea>
+                                                                    </div>
+                                                                    <div className="col-span-6 flex flex-col gap-2">
+                                                                        <label
+                                                                            htmlFor="degree_certificates"
+                                                                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                                                        >
+                                                                            Experience Certificates
+                                                                        </label>
+                                                                        <input
+                                                                            type="file"
+                                                                            name="degree_certificates"
+                                                                            accept="image/png, image/jpeg, image/gif"
+                                                                            multiple
+                                                                            onChange={e => handleChangeInExperience(e, index)}
+                                                                        />
+                                                                    </div>
+                                                                    <div className="col-span-6 flex flex-col gap-2">
+                                                                        {experience?.degree_certificates?.length > 0 &&
+                                                                            experience.degree_certificates.map((certificate, certificateIndex) => (
+                                                                                <div key={certificateIndex} className="w-full flex-1">
+                                                                                    {typeof certificate === "string" ? (
+                                                                                        // Existing file (URL)
+                                                                                        <a href={certificate} target="_blank" rel="noopener noreferrer" className=" text-blue-500 underline">
+                                                                                            {certificate}
+                                                                                        </a>
+                                                                                    ) : (
+                                                                                        // New file (File object)
+                                                                                        <span className="flex-1 text-gray-700">{certificate.name}</span>
+                                                                                    )}
+                                                                                </div>
+                                                                            ))
+                                                                        }
+                                                                    </div>
 
 
-                                                        </div>
+                                                                </div>
 
-                                                    </div>
-                                                ))}
-
+                                                            </div>
+                                                        ))}
+                                                    </>
+                                                }
                                                 <div className="w-full flex items-center gap-5 mt-10">
                                                     <div className="col-span-6 sm:col-full  w-[20%]">
                                                         <AuthButton Text="Save all" Loading={loading} />
@@ -560,7 +652,15 @@ const DoctorDashboard = () => {
                                                         color="warning"
                                                         onClick={handleApproveDoctor}
                                                     >
-                                                        Approve Or Reject Doctor
+                                                        Approve Doctor
+                                                    </Button>
+                                                    <Button
+                                                        type="button"
+                                                        variant="contained"
+                                                        color="error"
+                                                        onClick={handleRejectDoctor}
+                                                    >
+                                                        Reject Doctor
                                                     </Button>
                                                 </div>
                                                 {successMessage && <p className="text-green-500">{successMessage}</p>}

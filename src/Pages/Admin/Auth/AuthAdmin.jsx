@@ -32,7 +32,7 @@ const AuthAdmin = () => {
   }, [navigate, adminData.isAuthenticated]);
 
   const [DataForm, setDataForm] = useState({
-    email: "admin@example.com",
+    email: "Osgabc@gmail.com",
     password: "admin_password",
   });
 

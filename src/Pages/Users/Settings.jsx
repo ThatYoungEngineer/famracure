@@ -31,6 +31,8 @@ const Settings = () => {
         firstname: UserData.user.firstname,
         lastname: UserData.user.lastname,
         email: UserData.user.email,
+        date_of_birth: UserData.user.date_of_birth,
+        gender: UserData.user.gender,
         cin: UserData.user.cin,
         user_avatar: UserData.user.user_avatar ? UserData.user.user_avatar : "/img/Rectangle 4.jpg"
       });
@@ -67,6 +69,8 @@ const Settings = () => {
     formData.append("lastname", DataForm.lastname);
     formData.append("email", DataForm.email);
     formData.append("cin", DataForm.cin);
+    formData.append("gender", DataForm.gender);
+    formData.append("date_of_birth", DataForm.date_of_birth);
 
     if (UserAvatar) {
       formData.append("user_avatar", UserAvatar);
@@ -207,6 +211,44 @@ const Settings = () => {
                     placeholder="exemple@gmail.com"
                     required
                   />
+                </div>
+                <div className="mb-[20px]">
+                  <label
+                    htmlFor="date_of_birth"
+                    className="block mb-1 text-[14px]  font-medium text-gray-900 dark:text-white"
+                  >
+                    Date of Birth
+                  </label>
+                  <input
+                    type="date"
+                    id="date_of_birth"
+                    name="date_of_birth"
+                    value={DataForm.date_of_birth}
+                    onChange={handleChange}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-[12px] rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full   py-[4px] dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    placeholder="exemple@gmail.com"
+                    required
+                  />
+                </div>
+                <div className="mb-[20px]">
+                  <label
+                    htmlFor="gender"
+                    className="block mb-1 text-[14px]  font-medium text-gray-900 dark:text-white"
+                  >
+                    Gender
+                  </label>
+                  <select
+                    name="gender"
+                    id="gender"
+                    value={DataForm.gender}
+                    onChange={handleChange}
+                    className={`bg-gray-50 !border text-xs rounded-lg block w-full py-2 px-3 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 border-gray-300 text-gray-900}`}
+                  >
+                    <option value="#" selected disabled  >--Select Gender--</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="transgender">Transgender</option>
+                  </select>
                 </div>
                 <button className="inline-flex items-center px-3 py-2 text-[12px]  text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 ">
                   Save Changes

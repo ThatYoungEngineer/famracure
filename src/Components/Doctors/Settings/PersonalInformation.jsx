@@ -4,8 +4,10 @@ import { useSelector } from "react-redux";
 import axiosClient from "../../../AxiosClient";
 import AuthButton from "../../AuthButton";
 import { Button } from "@mui/material";
+import { ChevronDownIcon } from "@heroicons/react/24/solid";
+
 const PersonalInformation = () => {
-  const doctorData = useSelector((state) => state.AuthDoctor);  
+  const doctorData = useSelector((state) => state.AuthDoctor);
 
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("")
@@ -13,7 +15,7 @@ const PersonalInformation = () => {
   const [DataForm, setDataForm] = useState({})
   const [experienceList, setExperienceList] = useState([
     {
-      institute: '', 
+      institute: '',
       start_date: '',
       end_date: '',
       detail: '',
@@ -22,6 +24,8 @@ const PersonalInformation = () => {
   ])
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null); // Default profile picture
+
+  const [showExpFields, setShowExpFields] = useState(false)
 
   GetAuthDoctor()
 
@@ -34,13 +38,15 @@ const PersonalInformation = () => {
         cin: doctorData.doctor.cin || "",
         phoneNumber: doctorData.doctor.phoneNumber || "",
         email: doctorData.doctor.email || "",
+        gender: doctorData.doctor.gender || "",
+        dob: doctorData.doctor.dob || "",
         Matricule: doctorData.doctor.matricule || "",
         specialite: doctorData.doctor.specialite || "",
         nom_cabinet: doctorData.doctor.nom_cabinet || "",
         address_cabinet: doctorData.doctor.address_cabinet || "",
-        available: doctorData.doctor.available == "1" ? true :false ,
-        verified: doctorData.doctor.verified == "1" ? true :false ,
-        is_approved: doctorData.doctor.is_approved == "1" ? true :false ,
+        available: doctorData.doctor.available == "1" ? true : false,
+        verified: doctorData.doctor.verified == "1" ? true : false,
+        is_approved: doctorData.doctor.is_approved == "1" ? true : false,
         about: doctorData.doctor.about || "",
         experience_years: doctorData.doctor.experience_years || "",
         experience: doctorData.doctor.experience || [],
@@ -64,7 +70,7 @@ const PersonalInformation = () => {
   };
 
   const addExperience = () => {
-    setExperienceList([...experienceList, {institute: "", start_date: "", end_date: "", degree_certificates: [] }]);
+    setExperienceList([...experienceList, { institute: "", start_date: "", end_date: "", degree_certificates: [] }]);
   };
 
   const handleChangeInExperience = (e, index) => {
@@ -74,11 +80,11 @@ const PersonalInformation = () => {
       prev.map((item, i) =>
         i === index
           ? {
-              ...item,
-              [name]: name === "degree_certificates"
-                ? [...(item[name] ? [...item[name]] : []), ...Array.from(files)] // Prevent mutation
-                : value
-            }
+            ...item,
+            [name]: name === "degree_certificates"
+              ? [...(item[name] ? [...item[name]] : []), ...Array.from(files)] // Prevent mutation
+              : value
+          }
           : item
       )
     );
@@ -100,7 +106,7 @@ const PersonalInformation = () => {
   const HandelSubmit = (e) => {
     setLoading(true);
     e.preventDefault();
-    
+
     const formData = new FormData();
     formData.append("id", DataForm.id);
     formData.append("firstname", DataForm.firstname);
@@ -121,7 +127,7 @@ const PersonalInformation = () => {
     }
 
     experienceList.forEach((experience, index) => {
-    console.log('experience.degree_certificates: ', experience.degree_certificates)
+      console.log('experience.degree_certificates: ', experience.degree_certificates)
 
       formData.append(`institute[${index}]`, experience.institute);
       formData.append(`experience_start_date[${index}]`, experience.start_date);
@@ -141,35 +147,35 @@ const PersonalInformation = () => {
     })
     setSuccessMessage("");
     axiosClient
-    .post("/doctor/update/info", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    })
-    .then((res) => {
-      console.log('updated res : ', res);
-      const success = res?.data?.updated;
-      setSuccessMessage(success ? "Doctor information updated successfully" : "");
-      setExperienceList(res.data.doctor.experience)
-      setLoading(false);
-    })
-    .catch((err) => {
-      console.log(err);
-      setLoading(false);
-    })
+      .post("/doctor/update/info", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((res) => {
+        console.log('updated res : ', res);
+        const success = res?.data?.updated;
+        setSuccessMessage(success ? "Doctor information updated successfully" : "");
+        setExperienceList(res.data.doctor.experience)
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
+      })
   }
 
   const handleApprovalClick = () => {
     axiosClient
-    .post("/doctor/request-approval")
-    .then((res) => {
-       console.log(res);
-      const success = res?.data?.message;
-      setSuccessMessage(success? "Doctor approved successfully" : "Your request for approval has been sent");
-     })
-    .catch((err) => {
-       setSuccessMessage(err?.response?.data?.message);
-     })
+      .post("/doctor/request-approval")
+      .then((res) => {
+        console.log(res);
+        const success = res?.data?.message;
+        setSuccessMessage(success ? "Doctor approved successfully" : "Your request for approval has been sent");
+      })
+      .catch((err) => {
+        setSuccessMessage(err?.response?.data?.message);
+      })
   }
 
 
@@ -300,7 +306,7 @@ const PersonalInformation = () => {
                 name="specialite"
                 id="specialite"
                 className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                placeholder="tt"
+                placeholder="Specialization"
                 required
                 value={DataForm.specialite}
                 onChange={HandelChange}
@@ -346,6 +352,47 @@ const PersonalInformation = () => {
                 value={DataForm.email}
                 onChange={HandelChange}
               />
+            </div>
+          </div>
+
+          <div className="grid mt-3 grid-cols-6 gap-6">
+            <div className="col-span-6 sm:col-span-3">
+              <label
+                htmlFor="dob"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                Date of Birth
+              </label>
+              <input
+                type="date"
+                name="dob"
+                id="dob"
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                placeholder="dob"
+                required
+                value={DataForm.dob}
+                onChange={HandelChange}
+              />
+            </div>
+            <div className="col-span-6  sm:col-span-3">
+              <label
+                htmlFor="gender"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                Gender
+              </label>
+              <select
+                name="gender"
+                id="gender"
+                value={DataForm.gender}
+                onChange={HandelChange}
+                className={`bg-gray-50 !border text-xs rounded-lg block w-full py-2 px-3 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 border-gray-300 text-gray-900}`}
+              >
+                <option value="#" selected disabled  >--Select Gender--</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="transgender">Transgender</option>
+              </select>
             </div>
           </div>
 
@@ -408,165 +455,175 @@ const PersonalInformation = () => {
             </div>
           </div>
           <div className="col-span-6 sm:col-span-3 mt-5">
-              <label
-                htmlFor="cin"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
-                CIN
-              </label>
-              <input
-                type="text"
-                name="cin"
-                id="cin"
-                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                placeholder="cin"
-                required
-                value={DataForm.cin}
-                onChange={HandelChange}
-              />
-            </div>
-          <h1 className="text-2xl mt-5 font-semibold">Experience Fields</h1>
-          <div className="w-44 mt-5 sm:col-span-3">
-                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                      Total Experience (Years)
-                    </label>
-                    <input
-                      type="number"
-                      name="experience_years"
-                      readOnly
-                      disabled
-                      className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 disabled:opacity-80"
-                      value={doctorData?.doctor?.experience_years}
-                    />
-                  </div>
-          
-            {experienceList?.map((experience, index) => (
-              <div key={index} className="border p-4 rounded-lg mt-5">
-                <div className="grid mt-3 grid-cols-6 gap-6">
-                  <div className="col-span-6 sm:col-span-3">
-                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                      Experience Start Date
-                    </label>
-                    <input
-                      type="date"
-                      name="start_date"
-                      className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
-                      value={experience.start_date}
-                      onChange={(e) => handleChangeInExperience(e, index)}
-                    />
-                  </div>
-
-                  <div className="col-span-6 sm:col-span-3">
-                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                      Experience End Date
-                    </label>
-                    <input
-                      type="date"
-                      name="end_date"
-                      className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
-                      value={experience.end_date}
-                      onChange={(e) => handleChangeInExperience(e, index)}
-                    />
-                  </div>
-                </div>
-
-                <div className="grid mt-3 grid-cols-6 gap-6">
-                <div className="col-span-6 sm:col-span-3">
-                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                      Experience Institute
-                    </label>
-                    <input
-                      type="text"
-                      name="institute"
-                      className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
-                      placeholder="Enter institute name"
-                      value={experience.institute}
-                      onChange={(e) => handleChangeInExperience(e, index)}
-                    />
-                  </div>
-                  <div className="col-span-6">
-                    <label
-                      htmlFor="experience_detail"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      Experience Detail
-                    </label>
-                    <textarea
-                      id="experience_detail"
-                      rows="5"
-                      name="detail"
-                      className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                      placeholder="Enter your experience details"
-                      onChange={(e) => handleChangeInExperience(e, index)}                
-                      value={experience.detail}
-                    ></textarea>
-                  </div>
-                  <div className="col-span-6 flex flex-col gap-2">
-                    <label
-                      htmlFor="degree_certificates"
-                      className="block mb-2 text-lg font-medium text-gray-900 dark:text-white"
-                    >
-                      Experience Certificates
-                      <p className="text-sm font-light">Upload Education/Experience/Degree (documents)</p>
-                    </label>
-                    <input
-                      type="file" 
-                      name="degree_certificates"
-                      accept="image/png, image/jpeg, image/gif"
-                      multiple 
-                      onChange={e => handleChangeInExperience(e, index)} 
-                    />
-                  </div>
-                  <div className="col-span-6 flex flex-col gap-2">
-                    {experience?.degree_certificates?.length > 0 &&
-                      experience.degree_certificates.map((certificate, certificateIndex) => (
-                        <div key={certificateIndex} className="w-full flex-1">
-                          {typeof certificate === "string" ? (
-                            // Existing file (URL)
-                            <a href={certificate} target="_blank" rel="noopener noreferrer" className=" text-blue-500 underline">
-                              {certificate}
-                            </a>
-                          ) : (
-                            // New file (File object)
-                            <span className="flex-1 text-gray-700">{certificate.name}</span>
-                          )}
-                        </div>
-                      ))
-                    }   
-                  </div>               
-                </div>
-
-                {index > 0 && (
-                  <button
-                    onClick={() => removeExperience(index)}
-                    className="mt-3 bg-red-500 text-white px-3 py-2 rounded-lg"
-                  >
-                    Remove Experience
-                  </button>
-                )}
+            <label
+              htmlFor="cin"
+              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >
+              CIN
+            </label>
+            <input
+              type="text"
+              name="cin"
+              id="cin"
+              className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+              placeholder="cin"
+              required
+              value={DataForm.cin}
+              onChange={HandelChange}
+            />
+          </div>
+          <div className="w-full flex gap-2 items-center justify-center mt-5">
+            <h1 className="text-2xl font-semibold">Experience Fields</h1>
+            <span className="flex-1 border-t border-black" />
+            <button type="button" onClick={() => setShowExpFields(prev => !prev)}>
+              <ChevronDownIcon className={`w-5 h-5 ${showExpFields ? 'rotate-180' : 'rotate-0'}`} />
+            </button>
+          </div>
+          {showExpFields &&
+            <>
+              <div className="w-44 mt-5 sm:col-span-3">
+                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                  Total Experience (Years)
+                </label>
+                <input
+                  type="number"
+                  name="experience_years"
+                  readOnly
+                  disabled
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 disabled:opacity-80"
+                  value={doctorData?.doctor?.experience_years}
+                />
               </div>
-            ))}
 
-          <button
-            type="button"
-            onClick={addExperience}
-            className="bg-yellow-400 text-white px-4 py-2 rounded-lg mt-4"
-          >
-            Add More Experiences
-          </button>
+              {experienceList?.map((experience, index) => (
+                <div key={index} className="border p-4 rounded-lg mt-5">
+                  <div className="grid mt-3 grid-cols-6 gap-6">
+                    <div className="col-span-6 sm:col-span-3">
+                      <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                        Experience Start Date
+                      </label>
+                      <input
+                        type="date"
+                        name="start_date"
+                        className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
+                        value={experience.start_date}
+                        onChange={(e) => handleChangeInExperience(e, index)}
+                      />
+                    </div>
+
+                    <div className="col-span-6 sm:col-span-3">
+                      <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                        Experience End Date
+                      </label>
+                      <input
+                        type="date"
+                        name="end_date"
+                        className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
+                        value={experience.end_date}
+                        onChange={(e) => handleChangeInExperience(e, index)}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid mt-3 grid-cols-6 gap-6">
+                    <div className="col-span-6 sm:col-span-3">
+                      <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                        Experience Institute
+                      </label>
+                      <input
+                        type="text"
+                        name="institute"
+                        className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
+                        placeholder="Enter institute name"
+                        value={experience.institute}
+                        onChange={(e) => handleChangeInExperience(e, index)}
+                      />
+                    </div>
+                    <div className="col-span-6">
+                      <label
+                        htmlFor="experience_detail"
+                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      >
+                        Experience Detail
+                      </label>
+                      <textarea
+                        id="experience_detail"
+                        rows="5"
+                        name="detail"
+                        className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                        placeholder="Enter your experience details"
+                        onChange={(e) => handleChangeInExperience(e, index)}
+                        value={experience.detail}
+                      ></textarea>
+                    </div>
+                    <div className="col-span-6 flex flex-col gap-2">
+                      <label
+                        htmlFor="degree_certificates"
+                        className="block mb-2 text-lg font-medium text-gray-900 dark:text-white"
+                      >
+                        Experience Certificates
+                        <p className="text-sm font-light">Upload Education/Experience/Degree (documents)</p>
+                      </label>
+                      <input
+                        type="file"
+                        name="degree_certificates"
+                        accept="image/png, image/jpeg, image/gif"
+                        multiple
+                        onChange={e => handleChangeInExperience(e, index)}
+                      />
+                    </div>
+                    <div className="col-span-6 flex flex-col gap-2">
+                      {experience?.degree_certificates?.length > 0 &&
+                        experience.degree_certificates.map((certificate, certificateIndex) => (
+                          <div key={certificateIndex} className="w-full flex-1">
+                            {typeof certificate === "string" ? (
+                              // Existing file (URL)
+                              <a href={certificate} target="_blank" rel="noopener noreferrer" className=" text-blue-500 underline">
+                                {certificate}
+                              </a>
+                            ) : (
+                              // New file (File object)
+                              <span className="flex-1 text-gray-700">{certificate.name}</span>
+                            )}
+                          </div>
+                        ))
+                      }
+                    </div>
+                  </div>
+
+                  {index > 0 && (
+                    <button
+                      onClick={() => removeExperience(index)}
+                      className="mt-3 bg-red-500 text-white px-3 py-2 rounded-lg"
+                    >
+                      Remove Experience
+                    </button>
+                  )}
+                </div>
+              ))}
+
+              <button
+                type="button"
+                onClick={addExperience}
+                className="bg-yellow-400 text-white px-4 py-2 rounded-lg mt-4"
+              >
+                Add More Experiences
+              </button>
+            </>
+          }
           <div className="flex items-center gap-5 w-full mt-10">
             <div className="col-span-6 sm:col-full  w-[20%]">
               <AuthButton Text="Save all" Loading={loading} isDisabled={DataForm.verified} />
             </div>
             <div className="col-span-6 sm:col-full ">
-            <Button
-              type="button"
-              variant="contained"
-              color="secondary"
-              onClick={handleApprovalClick}
-            >
-              Request for Approval
-            </Button>
+              <Button
+                type="button"
+                variant="contained"
+                color="secondary"
+                onClick={handleApprovalClick}
+              >
+                Request for Approval
+              </Button>
             </div>
           </div>
           {successMessage && <p className="text-green-500">{successMessage}</p>}
