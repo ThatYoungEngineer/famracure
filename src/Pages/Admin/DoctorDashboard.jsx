@@ -189,27 +189,33 @@ const DoctorDashboard = () => {
                 verified: 1
             })
             .then((res) => {
-                console.log(res);
                 const success = res?.data?.message;
                 if (success) {
                     setSuccessMessage(success);
+                    setDataForm(prev => ({
+                        ...prev,
+                        verified: 1
+                    }))
                 }
             })
             .catch((err) => {
                 console.log(err);
             })
     }
-    
+
     const handleRejectDoctor = () => {
         axiosClient
             .post(`/admin/approve-doctor/${doctorDashboardData?.doctor.id}`, {
                 verified: 0
             })
             .then((res) => {
-                console.log(res);
                 const success = res?.data?.message;
                 if (success) {
                     setSuccessMessage(success);
+                    setDataForm(prev => ({
+                        ...prev,
+                        verified: 0
+                    }))
                 }
             })
             .catch((err) => {
@@ -520,7 +526,7 @@ const DoctorDashboard = () => {
                                                     <h1 className="text-2xl font-semibold">Experience Fields</h1>
                                                     <span className="flex-1 border-t border-black" />
                                                     <button type="button" onClick={() => setShowExpFields(prev => !prev)}>
-                                                    <ChevronDownIcon className={`w-5 h-5 ${showExpFields ? 'rotate-180' : 'rotate-0'}`} />
+                                                        <ChevronDownIcon className={`w-5 h-5 ${showExpFields ? 'rotate-180' : 'rotate-0'}`} />
                                                     </button>
                                                 </div>
 
@@ -643,13 +649,19 @@ const DoctorDashboard = () => {
                                                     </>
                                                 }
                                                 <div className="w-full flex items-center gap-5 mt-10">
-                                                    <div className="col-span-6 sm:col-full  w-[20%]">
-                                                        <AuthButton Text="Save all" Loading={loading} />
-                                                    </div>
+                                                    <Button
+                                                        type="submit"
+                                                        variant="contained"
+                                                        color="primary"
+                                                        disabled={loading}
+                                                    >
+                                                        Update Doctor
+                                                    </Button>
                                                     <Button
                                                         type="button"
                                                         variant="contained"
                                                         color="warning"
+                                                        disabled={DataForm.verified == 1}
                                                         onClick={handleApproveDoctor}
                                                     >
                                                         Approve Doctor
@@ -658,6 +670,7 @@ const DoctorDashboard = () => {
                                                         type="button"
                                                         variant="contained"
                                                         color="error"
+                                                        disabled={DataForm.verified == 0}
                                                         onClick={handleRejectDoctor}
                                                     >
                                                         Reject Doctor
