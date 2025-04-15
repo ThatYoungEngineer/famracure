@@ -3,9 +3,12 @@ import React, { useState } from 'react'
 import { Spinner } from 'flowbite-react'
 import 'react-calendar/dist/Calendar.css'
 import axiosClient from '../../../AxiosClient'
+import { useSelector } from 'react-redux'
 
 
 const DoctorDashboardStats = () => {
+
+    const doctorData = useSelector((state) => state.AuthDoctor);
 
     const [earnings, setEarnings] = useState(null)
     const [isLoading, setIsLoading] = useState(false)
@@ -28,10 +31,10 @@ const DoctorDashboardStats = () => {
     useEffect(() => {
         setIsLoading(true)
         axiosClient
-            .get('/doctor/earnings')
+            .get(`/doctors/${doctorData.doctor.id}/earnings`)
             .then((res) => {
-                console.log('doctor earnings', res)
-                setEarnings(res.data)
+                console.log('doctor earnings', res.data.data.total_earnings)
+                setEarnings(res.data.data.total_earnings)
             })
             .catch((err) => console.log(err))
             .finally(() => setIsLoading(false))
@@ -58,7 +61,7 @@ const DoctorDashboardStats = () => {
                     :
                     <>
                         <h2> Total Earnings </h2>
-                        <p> {earnings && earnings[0] ? earnings : 0} </p>
+                        <p> {earnings ? earnings : 0} </p>
                     </>
                 }
             </section>

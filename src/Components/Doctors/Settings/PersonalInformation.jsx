@@ -27,6 +27,9 @@ const PersonalInformation = () => {
 
   const [showExpFields, setShowExpFields] = useState(false)
 
+  const [loadingForToggle, setLoadingForToggle] = useState(false)
+  const [responseForToggle, setResponseForToggle] = useState(null)
+
   GetAuthDoctor()
 
   useEffect(() => {
@@ -61,7 +64,28 @@ const PersonalInformation = () => {
   console.log('avatar_doctor: ', doctorData.doctor.avatar_doctor)
 
   const HandelChangeCheckbox = (e) => {
-    setDataForm({ ...DataForm, available: e.target.checked })
+    setLoadingForToggle(true);
+    setResponseForToggle("");
+    axiosClient
+      .post("/doctors/availability", {
+        available: e.target.checked
+      })
+      .then((res) => {
+        console.log('availability res : ', res);
+        const success = res?.data?.updated === "success";
+        if (success) {
+          setDataForm(prev => ({
+            ...prev,
+            available: !prev.available
+          }));
+          setResponseForToggle("Doctor availability updated successfully!"); 
+        }
+        setLoadingForToggle(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoadingForToggle(false);
+      })
   };
 
   const HandelChange = (e, index) => {
@@ -118,7 +142,7 @@ const PersonalInformation = () => {
     formData.append("specialite", DataForm.specialite);
     formData.append("nom_cabinet", DataForm.nom_cabinet);
     formData.append("address_cabinet", DataForm.address_cabinet);
-    formData.append("available", DataForm.available ? 1 : 0);
+    // formData.append("available", DataForm.available ? 1 : 0);
     formData.append("about", DataForm.about);
     formData.append("cin", DataForm.cin);
 
@@ -224,7 +248,7 @@ const PersonalInformation = () => {
           <label className="relative inline-flex items-center mb-4 cursor-pointer">
             <input
               type="checkbox"
-              // value={DataForm.available}
+              disabled={loadingForToggle}
               checked={DataForm.available}
               name="available"
               onChange={HandelChangeCheckbox}
@@ -235,6 +259,10 @@ const PersonalInformation = () => {
               Doctor Is Present
             </span>
           </label>
+          <br />
+          <div className="mb-2 text-green-500 text-sm">
+            {responseForToggle && responseForToggle}
+          </div>
 
           <div className="grid grid-cols-6 gap-6">
             <div className="col-span-6 sm:col-span-3">
@@ -613,7 +641,7 @@ const PersonalInformation = () => {
           }
           <div className="flex items-center gap-5 w-full mt-10">
             <div className="col-span-6 sm:col-full  w-[20%]">
-              <AuthButton Text="Save all" Loading={loading} isDisabled={DataForm.verified} />
+              <AuthButton Text="Save all" Loading={loading} isDisabled={DataForm.verified || loadingForToggle} />
             </div>
             <div className="col-span-6 sm:col-full ">
               <Button
@@ -621,6 +649,7 @@ const PersonalInformation = () => {
                 variant="contained"
                 color="secondary"
                 onClick={handleApprovalClick}
+                disabled={loadingForToggle}
               >
                 Request for Approval
               </Button>
