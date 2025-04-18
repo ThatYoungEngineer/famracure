@@ -137,12 +137,13 @@ const PersonalInformation = () => {
     formData.append("lastname", DataForm.lastname);
     formData.append("cin", DataForm.cin);
     formData.append("phoneNumber", DataForm.phoneNumber);
+    formData.append("date_of_birth", DataForm.date_of_birth);
     formData.append("email", DataForm.email);
     formData.append("Matricule", DataForm.Matricule);
     formData.append("specialite", DataForm.specialite);
     formData.append("nom_cabinet", DataForm.nom_cabinet);
     formData.append("address_cabinet", DataForm.address_cabinet);
-    // formData.append("available", DataForm.available ? 1 : 0);
+    formData.append("available", 1);
     formData.append("about", DataForm.about);
     formData.append("cin", DataForm.cin);
 
@@ -457,7 +458,7 @@ const PersonalInformation = () => {
                 name="nom_cabinet"
                 id="nom_cabinet"
                 className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                placeholder="nom_cabinet"
+                placeholder="clinic name"
                 required
                 value={DataForm.nom_cabinet}
                 onChange={HandelChange}
@@ -475,7 +476,7 @@ const PersonalInformation = () => {
                 name="address_cabinet"
                 id="address_cabinet"
                 className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                placeholder="tt"
+                placeholder="clinic address"
                 required
                 value={DataForm.address_cabinet}
                 onChange={HandelChange}
