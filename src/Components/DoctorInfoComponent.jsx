@@ -1,7 +1,15 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import '../Assets/Css/HomeCss/DoctorInfoComponent.css';
 
 const DoctorInfoComponent = () => {
+  const [about, setAbout] = useState('')
+
+  const fetchAboutDoctor = async () => {}
+
+  useEffect(() => {
+    fetchAboutDoctor()
+  }, [])
+
   const doctorDetails = {
     name: 'Dr. Emily Johnson',
     specialization: 'Cardiologist',
@@ -29,7 +37,7 @@ const DoctorInfoComponent = () => {
   return (
     <div className="doctor-info-container">
       <h2>About the Doctor</h2>
-      <p className="doctor-about">{doctorDetails.about}</p>
+      <p className="doctor-about">{about ? about : doctorDetails.about}</p>
 
       <h2>Education</h2>
       <ul className="education-list">

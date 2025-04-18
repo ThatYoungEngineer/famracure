@@ -6,6 +6,7 @@ import {
   DocumentDuplicateIcon,
   Cog6ToothIcon,
   ArrowRightOnRectangleIcon,
+  IdentificationIcon
 } from "@heroicons/react/24/solid";
 import { Link, useNavigate } from "react-router-dom";
 import axiosClient from "../../../AxiosClient";
@@ -70,6 +71,16 @@ const Sidebar = () => {
                     {" "}
                     <Cog6ToothIcon className="w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" />
                     <span className="ml-3">Settings</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={"/doctor/about-me"}
+                    className="flex items-center p-2 text-base text-gray-900 rounded-lg hover:bg-gray-100 group dark:text-gray-200 dark:hover:bg-gray-700"
+                  >
+                    {" "}
+                    <IdentificationIcon className="w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" />
+                    <span className="ml-3">About Me</span>
                   </Link>
                 </li>
               </ul>

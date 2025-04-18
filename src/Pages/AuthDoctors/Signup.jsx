@@ -33,6 +33,7 @@ const Signup = () => {
     gender: "",
     email: "",
     password: "",
+    date_of_birth: "",
     password_confirmation: "",
     Matricule: "",
   });
@@ -45,6 +46,7 @@ const Signup = () => {
     email: [],
     password: [],
     Matricule: [],
+    date_of_birth: [],
   });
 
 
@@ -246,6 +248,31 @@ const Signup = () => {
                   </div>
                   <div>
                     <label
+                      htmlFor="date_of_birth"
+                      className="block mb-1 text-xs font-medium text-gray-900 dark:text-white"
+                    >
+                      Date of birth
+                    </label>
+                    <input
+                      type="date"
+                      id="date_of_birth"
+                      name="date_of_birth"
+                      className={`bg-gray-50 border text-xs rounded-lg block w-full py-2 px-3 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${getErrorMessage('date_of_birth') ? 'border-red-500 bg-red-50 text-red-900 placeholder-red-700' : 'border-gray-300 text-gray-900'}`}
+                      placeholder="Registration number"
+                      onChange={HandleChangeData}
+                      required
+                    />
+                    {getErrorMessage('date_of_birth') && (
+                      <p className="mt-2 text-xs text-red-600 dark:text-red-500">
+                        {getErrorMessage('date_of_birth')}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="grid mb-[20px]">
+                  <div>
+                    <label
                       htmlFor="phoneNumber"
                       className="block mb-1 text-xs font-medium text-gray-900 dark:text-white"
                     >
@@ -435,33 +462,33 @@ export default Signup;
 
 
 
-  // "doctor": {
-  //       "id": 48,
-  //       "firstname": "Muhammad",
-  //       "lastname": "Talha",
-  //       "cin": null,
-  //       "country_code": null,
-  //       "phoneNumber": "3078810314",
-  //       "gender": null,
-  //       "email": "taltude49@gmail.com",
-  //       "avatar_doctor": null,
-  //       "matricule": "42424242424",
-  //       "about": null,
-  //       "specialite": null,
-  //       "verified": 0,
-  //       "nom_cabinet": null,
-  //       "premium": 1,
-  //       "address_cabinet": null,
-  //       "day_debut_work": null,
-  //       "day_fin_work": null,
-  //       "time_debut_work": null,
-  //       "time_fin_work": null,
-  //       "appointment_time": null,
-  //       "available": 1,
-  //       "email_verified_at": null,
-  //       "qualifications": null,
-  //       "experience_years": null,
-  //       "satisfaction_percentage": null,
-  //       "created_at": "2025-03-01T14:36:33.000000Z",
-  //       "updated_at": "2025-03-01T14:36:33.000000Z"
-  //   },
+// "doctor": {
+//       "id": 48,
+//       "firstname": "Muhammad",
+//       "lastname": "Talha",
+//       "cin": null,
+//       "country_code": null,
+//       "phoneNumber": "3078810314",
+//       "gender": null,
+//       "email": "taltude49@gmail.com",
+//       "avatar_doctor": null,
+//       "matricule": "42424242424",
+//       "about": null,
+//       "specialite": null,
+//       "verified": 0,
+//       "nom_cabinet": null,
+//       "premium": 1,
+//       "address_cabinet": null,
+//       "day_debut_work": null,
+//       "day_fin_work": null,
+//       "time_debut_work": null,
+//       "time_fin_work": null,
+//       "appointment_time": null,
+//       "available": 1,
+//       "email_verified_at": null,
+//       "qualifications": null,
+//       "experience_years": null,
+//       "satisfaction_percentage": null,
+//       "created_at": "2025-03-01T14:36:33.000000Z",
+//       "updated_at": "2025-03-01T14:36:33.000000Z"
+//   },

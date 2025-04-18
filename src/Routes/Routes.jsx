@@ -49,6 +49,7 @@ import DoctorForgotPassword from "../Pages/AuthDoctors/ForgotPassword";
 import Prescriptions from "../Pages/Users/Prescriptions";
 import DoctorDashboard from "../Pages/Admin/DoctorDashboard";
 import UserDashboard from "../Pages/Admin/UserDashboard";
+import AboutMe from "../Pages/Doctors/AboutMe";
 
 const { createBrowserRouter } = require("react-router-dom");
 
@@ -201,6 +202,14 @@ const router = createBrowserRouter([
     element: (
       <AuthDoctorGuard>
         <DocotrSettings />
+      </AuthDoctorGuard>
+    ),
+  },
+  {
+    path: "/doctor/about-me",
+    element: (
+      <AuthDoctorGuard>
+        <AboutMe />
       </AuthDoctorGuard>
     ),
   },
