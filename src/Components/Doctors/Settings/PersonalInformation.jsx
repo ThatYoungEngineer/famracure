@@ -16,8 +16,11 @@ const PersonalInformation = () => {
   const [experienceList, setExperienceList] = useState([
     {
       institute: '',
+      city: '',
+      country: '',
       start_date: '',
       end_date: '',
+      experience_years: 0,
       detail: '',
       degree_certificates: [],
     }
@@ -78,7 +81,7 @@ const PersonalInformation = () => {
             ...prev,
             available: !prev.available
           }));
-          setResponseForToggle("Doctor availability updated successfully!"); 
+          setResponseForToggle("Doctor availability updated successfully!");
         }
         setLoadingForToggle(false);
       })
@@ -155,6 +158,8 @@ const PersonalInformation = () => {
       console.log('experience.degree_certificates: ', experience.degree_certificates)
 
       formData.append(`institute[${index}]`, experience.institute);
+      formData.append(`city[${index}]`, experience.city);
+      formData.append(`country[${index}]`, experience.country);
       formData.append(`experience_start_date[${index}]`, experience.start_date);
       formData.append(`experience_end_date[${index}]`, experience.end_date);
       formData.append(`experience_detail[${index}]`, experience.detail);
@@ -510,22 +515,62 @@ const PersonalInformation = () => {
           </div>
           {showExpFields &&
             <>
-              <div className="w-44 mt-5 sm:col-span-3">
-                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                  Total Experience (Years)
-                </label>
-                <input
-                  type="number"
-                  name="experience_years"
-                  readOnly
-                  disabled
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 disabled:opacity-80"
-                  value={doctorData?.doctor?.experience_years}
-                />
-              </div>
-
               {experienceList?.map((experience, index) => (
                 <div key={index} className="border p-4 rounded-lg mt-5">
+                  <div className="w-44 mt-5 sm:col-span-3">
+                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                      Experience (Years)
+                    </label>
+                    <input
+                      type="number"
+                      name="experience_years"
+                      readOnly
+                      disabled
+                      className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 disabled:opacity-80"
+                      value={experience.experience_years}
+                    />
+                  </div>
+                  <h1 className="text-xl font-semibold mt-5">Institute Details</h1>
+                  <div className="grid mt-3 grid-cols-6 gap-x-6 gap-y-3">
+                    <div className="col-span-6 sm:col-span-3">
+                      <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                        Institute Name
+                      </label>
+                      <input
+                        type="text"
+                        name="institute"
+                        className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
+                        value={experience.institute}
+                        onChange={(e) => handleChangeInExperience(e, index)}
+                      />
+                    </div>
+
+                    <div className="col-span-6 sm:col-span-3">
+                      <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                        Institute City
+                      </label>
+                      <input
+                        type="text"
+                        name="city"
+                        className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
+                        value={experience.city}
+                        onChange={(e) => handleChangeInExperience(e, index)}
+                      />
+                    </div>
+                    <div className="col-span-6 sm:col-span-3">
+                      <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                        Institute Country
+                      </label>
+                      <input
+                        type="text"
+                        name="country"
+                        className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
+                        value={experience.country}
+                        onChange={(e) => handleChangeInExperience(e, index)}
+                      />
+                    </div>
+                  </div>
+
                   <div className="grid mt-3 grid-cols-6 gap-6">
                     <div className="col-span-6 sm:col-span-3">
                       <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -539,7 +584,6 @@ const PersonalInformation = () => {
                         onChange={(e) => handleChangeInExperience(e, index)}
                       />
                     </div>
-
                     <div className="col-span-6 sm:col-span-3">
                       <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                         Experience End Date
@@ -553,21 +597,7 @@ const PersonalInformation = () => {
                       />
                     </div>
                   </div>
-
                   <div className="grid mt-3 grid-cols-6 gap-6">
-                    <div className="col-span-6 sm:col-span-3">
-                      <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                        Experience Institute
-                      </label>
-                      <input
-                        type="text"
-                        name="institute"
-                        className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
-                        placeholder="Enter institute name"
-                        value={experience.institute}
-                        onChange={(e) => handleChangeInExperience(e, index)}
-                      />
-                    </div>
                     <div className="col-span-6">
                       <label
                         htmlFor="experience_detail"
