@@ -28,7 +28,7 @@ const TableAppointment = ({ refreshApp, showAnnuler, setShowAnnuler, setIdAppoin
   const [invoiceError, setInvoiceError] = useState(null)
 
   const [prescriptionFormData, setPrescriptionFormData] = useState({
-    user_id: "", doctor_id: "", 
+    user_id: "", doctor_id: "",
     appointment_id: "",
     prescription_date: "",
     content: "",
@@ -44,8 +44,6 @@ const TableAppointment = ({ refreshApp, showAnnuler, setShowAnnuler, setIdAppoin
   });
   const [creating, setCreating] = useState(false);
 
-  console.log('prescriptionFormData: ', prescriptionFormData)
-
   useEffect(() => {
     if (selectedAppointment) {
       setPrescriptionFormData((prevData) => ({
@@ -56,8 +54,6 @@ const TableAppointment = ({ refreshApp, showAnnuler, setShowAnnuler, setIdAppoin
       }));
     }
   }, [selectedAppointment]);
-
-
 
   const handlePrescriptionChange = (e) => {
     setPrescriptionFormData({ ...prescriptionFormData, [e.target.name]: e.target.value });
@@ -71,21 +67,21 @@ const TableAppointment = ({ refreshApp, showAnnuler, setShowAnnuler, setIdAppoin
       refill_count: parseInt(prescriptionFormData.refill_count, 10),
       refill_remaining: parseInt(prescriptionFormData.refill_remaining, 10),
     };
-    
+
     setCreating(true);
     axiosClient
-    .post("/prescriptions", dataToSubmit)
-    .then(res => {
-      console.log('prescription api response: ', res)
-      alert("Prescription Created Successfully!");
-      setCreating(false);
-    })
-    .catch(err => {
-      const errorMessage = err.response.data.message
-      setPrescriptionError(errorMessage)
-      console.error("Error creating prescription:", errorMessage);
-      setCreating(false);
-    });
+      .post("/prescriptions", dataToSubmit)
+      .then(res => {
+        console.log('prescription api response: ', res)
+        alert("Prescription Created Successfully!");
+        setCreating(false);
+      })
+      .catch(err => {
+        const errorMessage = err.response.data.message
+        setPrescriptionError(errorMessage)
+        console.error("Error creating prescription:", errorMessage);
+        setCreating(false);
+      });
   };
 
   useEffect(() => {
@@ -104,7 +100,7 @@ const TableAppointment = ({ refreshApp, showAnnuler, setShowAnnuler, setIdAppoin
   const handleAcceptReschedule = async (e) => {
     setRescheduleSuccess(null)
     try {
-      const res = await axiosClient.post(`/appointments/${e}/approve-reschedule`, { 
+      const res = await axiosClient.post(`/appointments/${e}/approve-reschedule`, {
         new_date: selectedAppointment?.rescheduled_date,
         new_time: selectedAppointment?.rescheduled_time ? selectedAppointment?.rescheduled_time : "05:00",
       });
@@ -119,94 +115,108 @@ const TableAppointment = ({ refreshApp, showAnnuler, setShowAnnuler, setIdAppoin
   const generateInvoice = (id) => {
     setInvoiceError(null)
     axiosClient
-    .post(`/appointments/${id}/generate-invoice`)
-    .then((res) => { 
-      console.log('response', res)
+      .post(`/appointments/${id}/generate-invoice`)
+      .then((res) => {
+        console.log('response', res)
 
-     })
-    .catch((err) => 
-      setInvoiceError(err?.response?.data?.error)
-    )
+      })
+      .catch((err) =>
+        setInvoiceError(err?.response?.data?.error)
+      )
 
   }
+
   const downloadInvoice = (id) => {
     setInvoiceError(null)
     axiosClient
-    .get(`/appointments/${id}/invoice`, { responseType: "blob" })
-    .then((res) => {
-      const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `invoice_${id}.pdf`); // Set file name
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-     })
-    .catch((err) => {
-      console.log('err download: ', err)
-      err?.response?.data && setInvoiceError("Invoice not found")
-    })
-
+      .get(`/appointments/${id}/invoice`, { responseType: "blob" })
+      .then((res) => {
+        const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `invoice_${id}.pdf`); // Set file name
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      })
+      .catch((err) => {
+        console.log('err download: ', err)
+        err?.response?.data && setInvoiceError("Invoice not found")
+      })
+  }
+  const downloadPrescription = (id) => {
+    axiosClient
+      .get(`/prescriptions/${id}/download`, { responseType: "blob" })
+      .then((res) => {
+        const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `invoice_${id}.pdf`); // Set file name
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      })
+      .catch((err) => {
+        console.log('err download: ', err)
+      })
   }
 
   const deleteApp = (id) => {
     axiosClient
-    .delete(`/appointments/${id}`)
-    .then((res) => { 
-      console.log('response', res)
-    })
-    .catch((err) => console.log(err))
-    .finally(() => {
-      setRefresh(prev => !prev)
-    })
+      .delete(`/appointments/${id}`)
+      .then((res) => {
+        console.log('response', res)
+      })
+      .catch((err) => console.log(err))
+      .finally(() => {
+        setRefresh(prev => !prev)
+      })
   }
 
 
-const reducer = (state, action) => {
-  switch (action.type) {
-    case "SET_DATE":
-      return { ...state, dateAppointment: action.payload };
-    case "SET_TIME_SLOT":
-      return { ...state, timeSlot: { ...state.timeSlot, [action.field]: action.payload } };
-    case "ADD_SELECTED_TIME":
-      return { ...state, selectedTimes: [...state.selectedTimes, action.payload] };
-    case "REMOVE_SELECTED_TIME":
-      return { ...state, selectedTimes: state.selectedTimes.filter((_, index) => index !== action.payload) };
-    case "SET_LOADING":
-      return { ...state, isLoading: action.payload };
-    case "SET_SUCCESS_MESSAGE":
-      return { ...state, successMessage: action.payload };
-    case "RESET":
-      return getInitialState(); // Reset properly
-    default:
-      return state;
-  }
-};
+  const reducer = (state, action) => {
+    switch (action.type) {
+      case "SET_DATE":
+        return { ...state, dateAppointment: action.payload };
+      case "SET_TIME_SLOT":
+        return { ...state, timeSlot: { ...state.timeSlot, [action.field]: action.payload } };
+      case "ADD_SELECTED_TIME":
+        return { ...state, selectedTimes: [...state.selectedTimes, action.payload] };
+      case "REMOVE_SELECTED_TIME":
+        return { ...state, selectedTimes: state.selectedTimes.filter((_, index) => index !== action.payload) };
+      case "SET_LOADING":
+        return { ...state, isLoading: action.payload };
+      case "SET_SUCCESS_MESSAGE":
+        return { ...state, successMessage: action.payload };
+      case "RESET":
+        return getInitialState(); // Reset properly
+      default:
+        return state;
+    }
+  };
 
-// 🛠️ Function to generate initial state dynamically
-const getInitialState = () => ({
-  dateAppointment: openUpdateAppointment?.appointment_date || "",
-  timeSlot: {
-    appointment_time: openUpdateAppointment?.appointment_time || "",
-    video_fee: openUpdateAppointment?.video_fee || "",
-    clinic_fee: openUpdateAppointment?.clinic_fee || "",
-    appointment_type: openUpdateAppointment?.appointment_type || "",
-  },
-  selectedTimes: [],
-  isLoading: false,
-  successMessage: ""
-});
+  // 🛠️ Function to generate initial state dynamically
+  const getInitialState = () => ({
+    dateAppointment: openUpdateAppointment?.appointment_date || "",
+    timeSlot: {
+      appointment_time: openUpdateAppointment?.appointment_time || "",
+      video_fee: openUpdateAppointment?.video_fee || "",
+      clinic_fee: openUpdateAppointment?.clinic_fee || "",
+      appointment_type: openUpdateAppointment?.appointment_type || "",
+    },
+    selectedTimes: [],
+    isLoading: false,
+    successMessage: ""
+  });
 
-// ✅ Use `useReducer` properly
-const [state, dispatch] = useReducer(reducer, getInitialState());
+  // ✅ Use `useReducer` properly
+  const [state, dispatch] = useReducer(reducer, getInitialState());
 
-// ✅ Update state when `openUpdateAppointment` changes
-useEffect(() => {
-  dispatch({ type: "RESET" });
-}, [openUpdateAppointment]);
+  // ✅ Update state when `openUpdateAppointment` changes
+  useEffect(() => {
+    dispatch({ type: "RESET" });
+  }, [openUpdateAppointment]);
 
-
-  console.log("state: ", state)
 
   const postAppointment = async () => {
     dispatch({ type: "SET_LOADING", payload: true });
@@ -221,13 +231,13 @@ useEffect(() => {
       }));
 
       const response = await axiosClient.put(`/appointments/${openUpdateAppointment.id}`, {
-         appointment_date: state.dateAppointment,
-      appointment_time: state.timeSlot.appointment_time ? state.timeSlot.appointment_time : state.selectedTimes[0] , // Send only the first selected time
-      video_fee: state.timeSlot.video_fee,
-      clinic_fee: state.timeSlot.clinic_fee,
-      appointment_type: state.timeSlot.appointment_type,
+        appointment_date: state.dateAppointment,
+        appointment_time: state.timeSlot.appointment_time ? state.timeSlot.appointment_time : state.selectedTimes[0], // Send only the first selected time
+        video_fee: state.timeSlot.video_fee,
+        clinic_fee: state.timeSlot.clinic_fee,
+        appointment_type: state.timeSlot.appointment_type,
       });
-      
+
       if (response?.data?.message) {
         dispatch({ type: "SET_SUCCESS_MESSAGE", payload: response.data.message });
         refreshApp(prev => !prev)
@@ -241,7 +251,7 @@ useEffect(() => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!state.dateAppointment || (!state.timeSlot.appointment_time )) {
+    if (!state.dateAppointment || (!state.timeSlot.appointment_time)) {
       alert("Please enter a date and at least one time.");
       return;
     }
@@ -262,13 +272,13 @@ useEffect(() => {
   const handleCompleteAppointment = (id) => {
     console.log("handleCompleteAppointment: ", id)
     axiosClient
-    .patch(`/appointments/${id}/complete`)
-     .then((res) => {
+      .patch(`/appointments/${id}/complete`)
+      .then((res) => {
         console.log("Appointment complete res: ", res)
         setCompleteAppointment(res.data.message)
         refreshApp(prev => !prev)
       })
-     .catch((error) => {
+      .catch((error) => {
         console.error("Error completing appointment:", error);
       });
   }
@@ -292,15 +302,14 @@ useEffect(() => {
                     <tr key={idx} className="hover:bg-gray-100">
                       <td className="p-4 max-w-fit text-[14px] text-gray-500">
                         <span
-                          className={`w-fit text-left px-3 py-1 rounded-full text-sm font-medium ${
-                            el?.status === "confirmed"
+                          className={`w-fit text-left px-3 py-1 rounded-full text-sm font-medium ${el?.status === "confirmed"
                               ? "bg-green-100 text-green-700"
                               : el?.status === "pending"
-                              ? "bg-yellow-100 text-yellow-700"
-                              : el?.status === "completed"
-                              ? "bg-blue-100 text-blue-700"
-                              : "bg-gray-100 text-gray-700"
-                          }`}
+                                ? "bg-yellow-100 text-yellow-700"
+                                : el?.status === "completed"
+                                  ? "bg-blue-100 text-blue-700"
+                                  : "bg-gray-100 text-gray-700"
+                            }`}
                         >
                           {el?.status}
                         </span>
@@ -323,7 +332,7 @@ useEffect(() => {
                           </svg>
                           View
                         </button>
-                       
+
                         <button
                           type="button"
                           onClick={() => setOpenUpdateAppointment(el)}
@@ -349,14 +358,14 @@ useEffect(() => {
                       </td>
                     </tr>
                   ))
-                  :
-                   !isLoading && 
+                    :
+                    !isLoading &&
                     <tr className="h-20">
                       <td colSpan="8" className="text-center italic text-gray-500">
                         No data found
                       </td>
                     </tr>
-                  }                  
+                  }
                 </tbody>
               </table>
               {isLoading &&
@@ -380,7 +389,7 @@ useEffect(() => {
                     </svg>
                   </div>
                 </div>
-                }
+              }
             </div>
           </div>
         </div>
@@ -396,43 +405,55 @@ useEffect(() => {
           onHide={() => setSelectedAppointment(null)}
         >
           <div className="w-full m-0 flex flex-col gap-1">
-          <div className="w-full flex flex-col items-center justify-center">
-            <Button 
-              variant="contained"
-              color="primary"
-              size="small"
-              onClick={(e) => generateInvoice(selectedAppointment.id)}
-              className="w-fit p-2"
-            >
-              Generate Invoice
-            </Button>
-          </div>
-          <div className="w-full flex flex-col items-center justify-center">
-            <Button 
-              variant="contained"
-              color="primary"
-              size="small"
-              onClick={(e) => downloadInvoice(selectedAppointment.id)}
-              className="w-fit p-2"
-            >
-              Download Invoice
-            </Button>
-            {invoiceError && <p className="w-full text-center text-red-500">{invoiceError}</p>}
-          </div>
+            <div className="w-full flex flex-col items-center justify-center">
+              <Button
+                variant="outlined"
+                color="primary"
+                size="small"
+                onClick={(e) => generateInvoice(selectedAppointment.id)}
+                className="w-fit p-2"
+              >
+                Generate Invoice
+              </Button>
+            </div>
+            <div className="w-full flex flex-col items-center justify-center">
+              <Button
+                variant="contained"
+                color="success"
+                size="small"
+                onClick={(e) => downloadInvoice(selectedAppointment.id)}
+                className="w-fit p-2"
+              >
+                Download Invoice
+              </Button>
+              {invoiceError && <p className="w-full text-center text-red-500">{invoiceError}</p>}
+            </div>
+            <div className="w-full flex flex-col items-center justify-center">
+              <Button
+                variant="contained"
+                color="warning"
+                size="small"
+                onClick={(e) => downloadPrescription(selectedAppointment.id)}
+                className="w-fit p-2"
+              >
+                Download Prescription
+              </Button>
+              {invoiceError && <p className="w-full text-center text-red-500">{invoiceError}</p>}
+            </div>
 
             <div className="w-full flex items-center justify-between">
               <section className="w-full flex flex-col gap-2">
                 {(selectedAppointment.status === "confirmed" || selectedAppointment.status === "completed")
                   &&
-                    <section className="w-full flex flex-col gap-2 mb-5">
-                      <h1 className="flex-1 text-left font-bold text-2xl">Patient Information:</h1>
-                      <div>
-                        <div>Name: <span className="font-bold"> {selectedAppointment?.user?.firstname} {selectedAppointment?.user?.lastname}</span></div>
-                        <div>Email: {selectedAppointment?.user?.email}</div>
-                        <div>Phone: {selectedAppointment?.user?.phone_number}</div>
-                        <div>CNIC: {selectedAppointment?.user?.cin}</div>
-                      </div>
-                    </section>
+                  <section className="w-full flex flex-col gap-2 mb-5">
+                    <h1 className="flex-1 text-left font-bold text-2xl">Patient Information:</h1>
+                    <div>
+                      <div>Name: <span className="font-bold"> {selectedAppointment?.user?.firstname} {selectedAppointment?.user?.lastname}</span></div>
+                      <div>Email: {selectedAppointment?.user?.email}</div>
+                      <div>Phone: {selectedAppointment?.user?.phone_number}</div>
+                      <div>CNIC: {selectedAppointment?.user?.cin}</div>
+                    </div>
+                  </section>
                 }
                 {completeAppointment &&
                   <div className="w-full flex items-center justify-center text-green-400">
@@ -443,7 +464,7 @@ useEffect(() => {
                   <h2 className="flex-1 text-left">Appointment Type:</h2>
                   <h2 className="flex-1 text-left">Appointment Status:</h2>
                   <h2 className="flex-1 text-center">Appointment Fee</h2>
-                  {(selectedAppointment?.status === "confirmed" || selectedAppointment?.status === "completed" ) && (
+                  {(selectedAppointment?.status === "confirmed" || selectedAppointment?.status === "completed") && (
                     <>
                       <h2 className="flex-1 text-center">Join Call</h2>
                       <h2 className="flex-1 text-center">Create Prescription</h2>
@@ -458,21 +479,20 @@ useEffect(() => {
               <h2 className="flex-1 text-left">{selectedAppointment?.appointment_type}</h2>
               <div className="flex-1">
                 <h2
-                  className={`w-fit text-left px-3 py-1 rounded-full text-sm font-medium ${
-                    selectedAppointment?.status === "confirmed"
+                  className={`w-fit text-left px-3 py-1 rounded-full text-sm font-medium ${selectedAppointment?.status === "confirmed"
                       ? "bg-green-100 text-green-700"
                       : selectedAppointment?.status === "pending"
-                      ? "bg-yellow-100 text-yellow-700"
-                      : selectedAppointment?.status === "completed"
-                      ? "bg-blue-100 text-blue-700"
-                      : "bg-gray-100 text-gray-700"
-                  }`}
+                        ? "bg-yellow-100 text-yellow-700"
+                        : selectedAppointment?.status === "completed"
+                          ? "bg-blue-100 text-blue-700"
+                          : "bg-gray-100 text-gray-700"
+                    }`}
                 >
                   {selectedAppointment?.status}
                 </h2>
               </div>
               <h2 className="flex-1 text-center">PKR/- {selectedAppointment?.appointment_type === "video" ? selectedAppointment?.video_fee : selectedAppointment?.clinic_fee}</h2>
-              {selectedAppointment?.appointment_type === "video" && (selectedAppointment?.status === "confirmed" || selectedAppointment?.status === "completed" ) && (
+              {selectedAppointment?.appointment_type === "video" && (selectedAppointment?.status === "confirmed" || selectedAppointment?.status === "completed") && (
                 <span className="flex-1 flex items-center justify-center">
                   <Button
                     variant="contained"
@@ -485,27 +505,27 @@ useEffect(() => {
                   </Button>
                 </span>
               )}
-              {(selectedAppointment?.status === "confirmed" || selectedAppointment?.status === "completed" ) && (
+              {(selectedAppointment?.status === "confirmed" || selectedAppointment?.status === "completed") && (
                 <>
                   <span className="flex-1 flex items-center justify-center">
-                    <Button 
+                    <Button
                       variant="contained"
                       color="secondary"
                       size="small"
                       disabled={selectedAppointment?.status === "cancelled"}
-                      onClick={() => {setSelectedAppointment(null); setPrescriptionOpen(true)} }
+                      onClick={() => { setSelectedAppointment(null); setPrescriptionOpen(true) }}
                     >
                       Create Prescription
                     </Button>
                   </span>
                   <span className="flex-1 flex items-center justify-center">
-                    <Button 
+                    <Button
                       type="button"
                       variant="contained"
                       color="success"
                       size="small"
-                      disabled={selectedAppointment?.status === "cancelled" || selectedAppointment?.status === "completed" }
-                      onClick={() => {handleCompleteAppointment(selectedAppointment.id)} }
+                      disabled={selectedAppointment?.status === "cancelled" || selectedAppointment?.status === "completed"}
+                      onClick={() => { handleCompleteAppointment(selectedAppointment.id) }}
                     >
                       Complete Appointment
                     </Button>
@@ -531,7 +551,7 @@ useEffect(() => {
                 {rescheduleSuccess && <p className="w-full my-5 text-green-600">{rescheduleSuccess}</p>}
               </div>
             }
-            {(selectedAppointment?.status === "confirmed" || selectedAppointment?.status === "completed") && 
+            {(selectedAppointment?.status === "confirmed" || selectedAppointment?.status === "completed") &&
               <section className="mt-20 w-full">
                 <Chat doctor_id={selectedAppointment?.doctor_id} user_id={selectedAppointment?.user_id} appointmentId={selectedAppointment?.id} />
               </section>
@@ -539,9 +559,9 @@ useEffect(() => {
           </div>
         </Dialog>
       )}
-      
+
       {/* Prescription Dialog */}
-      <Dialog 
+      <Dialog
         header=""
         visible={!!isPrescriptionOpen}
         maximized
@@ -724,9 +744,9 @@ useEffect(() => {
       </Dialog>
 
 
-      {/* Update Prescription */}      
+      {/* Update Prescription */}
 
-      <Dialog 
+      <Dialog
         header=""
         visible={!!openUpdateAppointment}
         maximized
@@ -742,89 +762,89 @@ useEffect(() => {
 
 
 
-      <div className="fixed top-0 left-0 h-screen w-screen flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-        <div className="bg-white rounded-lg shadow-lg dark:bg-gray-800 w-96 p-6 relative">
-          <div className="w-full flex items-center justify-between ">
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Update Appointment - id ({openUpdateAppointment?.id})</h3>
-             <button 
-              onClick={() => setOpenUpdateAppointment(null)} className="text-2xl bg-transparent rounded-lg p-0 ml-auto inline-flex items-center dark:hover:text-white text-gray-500 hover:text-gray-700"
-            >
-              &times;
-            </button>
-          </div>
-          <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-            <label htmlFor="dateAppointment" className="block w-fit mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              Appointment Date
-            </label>
-            <input 
-              type="date"
-              className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              min={new Date().toISOString().split("T")[0]} // Disables past dates
-              value={state.dateAppointment || openUpdateAppointment?.appointment_date} 
-              onChange={(e) => dispatch({ type: "SET_DATE", payload: e.target.value })} required 
-            />
+            <div className="fixed top-0 left-0 h-screen w-screen flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+              <div className="bg-white rounded-lg shadow-lg dark:bg-gray-800 w-96 p-6 relative">
+                <div className="w-full flex items-center justify-between ">
+                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Update Appointment - id ({openUpdateAppointment?.id})</h3>
+                  <button
+                    onClick={() => setOpenUpdateAppointment(null)} className="text-2xl bg-transparent rounded-lg p-0 ml-auto inline-flex items-center dark:hover:text-white text-gray-500 hover:text-gray-700"
+                  >
+                    &times;
+                  </button>
+                </div>
+                <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+                  <label htmlFor="dateAppointment" className="block w-fit mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                    Appointment Date
+                  </label>
+                  <input
+                    type="date"
+                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    min={new Date().toISOString().split("T")[0]} // Disables past dates
+                    value={state.dateAppointment || openUpdateAppointment?.appointment_date}
+                    onChange={(e) => dispatch({ type: "SET_DATE", payload: e.target.value })} required
+                  />
 
-            <label htmlFor="timeAppointment" className="block w-fit mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              Select Time
-            </label>
-            <div className="flex gap-2">
-              <input 
-                type="time" 
-                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                value={state.timeSlot.appointment_time || openUpdateAppointment?.appointment_time} 
-                onChange={handleTimeChange} step="1800" 
-              />
+                  <label htmlFor="timeAppointment" className="block w-fit mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                    Select Time
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      type="time"
+                      className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                      value={state.timeSlot.appointment_time || openUpdateAppointment?.appointment_time}
+                      onChange={handleTimeChange} step="1800"
+                    />
+                  </div>
+
+                  <label htmlFor="timeAppointment" className="block w-fit mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                    Video Fee
+                  </label>
+                  <input
+                    type="number"
+                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    placeholder="Video Fee"
+                    value={state.timeSlot.video_fee || openUpdateAppointment?.video_fee}
+                    onChange={(e) => dispatch({ type: "SET_TIME_SLOT", field: "video_fee", payload: e.target.value })}
+                    required
+                  />
+
+                  <label htmlFor="timeAppointment" className="block w-fit mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                    Clinic Fee
+                  </label>
+                  <input
+                    type="number"
+                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    placeholder="Clinic Fee"
+                    value={state.timeSlot.clinic_fee || openUpdateAppointment?.clinic_fee}
+                    onChange={(e) => dispatch({ type: "SET_TIME_SLOT", field: "clinic_fee", payload: e.target.value })}
+                    required
+                  />
+
+                  <label htmlFor="timeAppointment" className="block w-fit mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                    Appointment Type
+                  </label>
+                  <select
+                    value={state.timeSlot.appointment_type || openUpdateAppointment?.appointment_type}
+                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    onChange={(e) => dispatch({ type: "SET_TIME_SLOT", field: "appointment_type", payload: e.target.value })}
+                    required
+                  >
+                    <option value="">--Select--</option>
+                    <option value="video">Video</option>
+                    <option value="clinic">Clinic</option>
+                  </select>
+
+                  <button
+                    type="submit"
+                    className="w-full disabled:opacity-30 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+                    disabled={state.isLoading}
+                  >
+                    {state.isLoading ? "Loading..." : "Confirm Appointment"}
+                  </button>
+                </form>
+                {state.successMessage && <AlertSucces Message={state.successMessage} />}
+              </div>
             </div>
-
-            <label htmlFor="timeAppointment" className="block w-fit mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              Video Fee
-            </label>
-            <input 
-              type="number" 
-              className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              placeholder="Video Fee"
-              value={state.timeSlot.video_fee || openUpdateAppointment?.video_fee} 
-              onChange={(e) => dispatch({ type: "SET_TIME_SLOT", field: "video_fee", payload: e.target.value })} 
-              required 
-            />
-
-            <label htmlFor="timeAppointment" className="block w-fit mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              Clinic Fee
-            </label>
-            <input 
-              type="number" 
-              className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              placeholder="Clinic Fee" 
-              value={state.timeSlot.clinic_fee || openUpdateAppointment?.clinic_fee} 
-              onChange={(e) => dispatch({ type: "SET_TIME_SLOT", field: "clinic_fee", payload: e.target.value })} 
-              required 
-            />
-
-            <label htmlFor="timeAppointment" className="block w-fit mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              Appointment Type
-            </label>
-            <select
-              value={state.timeSlot.appointment_type || openUpdateAppointment?.appointment_type} 
-              className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              onChange={(e) => dispatch({ type: "SET_TIME_SLOT", field: "appointment_type", payload: e.target.value })} 
-              required
-            >
-              <option value="">--Select--</option>
-              <option value="video">Video</option>
-              <option value="clinic">Clinic</option>
-            </select>
-
-            <button 
-              type="submit" 
-              className="w-full disabled:opacity-30 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
-              disabled={state.isLoading}
-            >
-              {state.isLoading ? "Loading..." : "Confirm Appointment"}
-            </button>
-          </form>
-          {state.successMessage && <AlertSucces Message={state.successMessage} />}
-        </div>
-      </div>
 
 
 

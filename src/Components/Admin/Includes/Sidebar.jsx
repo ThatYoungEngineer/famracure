@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowRightEndOnRectangleIcon, UserIcon, EnvelopeIcon, CurrencyDollarIcon } from "@heroicons/react/24/solid";
 import { get, remove } from "../../../Services/LocalStorageService";
@@ -48,6 +48,7 @@ const Sidebar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isPrinting, setIsPrinting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const logout = () => {
@@ -71,9 +72,35 @@ const Sidebar = () => {
     }
   };
 
+    useEffect(() => {
+    // Media query listener for print
+    const mediaQuery = window.matchMedia('print');
+    
+    const handlePrintChange = (mq) => {
+      setIsPrinting(mq.matches);
+    };
+
+    // Initial check
+    setIsPrinting(mediaQuery.matches);
+    
+    // Add listener (for browsers that support it)
+    mediaQuery.addListener(handlePrintChange);
+    
+    return () => {
+      mediaQuery.removeListener(handlePrintChange);
+    };
+  }, []);
+
+
+    // Add print-specific class when printing
+  if (isPrinting) {
+    return null; // Or render alternative content for print if needed
+  }
+
+
   return (
     <aside
-      className={`fixed top-16 left-0 z-40 border-t h-screen overflow-y-auto border-r border-gray-200 transition-transform bg-white ${
+      className={`print:hidden fixed top-16 left-0 z-40 border-t h-screen overflow-y-auto border-r border-gray-200 transition-transform bg-white ${
         isCollapsed ? "w-7" : "w-64"
       }`}
     >

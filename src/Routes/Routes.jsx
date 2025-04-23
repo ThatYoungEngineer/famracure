@@ -182,7 +182,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/docotr/rendezvous",
+    path: "/doctor/rendezvous",
     element: (
       <AuthDoctorGuard>
         <DoctorRendezVous />

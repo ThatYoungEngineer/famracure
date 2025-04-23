@@ -1,13 +1,47 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '@mui/material'
 import { Spinner } from 'flowbite-react'
+import axiosClient from '../../../AxiosClient'
 
 const DoctorAboutMe = () => {
     const [aboutMe, setAboutMe] = useState('')
     const [isLoading, setIsLoading] = useState(false)
     const [message, setMessage] = useState({success: "", error: ""})
 
-    const handleAboutMe = () => {}
+
+console.log("aboutMe: ", aboutMe)
+    useEffect(() => {
+        getAboutMe()
+    }, [])
+    const getAboutMe = () => {
+        setIsLoading(true)
+        try {
+            axiosClient
+            .get('/doctor/about')
+            .then((response) => {
+                setAboutMe(response.data.about_doctor)
+            })   
+        } catch (error) {
+            console.log("error: ", error)
+        } finally {
+            setIsLoading(false)
+        }
+    }
+    const postAboutMe = () => {
+        setIsLoading(true)
+        try {
+            axiosClient
+            .post('/doctor/about', { about_doctor: aboutMe })
+            .then((response) => {
+                setMessage({success: response.data.message, error: ""})
+            })
+        } catch (error) {
+            setMessage({success: "", error: error.response.data.message})
+        } finally {
+            setIsLoading(false)
+        }
+
+    }
 
   return (
     <main className='p-5 flex flex-col gap-10'>
@@ -25,10 +59,10 @@ const DoctorAboutMe = () => {
             <div className='w-full flex items-center justify-end gap-3'>
                 <Button
                     type='button'
-                    onClick={handleAboutMe}
+                    onClick={postAboutMe}
                     variant='contained'
                     color='primary'
-                    disabled={isLoading || true}
+                    disabled={isLoading}
                     size='large'
                 >
                     {isLoading && <Spinner size='sm' className='mr-2' color="info" /> } Submit

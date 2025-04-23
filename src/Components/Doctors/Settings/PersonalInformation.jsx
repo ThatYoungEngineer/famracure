@@ -4,7 +4,8 @@ import { useSelector } from "react-redux";
 import axiosClient from "../../../AxiosClient";
 import AuthButton from "../../AuthButton";
 import { Button } from "@mui/material";
-import { ChevronDownIcon } from "@heroicons/react/24/solid";
+import { ChevronDownIcon, InformationCircleIcon } from "@heroicons/react/24/solid";
+import { Alert } from "flowbite-react";
 
 const PersonalInformation = () => {
   const doctorData = useSelector((state) => state.AuthDoctor);
@@ -688,6 +689,13 @@ const PersonalInformation = () => {
           </div>
           {successMessage && <p className="text-green-500">{successMessage}</p>}
         </form>
+        <div className="mt-10">
+          <Alert color="warning" withBorderAccent icon={InformationCircleIcon}>
+            <span>
+              <span className="font-medium">Note!</span> Filled information after admin approval cannot be changed.
+            </span>
+          </Alert>
+        </div>
       </div>
     </section>
   );
