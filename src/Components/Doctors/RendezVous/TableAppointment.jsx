@@ -148,6 +148,7 @@ const TableAppointment = ({ refreshApp, showAnnuler, setShowAnnuler, setIdAppoin
     axiosClient
       .get(`/prescriptions/${id}/download`, { responseType: "blob" })
       .then((res) => {
+        console.log('res of download prescription: ', res)
         const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
         const link = document.createElement('a');
         link.href = url;
@@ -157,7 +158,7 @@ const TableAppointment = ({ refreshApp, showAnnuler, setShowAnnuler, setIdAppoin
         document.body.removeChild(link);
       })
       .catch((err) => {
-        console.log('err download: ', err)
+        alert(err.message)
       })
   }
 
@@ -279,7 +280,7 @@ const TableAppointment = ({ refreshApp, showAnnuler, setShowAnnuler, setIdAppoin
         refreshApp(prev => !prev)
       })
       .catch((error) => {
-        console.error("Error completing appointment:", error);
+        alert(error?.response?.data?.message)
       });
   }
 
@@ -452,6 +453,8 @@ const TableAppointment = ({ refreshApp, showAnnuler, setShowAnnuler, setIdAppoin
                       <div>Email: {selectedAppointment?.user?.email}</div>
                       <div>Phone: {selectedAppointment?.user?.phone_number}</div>
                       <div>CNIC: {selectedAppointment?.user?.cin}</div>
+                      <div>Age: {selectedAppointment?.user?.age} years</div>
+                      <div className="capitalize">Gender: {selectedAppointment?.user?.gender}</div>
                     </div>
                   </section>
                 }

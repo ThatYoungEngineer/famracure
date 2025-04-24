@@ -14,7 +14,7 @@ const DoctorPage = ({feeType, avatar_doctor }) => {
     const fetchDoctorProfile = async () => {
       try {
         const response = await axios.get(`https://backend.famracure.com/api/doctor_view/${id}`);
-        console.log('API Response:', response.data); // Log the API response to debug
+        console.log('API Response of doctor:', response.data); // Log the API response to debug
         setDoctor(response.data);
       } catch (error) {
         console.error('Error fetching doctor profile:', error);
@@ -24,14 +24,12 @@ const DoctorPage = ({feeType, avatar_doctor }) => {
     fetchDoctorProfile();
   }, [id]);
 
-  console.log("doctor profile: ", doctor)
-
   return (
     <div className="container-c">
       <div className="doctor-profile-card">
         
         <img 
-          src={`https://backend.famracure.com/images/doctors/${avatar_doctor}` || "/img/doc-listing.jpg" } 
+          src={ avatar_doctor ? `https://backend.famracure.com/images/doctors/${avatar_doctor}` : "/img/doc-listing.jpg" } 
           alt="profile" 
           className="h-[110px] w-[131px] rounded-[10px]"
         />

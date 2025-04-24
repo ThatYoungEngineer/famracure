@@ -58,9 +58,7 @@ const BookingAppointment = () => {
     axiosClient
       .get(`/doctor/${id}`)
       .then((res) => {
-        console.log('doctorrr data: ', res)
         const doctorData = res.data[0];
-        console.log('doctor data API: ', doctorData);
         setDoctorDetails({
           id: doctorData.id,
           name: `Dr. ${doctorData.firstname} ${doctorData.lastname}`,

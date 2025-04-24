@@ -1,10 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import '../Assets/Css/HomeCss/DoctorInfoComponent.css';
+import axiosClient from '../AxiosClient';
 
-const DoctorInfoComponent = () => {
+const DoctorInfoComponent = ({doctorId}) => {
   const [about, setAbout] = useState('')
 
-  const fetchAboutDoctor = async () => {}
+  const fetchAboutDoctor = async () => {
+      axiosClient
+      .get(`https://backend.famracure.com/api/doctors/${doctorId}/about`)
+      .then((response) => {
+        console.log('response of about doctor: ', response.data.about_doctor);
+        setAbout(response.data.about_doctor)
+      })
+      .catch((error) => {
+        alert(error.response.data.message);
+      })
+  }
 
   useEffect(() => {
     fetchAboutDoctor()

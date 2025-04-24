@@ -32,6 +32,7 @@ const Settings = () => {
         lastname: UserData.user.lastname,
         email: UserData.user.email,
         date_of_birth: UserData.user.date_of_birth,
+        age: UserData.user.age,
         gender: UserData.user.gender,
         cin: UserData.user.cin,
         user_avatar: UserData.user.user_avatar ? UserData.user.user_avatar : "/img/Rectangle 4.jpg"
@@ -53,15 +54,8 @@ const Settings = () => {
     }
   };
 
-  console.log(UserData);
-  console.log("UserAvatar: ", UserAvatar)
-  console.log(DataForm);
-
-
   const HandleSubmit = (e) => {
     e.preventDefault();
-
-    console.log("DataForm---------: ", DataForm);
 
     const formData = new FormData();
     formData.append("id", DataForm.id);
@@ -228,6 +222,24 @@ const Settings = () => {
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-[12px] rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full   py-[4px] dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="exemple@gmail.com"
                     required
+                  />
+                </div>
+                <div className="mb-[20px]">
+                  <label
+                    htmlFor="age"
+                    className="block mb-1 text-[14px]  font-medium text-gray-900 dark:text-white"
+                  >
+                    Age
+                  </label>
+                  <input
+                    type="text"
+                    id="age"
+                    name="age"
+                    value={DataForm.age}
+                    className="text-green-600 font-semibold opacity-80 bg-gray-50 border border-gray-300 text-[12px] rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full   py-[4px] dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 cursor-not-allowed "
+                    placeholder="exemple@gmail.com"
+                    readOnly
+                    disabled
                   />
                 </div>
                 <div className="mb-[20px]">

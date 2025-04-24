@@ -123,7 +123,7 @@ const PaymentPage = () => {
                 <img
                   alt="Doctor's profile"
                   className="rounded-full mr-4 w-16 h-16 object-cover"
-                  src={`https://backend.famracure.com/images/doctors/${persistedData?.doctorDetails?.avatar_doctor}` || "/img/doc-listing.jpg" } 
+                  src={ persistedData?.doctorDetails?.avatar_doctor ? `https://backend.famracure.com/images/doctors/${persistedData?.doctorDetails?.avatar_doctor}` : "/img/doc-listing.jpg" } 
                 />
                 <div>
                   <h3 className="text-lg font-semibold">{persistedData?.doctorDetails?.name || "Unknown" }</h3>

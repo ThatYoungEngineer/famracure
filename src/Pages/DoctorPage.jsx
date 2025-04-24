@@ -10,7 +10,7 @@ import DoctorInfoComponent from '../Components/DoctorInfoComponent';
 import SimilarDoctors from '../Components/SimilarDoctors';
 
 const AvailabilityBadge = ({ available }) => (
-  <div className={`flex items-center text-xs font-medium rounded-full px-2 py-0.5 
+  <div className={`flex items-center text-xs font-medium rounded-full px-2 py-0.5 w-fit
     ${available ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
     <span className={`w-3 h-3 mr-1 rounded-full ${available ? 'bg-green-500' : 'bg-red-500'}`}></span>
     {available ? "Available" : "Not Available"}
@@ -40,6 +40,8 @@ const DoctorPage = () => {
 
   }, [id]);
 
+  console.log('doctor: ', doctor); // Log the doctor data to debug
+
   if (loading) return <div className="text-center mt-10">Loading...</div>;
   if (!doctor) return <div className="text-center mt-10 text-red-500">Doctor not found.</div>;
 
@@ -57,7 +59,7 @@ const DoctorPage = () => {
               
               {/* Doctor Image */}
               <div className="w-full lg:w-1/3 flex justify-center">
-                <img src="/img/doc-listing.jpg" alt="Doctor profile" className="shadow-lg object-cover w-[131px] h-[110px]" />
+                <img src={doctor?.avatar_doctor ? doctor?.avatar_doctor : "/img/doc-listing.jpg"} alt="Doctor profile" className="shadow-lg object-cover w-[131px] h-[110px]" />
               </div>
               
               {/* Doctor Details */}
@@ -106,8 +108,8 @@ const DoctorPage = () => {
         </div>
       </div>
 
-      <ReviewComponent doctorId={id}/>
-      <DoctorInfoComponent />
+      <ReviewComponent doctorId={id} />
+      <DoctorInfoComponent doctorId={id} />
       <FAQSection />
       <SimilarDoctors />
       <FooterTopBar />
