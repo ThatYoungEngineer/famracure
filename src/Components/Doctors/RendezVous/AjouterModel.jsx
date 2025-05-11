@@ -5,12 +5,12 @@ import AlertSucces from "../../Alert/AlertSucces";
 const initialState = {
   dateAppointment: "",
   timeSlot: {
-    appointment_time: "", // Current time being selected
+    appointment_time: "",
     video_fee: "",
     clinic_fee: "",
     appointment_type: ""
   },
-  selectedTimes: [], // Array of selected times (for pills)
+  selectedTimes: [],
   isLoading: false,
   successMessage: ""
 };
@@ -43,7 +43,6 @@ const AjouterModel = ({ show, setShow, refreshApp }) => {
     dispatch({ type: "SET_LOADING", payload: true });
     dispatch({ type: "SET_SUCCESS_MESSAGE", payload: "" });
     try {
-      // Prepare time slots with shared details
       const timeSlots = state.selectedTimes.map((time) => ({
         appointment_time: time,
         video_fee: state.timeSlot.video_fee,
@@ -53,12 +52,12 @@ const AjouterModel = ({ show, setShow, refreshApp }) => {
 
       const response = await axiosClient.post("/doctor/appointments/create", {
         appointment_date: state.dateAppointment,
-        time_slots: timeSlots // Send the array of time slots
+        time_slots: timeSlots
       });
       
       if (response?.data?.message) {
         dispatch({ type: "SET_SUCCESS_MESSAGE", payload: response.data.message });
-        refreshApp(prev => !prev)
+        refreshApp(prev => !prev);
       }
     } catch (error) {
       console.error("Error posting appointment:", error);
@@ -90,7 +89,7 @@ const AjouterModel = ({ show, setShow, refreshApp }) => {
   const handleAddTime = () => {
     if (state.timeSlot.appointment_time && !state.selectedTimes.includes(state.timeSlot.appointment_time)) {
       dispatch({ type: "ADD_SELECTED_TIME", payload: state.timeSlot.appointment_time });
-      dispatch({ type: "SET_TIME_SLOT", field: "appointment_time", payload: "" }); // Clear the input
+      dispatch({ type: "SET_TIME_SLOT", field: "appointment_time", payload: "" });
     }
   };
 
@@ -100,110 +99,144 @@ const AjouterModel = ({ show, setShow, refreshApp }) => {
 
   return (
     show && (
-      <div className="fixed top-0 left-0 h-screen w-screen flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-        <div className="bg-white rounded-lg shadow-lg dark:bg-gray-800 w-96 p-6 relative">
-          <div className="w-full flex items-center justify-between ">
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Select Appointment</h3>
+      <div className="fixed top-0 left-0 h-screen w-screen flex items-center justify-center bg-gray-900 bg-opacity-50 z-50 p-4">
+        <div className="bg-white rounded-lg shadow-lg dark:bg-gray-800 w-full max-w-md p-4 sm:p-6 relative">
+          <div className="w-full flex items-center justify-between">
+            <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">
+              Select Appointment
+            </h3>
             <button 
-              onClick={() => setShow(false)} className="text-2xl bg-transparent rounded-lg p-0 ml-auto inline-flex items-center dark:hover:text-white text-gray-500 hover:text-gray-700"
+              onClick={() => setShow(false)} 
+              className="text-2xl bg-transparent rounded-lg p-0 ml-auto inline-flex items-center dark:hover:text-white text-gray-500 hover:text-gray-700"
             >
               &times;
             </button>
           </div>
-          <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-            <label htmlFor="dateAppointment" className="block w-fit mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              Appointment Date
-            </label>
-            <input 
-              type="date"
-              className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              min={new Date().toISOString().split("T")[0]} // Disables past dates
-              value={state.dateAppointment} 
-              onChange={(e) => dispatch({ type: "SET_DATE", payload: e.target.value })} required 
-            />
-
-            <div className="flex flex-wrap gap-2">
-              {state.selectedTimes.map((time, index) => (
-                <div
-                  key={index}
-                  className="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full flex items-center gap-2"
-                >
-                  {time}
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveTime(index)}
-                    className="text-blue-800 hover:text-blue-900"
-                  >
-                    &times;
-                  </button>
-                </div>
-              ))}
-            </div>
-
-            <label htmlFor="timeAppointment" className="block w-fit mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              Select Time
-            </label>
-            <div className="flex gap-2">
+          
+          <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4 mt-3 sm:mt-4">
+            {/* Date Input */}
+            <div>
+              <label htmlFor="dateAppointment" className="block mb-1 sm:mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                Appointment Date
+              </label>
               <input 
-                type="time" 
-                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                value={state.timeSlot.appointment_time} 
-                onChange={handleTimeChange} step="1800" 
+                type="date"
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2 sm:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                min={new Date().toISOString().split("T")[0]}
+                value={state.dateAppointment} 
+                onChange={(e) => dispatch({ type: "SET_DATE", payload: e.target.value })} 
+                required 
               />
-              <button
-                type="button"
-                onClick={handleAddTime}
-                className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
-              >
-                Add
-              </button>
             </div>
 
-            <label htmlFor="timeAppointment" className="block w-fit mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              Video Fee
-            </label>
-            <input 
-              type="number" 
-              className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              placeholder="Video Fee" value={state.timeSlot.video_fee} 
-              onChange={(e) => dispatch({ type: "SET_TIME_SLOT", field: "video_fee", payload: e.target.value })} 
-              required 
-            />
+            {/* Selected Times */}
+            {state.selectedTimes.length > 0 && (
+              <div>
+                <label className="block mb-1 sm:mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                  Selected Times
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {state.selectedTimes.map((time, index) => (
+                    <div
+                      key={index}
+                      className="bg-blue-100 text-blue-800 text-xs sm:text-sm font-medium px-2 sm:px-3 py-1 rounded-full flex items-center gap-1 sm:gap-2"
+                    >
+                      {time}
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveTime(index)}
+                        className="text-blue-800 hover:text-blue-900 text-sm"
+                      >
+                        &times;
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
-            <label htmlFor="timeAppointment" className="block w-fit mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              Clinic Fee
-            </label>
-            <input 
-              type="number" 
-              className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              placeholder="Clinic Fee" 
-              value={state.timeSlot.clinic_fee} 
-              onChange={(e) => dispatch({ type: "SET_TIME_SLOT", field: "clinic_fee", payload: e.target.value })} 
-              required 
-            />
+            {/* Time Selection */}
+            <div>
+              <label htmlFor="timeAppointment" className="block mb-1 sm:mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                Select Time
+              </label>
+              <div className="flex gap-2">
+                <input 
+                  type="time" 
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2 sm:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  value={state.timeSlot.appointment_time} 
+                  onChange={handleTimeChange} 
+                  step="1800" 
+                />
+                <button
+                  type="button"
+                  onClick={handleAddTime}
+                  className="bg-green-600 text-white px-3 sm:px-4 py-1 sm:py-2 rounded-lg hover:bg-green-700 text-sm sm:text-base"
+                >
+                  Add
+                </button>
+              </div>
+            </div>
 
-            <label htmlFor="timeAppointment" className="block w-fit mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              Appointment Type
-            </label>
-            <select
-              value={state.timeSlot.appointment_type} 
-              className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              onChange={(e) => dispatch({ type: "SET_TIME_SLOT", field: "appointment_type", payload: e.target.value })} 
-              required
-            >
-              <option value="">--Select--</option>
-              <option value="video">Video</option>
-              <option value="clinic">Clinic</option>
-            </select>
+            {/* Fees and Type */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+              <div>
+                <label htmlFor="videoFee" className="block mb-1 sm:mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                  Video Fee
+                </label>
+                <input 
+                  type="number" 
+                  id="videoFee"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2 sm:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  placeholder="Video Fee" 
+                  value={state.timeSlot.video_fee} 
+                  onChange={(e) => dispatch({ type: "SET_TIME_SLOT", field: "video_fee", payload: e.target.value })} 
+                  required 
+                />
+              </div>
+              
+              <div>
+                <label htmlFor="clinicFee" className="block mb-1 sm:mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                  Clinic Fee
+                </label>
+                <input 
+                  type="number" 
+                  id="clinicFee"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2 sm:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  placeholder="Clinic Fee" 
+                  value={state.timeSlot.clinic_fee} 
+                  onChange={(e) => dispatch({ type: "SET_TIME_SLOT", field: "clinic_fee", payload: e.target.value })} 
+                  required 
+                />
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="appointmentType" className="block mb-1 sm:mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                Appointment Type
+              </label>
+              <select
+                id="appointmentType"
+                value={state.timeSlot.appointment_type} 
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2 sm:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                onChange={(e) => dispatch({ type: "SET_TIME_SLOT", field: "appointment_type", payload: e.target.value })} 
+                required
+              >
+                <option value="">--Select--</option>
+                <option value="video">Video</option>
+                <option value="clinic">Clinic</option>
+              </select>
+            </div>
 
             <button 
               type="submit" 
-              className="w-full disabled:opacity-30 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+              className="w-full disabled:opacity-30 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 text-sm sm:text-base"
               disabled={state.isLoading}
             >
               {state.isLoading ? "Loading..." : "Confirm Appointment"}
             </button>
           </form>
+          
           {state.successMessage && <AlertSucces Message={state.successMessage} />}
         </div>
       </div>

@@ -27,10 +27,9 @@ const PersonalInformation = () => {
     }
   ])
   const [selectedFile, setSelectedFile] = useState(null);
-  const [preview, setPreview] = useState(null); // Default profile picture
+  const [preview, setPreview] = useState(null);
 
   const [showExpFields, setShowExpFields] = useState(false)
-
   const [loadingForToggle, setLoadingForToggle] = useState(false)
   const [responseForToggle, setResponseForToggle] = useState(null)
 
@@ -59,13 +58,11 @@ const PersonalInformation = () => {
         experience: doctorData.doctor.experience || [],
       })
       if (doctorData?.doctor?.experience?.length > 0) {
-        setExperienceList(doctorData.doctor.experience); // Ensure it's updated
+        setExperienceList(doctorData.doctor.experience);
       }
-      setPreview(doctorData.doctor.avatar_doctor || "/img/Rectangle 4.jpg"); // Default if no avatar
+      setPreview(doctorData.doctor.avatar_doctor || "/img/Rectangle 4.jpg");
     }
   }, [doctorData]);
-
-  console.log('avatar_doctor: ', doctorData.doctor.avatar_doctor)
 
   const HandelChangeCheckbox = (e) => {
     setLoadingForToggle(true);
@@ -75,7 +72,6 @@ const PersonalInformation = () => {
         available: e.target.checked
       })
       .then((res) => {
-        console.log('availability res : ', res);
         const success = res?.data?.updated === "success";
         if (success) {
           setDataForm(prev => ({
@@ -110,7 +106,7 @@ const PersonalInformation = () => {
           ? {
             ...item,
             [name]: name === "degree_certificates"
-              ? [...(item[name] ? [...item[name]] : []), ...Array.from(files)] // Prevent mutation
+              ? [...(item[name] ? [...item[name]] : []), ...Array.from(files)]
               : value
           }
           : item
@@ -127,7 +123,7 @@ const PersonalInformation = () => {
     const file = e.target.files[0];
     if (file) {
       setSelectedFile(file);
-      setPreview(URL.createObjectURL(file)); // Show image preview
+      setPreview(URL.createObjectURL(file));
     }
   }
 
@@ -152,12 +148,10 @@ const PersonalInformation = () => {
     formData.append("cin", DataForm.cin);
 
     if (selectedFile) {
-      formData.append("avatar_doctor", selectedFile); // Fix: Send a file, not a URL
+      formData.append("avatar_doctor", selectedFile);
     }
 
     experienceList.forEach((experience, index) => {
-      console.log('experience.degree_certificates: ', experience.degree_certificates)
-
       formData.append(`institute[${index}]`, experience.institute);
       formData.append(`city[${index}]`, experience.city);
       formData.append(`country[${index}]`, experience.country);
@@ -167,10 +161,8 @@ const PersonalInformation = () => {
       if (experience.degree_certificates) {
         experience.degree_certificates.forEach((file, fileIndex) => {
           if (typeof file === "string") {
-            // If it's a URL, send it separately (e.g., as JSON or an array field)
             formData.append(`existing_degree_certificates[]`, file);
           } else {
-            // If it's a new file (File object), add it to FormData
             formData.append(`degree_certificates[${fileIndex}]`, file);
           }
         });
@@ -184,7 +176,6 @@ const PersonalInformation = () => {
         },
       })
       .then((res) => {
-        console.log('updated res : ', res);
         const success = res?.data?.updated;
         setSuccessMessage(success ? "Doctor information updated successfully" : "");
         setExperienceList(res.data.doctor.experience)
@@ -200,7 +191,6 @@ const PersonalInformation = () => {
     axiosClient
       .post("/doctor/request-approval")
       .then((res) => {
-        console.log(res);
         const success = res?.data?.message;
         setSuccessMessage(success ? "Doctor approved successfully" : "Your request for approval has been sent");
       })
@@ -209,25 +199,26 @@ const PersonalInformation = () => {
       })
   }
 
-
   return (
-    <section className="flex gap-10 justify-between">
-
-      <div className="w-[50%]">
+    <section className="flex flex-col lg:flex-row gap-4 md:gap-6 lg:gap-8 xl:gap-10 justify-between p-2 sm:p-4">
+      {/* Profile Picture Section */}
+      <div className="w-full lg:w-[40%] xl:w-[35%] 2xl:w-[30%]">
         <div className="p-4 mb-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
-          <div className="items-center sm:flex xl:block 2xl:flex sm:space-x-4 xl:space-x-0 2xl:space-x-4">
-            {/* Display Selected Image Preview */}
-            <img className="mb-4 rounded-lg w-28 h-28 sm:mb-0 xl:mb-4 2xl:mb-0" src={preview} alt="Profile" />
+          <div className="items-center sm:flex xl:flex 2xl:flex sm:space-x-4 xl:space-x-0 2xl:space-x-4">
+            <img 
+              className="mb-4 rounded-lg w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 sm:mb-0 xl:mb-4 2xl:mb-0" 
+              src={preview} 
+              alt="Profile" 
+            />
 
-            <div>
-              <h3 className="mb-1 text-xl font-bold text-gray-900 dark:text-white">
+            <div className="w-full">
+              <h3 className="mb-1 text-lg sm:text-xl font-bold text-gray-900 dark:text-white">
                 Profile picture
               </h3>
-              <div className="mb-4 text-sm text-gray-500 dark:text-gray-400">
+              <div className="mb-4 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                 JPG, GIF, or PNG. Max size: 800KB
               </div>
 
-              {/* File Input */}
               <input
                 id="fileInput"
                 type="file"
@@ -237,7 +228,7 @@ const PersonalInformation = () => {
               />
               <label
                 htmlFor="fileInput"
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg cursor-pointer hover:bg-blue-700"
+                className="inline-block px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium text-white bg-blue-600 rounded-lg cursor-pointer hover:bg-blue-700"
               >
                 Choose Image
               </label>
@@ -246,44 +237,43 @@ const PersonalInformation = () => {
         </div>
       </div>
 
-
-      <div className="w-full p-4 mb-4 bg-white border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
-        <h3 className="mb-4 text-xl font-semibold dark:text-white">
+      {/* Form Section */}
+      <div className="w-full p-3 sm:p-4 mb-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 dark:bg-gray-800">
+        <h3 className="mb-4 text-lg sm:text-xl font-semibold dark:text-white">
           General Information
         </h3>
         <form onSubmit={HandelSubmit}>
-          <label className="relative inline-flex items-center mb-4 cursor-pointer">
-            <input
-              type="checkbox"
-              disabled={loadingForToggle}
-              checked={DataForm.available}
-              name="available"
-              onChange={HandelChangeCheckbox}
-              className="sr-only peer"
-            />
-            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all  peer-checked:bg-blue-600"></div>
-            <span className="ml-3 text-sm font-medium text-gray-900 ">
-              Doctor Is Present
-            </span>
-          </label>
-          <br />
-          <div className="mb-2 text-green-500 text-sm">
-            {responseForToggle && responseForToggle}
+          <div className="flex items-center mb-3">
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                disabled={loadingForToggle}
+                checked={DataForm.available}
+                name="available"
+                onChange={HandelChangeCheckbox}
+                className="sr-only peer"
+              />
+              <div className="w-9 h-5 sm:w-11 sm:h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 sm:after:h-5 sm:after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+              <span className="ml-2 sm:ml-3 text-xs sm:text-sm font-medium text-gray-900">
+                Doctor Is Present
+              </span>
+            </label>
           </div>
+          {responseForToggle && (
+            <div className="mb-2 text-green-500 text-xs sm:text-sm">
+              {responseForToggle}
+            </div>
+          )}
 
-          <div className="grid grid-cols-6 gap-6">
+          <div className="grid grid-cols-6 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
             <div className="col-span-6 sm:col-span-3">
-              <label
-                htmlFor="first-name"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
+              <label className="block mb-1 sm:mb-2 text-xs sm:text-sm font-medium text-gray-900 dark:text-white">
                 First Name
               </label>
               <input
                 type="text"
                 name="firstname"
-                id="first-name"
-                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 sm:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                 placeholder="Bonnie"
                 required
                 value={DataForm.firstname}
@@ -291,17 +281,13 @@ const PersonalInformation = () => {
               />
             </div>
             <div className="col-span-6 sm:col-span-3">
-              <label
-                htmlFor="lastname"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
+              <label className="block mb-1 sm:mb-2 text-xs sm:text-sm font-medium text-gray-900 dark:text-white">
                 Last Name
               </label>
               <input
                 type="text"
                 name="lastname"
-                id="lastname"
-                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 sm:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                 placeholder="tt"
                 required
                 value={DataForm.lastname}
@@ -310,37 +296,29 @@ const PersonalInformation = () => {
             </div>
           </div>
 
-          <div className="grid mt-3 grid-cols-6 gap-6">
+          <div className="grid mt-3 grid-cols-6 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
             <div className="col-span-6 sm:col-span-3">
-              <label
-                htmlFor="Matricule"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
+              <label className="block mb-1 sm:mb-2 text-xs sm:text-sm font-medium text-gray-900 dark:text-white">
                 Matricule
               </label>
               <input
                 type="text"
                 name="Matricule"
-                id="Matricule"
-                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 sm:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                 placeholder="Matricule"
                 required
                 value={DataForm.Matricule}
                 onChange={HandelChange}
               />
             </div>
-            <div className="col-span-6  sm:col-span-3">
-              <label
-                htmlFor="specialite"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
+            <div className="col-span-6 sm:col-span-3">
+              <label className="block mb-1 sm:mb-2 text-xs sm:text-sm font-medium text-gray-900 dark:text-white">
                 Specialite
               </label>
               <input
                 type="text"
                 name="specialite"
-                id="specialite"
-                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 sm:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                 placeholder="Specialization"
                 required
                 value={DataForm.specialite}
@@ -349,37 +327,29 @@ const PersonalInformation = () => {
             </div>
           </div>
 
-          <div className="grid mt-3 grid-cols-6 gap-6">
+          <div className="grid mt-3 grid-cols-6 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
             <div className="col-span-6 sm:col-span-3">
-              <label
-                htmlFor="phoneNumber"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
+              <label className="block mb-1 sm:mb-2 text-xs sm:text-sm font-medium text-gray-900 dark:text-white">
                 Phone Number
               </label>
               <input
                 type="text"
                 name="phoneNumber"
-                id="phoneNumber"
-                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 sm:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                 placeholder="phoneNumber"
                 required
                 value={DataForm.phoneNumber}
                 onChange={HandelChange}
               />
             </div>
-            <div className="col-span-6  sm:col-span-3">
-              <label
-                htmlFor="email"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
+            <div className="col-span-6 sm:col-span-3">
+              <label className="block mb-1 sm:mb-2 text-xs sm:text-sm font-medium text-gray-900 dark:text-white">
                 Email
               </label>
               <input
                 type="email"
                 name="email"
-                id="email"
-                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 sm:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                 placeholder="tt"
                 required
                 disabled
@@ -390,40 +360,32 @@ const PersonalInformation = () => {
             </div>
           </div>
 
-          <div className="grid mt-3 grid-cols-6 gap-6">
+          <div className="grid mt-3 grid-cols-6 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
             <div className="col-span-6 sm:col-span-3">
-              <label
-                htmlFor="date_of_birth"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
+              <label className="block mb-1 sm:mb-2 text-xs sm:text-sm font-medium text-gray-900 dark:text-white">
                 Date of Birth
               </label>
               <input
                 type="date"
                 name="date_of_birth"
-                id="date_of_birth"
-                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 sm:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                 placeholder="Date of birth"
                 required
                 value={DataForm.date_of_birth}
                 onChange={HandelChange}
               />
             </div>
-            <div className="col-span-6  sm:col-span-3">
-              <label
-                htmlFor="gender"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
+            <div className="col-span-6 sm:col-span-3">
+              <label className="block mb-1 sm:mb-2 text-xs sm:text-sm font-medium text-gray-900 dark:text-white">
                 Gender
               </label>
               <select
                 name="gender"
-                id="gender"
                 value={DataForm.gender}
                 onChange={HandelChange}
-                className={`bg-gray-50 !border text-xs rounded-lg block w-full py-2 px-3 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 border-gray-300 text-gray-900}`}
+                className={`bg-gray-50 border text-xs sm:text-sm rounded-lg block w-full p-2 sm:p-2.5 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 border-gray-300 text-gray-900}`}
               >
-                <option value="#" selected disabled  >--Select Gender--</option>
+                <option value="#" selected disabled>--Select Gender--</option>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
                 <option value="transgender">Transgender</option>
@@ -431,19 +393,15 @@ const PersonalInformation = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-6 gap-6">
-            <div className="col-span-6 sm:col-full mt-4 mb-4">
-              <label
-                htmlFor="phoneNumber"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
+          <div className="grid grid-cols-6 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
+            <div className="col-span-6 sm:col-full mt-3 mb-3">
+              <label className="block mb-1 sm:mb-2 text-xs sm:text-sm font-medium text-gray-900 dark:text-white">
                 About
               </label>
               <textarea
-                id="chat"
-                rows="5"
+                rows="4"
                 name="about"
-                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 sm:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                 placeholder=" about You..."
                 value={DataForm.about}
                 onChange={HandelChange}
@@ -451,37 +409,29 @@ const PersonalInformation = () => {
             </div>
           </div>
 
-          <div className="grid mt-3 grid-cols-6 gap-6">
+          <div className="grid mt-3 grid-cols-6 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
             <div className="col-span-6 sm:col-span-3">
-              <label
-                htmlFor="nom_cabinet"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
+              <label className="block mb-1 sm:mb-2 text-xs sm:text-sm font-medium text-gray-900 dark:text-white">
                 Name of clinic
               </label>
               <input
                 type="text"
                 name="nom_cabinet"
-                id="nom_cabinet"
-                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 sm:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                 placeholder="clinic name"
                 required
                 value={DataForm.nom_cabinet}
                 onChange={HandelChange}
               />
             </div>
-            <div className="col-span-6  sm:col-span-3">
-              <label
-                htmlFor="address_cabinet"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
+            <div className="col-span-6 sm:col-span-3">
+              <label className="block mb-1 sm:mb-2 text-xs sm:text-sm font-medium text-gray-900 dark:text-white">
                 Address of clinic
               </label>
               <input
                 type="text"
                 name="address_cabinet"
-                id="address_cabinet"
-                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 sm:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                 placeholder="clinic address"
                 required
                 value={DataForm.address_cabinet}
@@ -489,37 +439,36 @@ const PersonalInformation = () => {
               />
             </div>
           </div>
-          <div className="col-span-6 sm:col-span-3 mt-5">
-            <label
-              htmlFor="cin"
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >
+          
+          <div className="col-span-6 sm:col-span-3 mt-3">
+            <label className="block mb-1 sm:mb-2 text-xs sm:text-sm font-medium text-gray-900 dark:text-white">
               CIN
             </label>
             <input
               type="text"
               name="cin"
-              id="cin"
-              className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+              className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 sm:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
               placeholder="cin"
               required
               value={DataForm.cin}
               onChange={HandelChange}
             />
           </div>
-          <div className="w-full flex gap-2 items-center justify-center mt-5">
-            <h1 className="text-2xl font-semibold">Experience Fields</h1>
+          
+          <div className="w-full flex gap-2 items-center justify-center mt-4 sm:mt-5">
+            <h1 className="text-lg sm:text-xl md:text-2xl font-semibold">Experience Fields</h1>
             <span className="flex-1 border-t border-black" />
             <button type="button" onClick={() => setShowExpFields(prev => !prev)}>
-              <ChevronDownIcon className={`w-5 h-5 ${showExpFields ? 'rotate-180' : 'rotate-0'}`} />
+              <ChevronDownIcon className={`w-4 h-4 sm:w-5 sm:h-5 ${showExpFields ? 'rotate-180' : 'rotate-0'}`} />
             </button>
           </div>
-          {showExpFields &&
+          
+          {showExpFields && (
             <>
               {experienceList?.map((experience, index) => (
-                <div key={index} className="border p-4 rounded-lg mt-5">
-                  <div className="w-44 mt-5 sm:col-span-3">
-                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                <div key={index} className="border p-3 sm:p-4 rounded-lg mt-3 sm:mt-4">
+                  <div className="w-full sm:w-44 mt-3 sm:mt-4">
+                    <label className="block mb-1 sm:mb-2 text-xs sm:text-sm font-medium text-gray-900 dark:text-white">
                       Experience (Years)
                     </label>
                     <input
@@ -527,102 +476,97 @@ const PersonalInformation = () => {
                       name="experience_years"
                       readOnly
                       disabled
-                      className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5 disabled:opacity-80"
+                      className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg block w-full p-2 sm:p-2.5 disabled:opacity-80"
                       value={experience.experience_years}
                     />
                   </div>
-                  <h1 className="text-xl font-semibold mt-5">Institute Details</h1>
-                  <div className="grid mt-3 grid-cols-6 gap-x-6 gap-y-3">
+                  <h1 className="text-lg sm:text-xl font-semibold mt-3 sm:mt-4">Institute Details</h1>
+                  <div className="grid mt-2 grid-cols-6 gap-x-3 sm:gap-x-4 md:gap-x-5 lg:gap-x-6 gap-y-2 sm:gap-y-3">
                     <div className="col-span-6 sm:col-span-3">
-                      <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                      <label className="block mb-1 sm:mb-2 text-xs sm:text-sm font-medium text-gray-900 dark:text-white">
                         Institute Name
                       </label>
                       <input
                         type="text"
                         name="institute"
-                        className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
+                        className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg block w-full p-2 sm:p-2.5"
                         value={experience.institute}
                         onChange={(e) => handleChangeInExperience(e, index)}
                       />
                     </div>
 
                     <div className="col-span-6 sm:col-span-3">
-                      <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                      <label className="block mb-1 sm:mb-2 text-xs sm:text-sm font-medium text-gray-900 dark:text-white">
                         Institute City
                       </label>
                       <input
                         type="text"
                         name="city"
-                        className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
+                        className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg block w-full p-2 sm:p-2.5"
                         value={experience.city}
                         onChange={(e) => handleChangeInExperience(e, index)}
                       />
                     </div>
                     <div className="col-span-6 sm:col-span-3">
-                      <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                      <label className="block mb-1 sm:mb-2 text-xs sm:text-sm font-medium text-gray-900 dark:text-white">
                         Institute Country
                       </label>
                       <input
                         type="text"
                         name="country"
-                        className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
+                        className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg block w-full p-2 sm:p-2.5"
                         value={experience.country}
                         onChange={(e) => handleChangeInExperience(e, index)}
                       />
                     </div>
                   </div>
 
-                  <div className="grid mt-3 grid-cols-6 gap-6">
+                  <div className="grid mt-2 grid-cols-6 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
                     <div className="col-span-6 sm:col-span-3">
-                      <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                      <label className="block mb-1 sm:mb-2 text-xs sm:text-sm font-medium text-gray-900 dark:text-white">
                         Experience Start Date
                       </label>
                       <input
                         type="date"
                         name="start_date"
-                        className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
+                        className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg block w-full p-2 sm:p-2.5"
                         value={experience.start_date}
                         onChange={(e) => handleChangeInExperience(e, index)}
                       />
                     </div>
                     <div className="col-span-6 sm:col-span-3">
-                      <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                      <label className="block mb-1 sm:mb-2 text-xs sm:text-sm font-medium text-gray-900 dark:text-white">
                         Experience End Date
                       </label>
                       <input
                         type="date"
                         name="end_date"
-                        className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
+                        className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg block w-full p-2 sm:p-2.5"
                         value={experience.end_date}
                         onChange={(e) => handleChangeInExperience(e, index)}
                       />
                     </div>
                   </div>
-                  <div className="grid mt-3 grid-cols-6 gap-6">
+                  
+                  <div className="grid mt-2 grid-cols-6 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
                     <div className="col-span-6">
-                      <label
-                        htmlFor="experience_detail"
-                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                      >
+                      <label className="block mb-1 sm:mb-2 text-xs sm:text-sm font-medium text-gray-900 dark:text-white">
                         Experience Detail
                       </label>
                       <textarea
-                        id="experience_detail"
-                        rows="5"
+                        rows="3"
                         name="detail"
-                        className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                        className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-xs sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2 sm:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                         placeholder="Enter your experience details"
                         onChange={(e) => handleChangeInExperience(e, index)}
                         value={experience.detail}
                       ></textarea>
                     </div>
-                    <div className="col-span-6 flex flex-col gap-2">
-                      <label
-                        htmlFor="degree_certificates"
-                        className="block mb-2 text-lg font-medium text-gray-900 dark:text-white"
-                      >
+                    
+                    <div className="col-span-6 flex flex-col gap-1 sm:gap-2">
+                      <label className="block mb-1 sm:mb-2 text-sm sm:text-lg font-medium text-gray-900 dark:text-white">
                         Experience Certificates
-                        <p className="text-sm font-light">Upload Education/Experience/Degree (documents)</p>
+                        <p className="text-xs sm:text-sm font-light">Upload Education/Experience/Degree (documents)</p>
                       </label>
                       <input
                         type="file"
@@ -630,20 +574,20 @@ const PersonalInformation = () => {
                         accept="image/png, image/jpeg, image/gif"
                         multiple
                         onChange={e => handleChangeInExperience(e, index)}
+                        className="text-xs sm:text-sm"
                       />
                     </div>
-                    <div className="col-span-6 flex flex-col gap-2">
+                    
+                    <div className="col-span-6 flex flex-col gap-1 sm:gap-2">
                       {experience?.degree_certificates?.length > 0 &&
                         experience.degree_certificates.map((certificate, certificateIndex) => (
                           <div key={certificateIndex} className="w-full flex-1">
                             {typeof certificate === "string" ? (
-                              // Existing file (URL)
-                              <a href={certificate} target="_blank" rel="noopener noreferrer" className=" text-blue-500 underline">
+                              <a href={certificate} target="_blank" rel="noopener noreferrer" className="text-xs sm:text-sm text-blue-500 underline">
                                 {certificate}
                               </a>
                             ) : (
-                              // New file (File object)
-                              <span className="flex-1 text-gray-700">{certificate.name}</span>
+                              <span className="flex-1 text-xs sm:text-sm text-gray-700">{certificate.name}</span>
                             )}
                           </div>
                         ))
@@ -653,8 +597,9 @@ const PersonalInformation = () => {
 
                   {index > 0 && (
                     <button
+                      type="button"
                       onClick={() => removeExperience(index)}
-                      className="mt-3 bg-red-500 text-white px-3 py-2 rounded-lg"
+                      className="mt-2 sm:mt-3 bg-red-500 text-white px-2 py-1 sm:px-3 sm:py-2 rounded-lg text-xs sm:text-sm"
                     >
                       Remove Experience
                     </button>
@@ -665,33 +610,46 @@ const PersonalInformation = () => {
               <button
                 type="button"
                 onClick={addExperience}
-                className="bg-yellow-400 text-white px-4 py-2 rounded-lg mt-4"
+                className="bg-yellow-400 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg mt-3 sm:mt-4 text-xs sm:text-sm"
               >
                 Add More Experiences
               </button>
             </>
-          }
-          <div className="flex items-center gap-5 w-full mt-10">
-            <div className="col-span-6 sm:col-full  w-[20%]">
-              <AuthButton Text="Save all" Loading={loading} isDisabled={DataForm.verified || loadingForToggle} />
+          )}
+          
+          <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 md:gap-5 w-full mt-6 sm:mt-8">
+            <div className="w-full sm:w-[30%] md:w-[25%] lg:w-[20%]">
+              <AuthButton 
+                Text="Save all" 
+                Loading={loading} 
+                isDisabled={DataForm.verified || loadingForToggle} 
+                className="w-full text-xs sm:text-sm"
+              />
             </div>
-            <div className="col-span-6 sm:col-full ">
+            <div className="w-full sm:w-auto">
               <Button
                 type="button"
                 variant="contained"
                 color="secondary"
                 onClick={handleApprovalClick}
                 disabled={loadingForToggle}
+                className="w-full sm:w-auto text-xs sm:text-sm"
               >
                 Request for Approval
               </Button>
             </div>
           </div>
-          {successMessage && <p className="text-green-500">{successMessage}</p>}
+          
+          {successMessage && (
+            <p className="mt-2 sm:mt-3 text-green-500 text-xs sm:text-sm">
+              {successMessage}
+            </p>
+          )}
         </form>
-        <div className="mt-10">
+        
+        <div className="mt-6 sm:mt-8">
           <Alert color="warning" withBorderAccent icon={InformationCircleIcon}>
-            <span>
+            <span className="text-xs sm:text-sm">
               <span className="font-medium">Note!</span> Filled information after admin approval cannot be changed.
             </span>
           </Alert>

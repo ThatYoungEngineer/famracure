@@ -6,13 +6,8 @@ import GetAuthUser from "../../hooks/GetAuthUser";
 
 const Settings = () => {
   const UserData = useSelector((state) => state.authUser);
-  // const dispatch = useDispatch();
-  // const navigate = useNavigate();
-
   const [UserAvatar, setUserAvatar] = useState(null);
-
   const [preview, setPreview] = useState(null);
-
   const [DataForm, setDataForm] = useState({
     id: 0,
     firstname: "",
@@ -40,7 +35,6 @@ const Settings = () => {
     }
   }, [UserData]);
 
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setDataForm({ ...DataForm, [name]: value });
@@ -50,13 +44,12 @@ const Settings = () => {
     const file = e.target.files[0];
     if (file) {
       setUserAvatar(file);
-      setPreview(URL.createObjectURL(file)); // ✅ Use 'file' directly
+      setPreview(URL.createObjectURL(file));
     }
   };
 
   const HandleSubmit = (e) => {
     e.preventDefault();
-
     const formData = new FormData();
     formData.append("id", DataForm.id);
     formData.append("firstname", DataForm.firstname);
@@ -73,67 +66,62 @@ const Settings = () => {
     axiosClient
       .post("/user/update", formData, {
         headers: {
-          "Content-Type": "multipart/form-data", // Ensures form-data format
+          "Content-Type": "multipart/form-data",
         },
       })
       .then((res) => alert(res.data.message))
       .catch((err) => console.log(err));
   };
 
-
   return (
     <>
       <Header />
-      <div className="_container my-8 flex ">
-        <UserNavSettings />
-        <div className=" w-[75%] ">
+      <div className="_container my-8 flex flex-col lg:flex-row">
+        {/* Sidebar - hidden on mobile, shown on tablet/desktop */}
+        <div className="lg:w-1/4 mb-6 lg:mb-0">
+          <UserNavSettings />
+        </div>
+        
+        {/* Main Content */}
+        <div className="w-full lg:w-3/4 px-4 lg:px-0">
           <form onSubmit={HandleSubmit}>
-            <div className=" ml-7   ">
-              <div className="p-4 mb-4 bg-white   ">
-                <div className="items-center sm:flex xl:block 2xl:flex sm:space-x-4 xl:space-x-0 2xl:space-x-4">
-                  <img
-                    className="mb-4 rounded-lg w-28 h-28 sm:mb-0 xl:mb-4 2xl:mb-0"
-                    src={preview ? preview : DataForm.user_avatar}
-                    alt=""
-                  />
-                  <div>
-                    <h3 className="mb-1  text-sm  font-bold">
-                      Profile picture
-                    </h3>
-                    <div className="mb-4 text-[11px] text-gray-500 ">
-                      JPG, GIF or PNG. Max size of 800K
-                    </div>
-                    <div className="flex items-center space-x-4">
-                      <div>
-                        <label
-                          className="inline-flex items-center px-3 py-2 text-[12px]  text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 "
-                          htmlFor="DownloadFile"
-                        >
-                          Upload picture
-                        </label>
-                        <input
-                          className=" hidden "
-                          id="DownloadFile"
-                          type="file"
-                          name="user_avatar"
-                          onChange={handleFile}
-                        />
-                      </div>
-                    </div>
+            {/* Profile Picture Section */}
+            <div className="p-4 mb-6 bg-white rounded-lg shadow-sm">
+              <div className="flex flex-col sm:flex-row lg:flex-col xl:flex-row items-center gap-4">
+                <img
+                  className="w-28 h-28 rounded-lg object-cover"
+                  src={preview ? preview : DataForm.user_avatar}
+                  alt="Profile"
+                />
+                <div className="text-center sm:text-left">
+                  <h3 className="mb-1 text-sm font-bold">Profile picture</h3>
+                  <div className="mb-4 text-xs text-gray-500">
+                    JPG, GIF or PNG. Max size of 800K
+                  </div>
+                  <div className="flex justify-center sm:justify-start">
+                    <label className="inline-flex items-center px-3 py-2 text-xs text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 cursor-pointer transition-colors">
+                      Upload picture
+                      <input
+                        className="hidden"
+                        type="file"
+                        name="user_avatar"
+                        onChange={handleFile}
+                        accept="image/*"
+                      />
+                    </label>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="  ml-16 ">
-              <h3 className="mb-7  text-sm  ">Personal Information :</h3>
 
-              <div className=" w-[55%] ">
-                <div className="grid gap-6 mb-[20px] md:grid-cols-2">
-                  <div>
-                    <label
-                      htmlFor="FirstName"
-                      className="block mb-1 text-[12px]  font-medium text-gray-900 dark:text-white"
-                    >
+            {/* Personal Information Section */}
+            <div className="mt-6">
+              <h3 className="mb-4 text-sm font-semibold">Personal Information:</h3>
+              
+              <div className="w-full lg:w-3/4">
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="mb-4">
+                    <label htmlFor="FirstName" className="block mb-1 text-xs font-medium text-gray-900">
                       First Name
                     </label>
                     <input
@@ -141,19 +129,14 @@ const Settings = () => {
                       id="FirstName"
                       name="firstname"
                       value={DataForm.firstname}
-                      className={
-                        "bg-gray-50 border border-gray-300 text-gray-900 text-[14px] rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full  py-[4px] dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      }
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2"
                       onChange={handleChange}
                       placeholder="First Name"
                       required
                     />
                   </div>
-                  <div>
-                    <label
-                      htmlFor="LastName"
-                      className="block mb-1 text-[12px]  font-medium text-gray-900 dark:text-white"
-                    >
+                  <div className="mb-4">
+                    <label htmlFor="LastName" className="block mb-1 text-xs font-medium text-gray-900">
                       Last Name
                     </label>
                     <input
@@ -162,17 +145,15 @@ const Settings = () => {
                       name="lastname"
                       value={DataForm.lastname}
                       onChange={handleChange}
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-[14px] rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full  py-[4px] dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2"
                       placeholder="Last Name"
                       required
                     />
                   </div>
                 </div>
-                <div className="mb-[20px]">
-                  <label
-                    htmlFor="cin"
-                    className="block mb-1 text-[14px]  font-medium text-gray-900 dark:text-white"
-                  >
+
+                <div className="mb-4">
+                  <label htmlFor="cin" className="block mb-1 text-xs font-medium text-gray-900">
                     National ID
                   </label>
                   <input
@@ -182,16 +163,13 @@ const Settings = () => {
                     value={DataForm.cin}
                     onChange={handleChange}
                     disabled
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-[12px] rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full   py-[4px] dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="National ID "
-                    required
+                    className="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2 cursor-not-allowed"
+                    placeholder="National ID"
                   />
                 </div>
-                <div className="mb-[20px]">
-                  <label
-                    htmlFor="email"
-                    className="block mb-1 text-[14px]  font-medium text-gray-900 dark:text-white"
-                  >
+
+                <div className="mb-4">
+                  <label htmlFor="email" className="block mb-1 text-xs font-medium text-gray-900">
                     Email
                   </label>
                   <input
@@ -201,16 +179,13 @@ const Settings = () => {
                     value={DataForm.email}
                     onChange={handleChange}
                     disabled
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-[12px] rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full   py-[4px] dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="exemple@gmail.com"
-                    required
+                    className="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2 cursor-not-allowed"
+                    placeholder="example@gmail.com"
                   />
                 </div>
-                <div className="mb-[20px]">
-                  <label
-                    htmlFor="date_of_birth"
-                    className="block mb-1 text-[14px]  font-medium text-gray-900 dark:text-white"
-                  >
+
+                <div className="mb-4">
+                  <label htmlFor="date_of_birth" className="block mb-1 text-xs font-medium text-gray-900">
                     Date of Birth
                   </label>
                   <input
@@ -219,16 +194,13 @@ const Settings = () => {
                     name="date_of_birth"
                     value={DataForm.date_of_birth}
                     onChange={handleChange}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-[12px] rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full   py-[4px] dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="exemple@gmail.com"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2"
                     required
                   />
                 </div>
-                <div className="mb-[20px]">
-                  <label
-                    htmlFor="age"
-                    className="block mb-1 text-[14px]  font-medium text-gray-900 dark:text-white"
-                  >
+
+                <div className="mb-4">
+                  <label htmlFor="age" className="block mb-1 text-xs font-medium text-gray-900">
                     Age
                   </label>
                   <input
@@ -236,17 +208,14 @@ const Settings = () => {
                     id="age"
                     name="age"
                     value={DataForm.age}
-                    className="text-green-600 font-semibold opacity-80 bg-gray-50 border border-gray-300 text-[12px] rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full   py-[4px] dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 cursor-not-allowed "
-                    placeholder="exemple@gmail.com"
+                    className="bg-gray-100 border border-gray-300 text-green-600 font-semibold text-sm rounded-lg block w-full p-2 cursor-not-allowed"
                     readOnly
                     disabled
                   />
                 </div>
-                <div className="mb-[20px]">
-                  <label
-                    htmlFor="gender"
-                    className="block mb-1 text-[14px]  font-medium text-gray-900 dark:text-white"
-                  >
+
+                <div className="mb-6">
+                  <label htmlFor="gender" className="block mb-1 text-xs font-medium text-gray-900">
                     Gender
                   </label>
                   <select
@@ -254,31 +223,34 @@ const Settings = () => {
                     id="gender"
                     value={DataForm.gender}
                     onChange={handleChange}
-                    className={`bg-gray-50 !border text-xs rounded-lg block w-full py-2 px-3 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 border-gray-300 text-gray-900}`}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2"
                   >
-                    <option value="#" selected disabled  >--Select Gender--</option>
+                    <option value="#" disabled>--Select Gender--</option>
                     <option value="male">Male</option>
                     <option value="female">Female</option>
                     <option value="transgender">Transgender</option>
                   </select>
                 </div>
-                <button className="inline-flex items-center px-3 py-2 text-[12px]  text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 ">
+
+                <button 
+                  type="submit"
+                  className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 transition-colors"
+                >
                   Save Changes
                 </button>
               </div>
             </div>
           </form>
-          <div className="  ml-16 mt-7 ">
-            <h3 className="mb-2  text-sm  text-red-600 ">Delete Account :</h3>
-            <p className=" mb-5 text-[16px] ">
-              Do you want to delete the account? Please press below "Delete"
-              button
+
+          {/* Delete Account Section */}
+          <div className="mt-8 p-4 border-t border-gray-200">
+            <h3 className="mb-2 text-sm font-semibold text-red-600">Delete Account:</h3>
+            <p className="mb-4 text-sm text-gray-700">
+              Do you want to delete the account? Please press below "Delete" button
             </p>
-            <form className=" w-[55%] ">
-              <button className="inline-flex items-center px-3 py-2 text-[12px]  text-center text-white rounded-lg bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 ">
-                Delete Acount
-              </button>
-            </form>
+            <button className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:ring-red-300 transition-colors">
+              Delete Account
+            </button>
           </div>
         </div>
       </div>
