@@ -146,7 +146,7 @@ const TableAppointment = ({ refreshApp, showAnnuler, setShowAnnuler, setIdAppoin
   }
   const downloadPrescription = (id) => {
     axiosClient
-      .get(`/prescriptions/download/${id}`, { responseType: "blob" })
+      .get(`/prescriptions/download?appointment_id=${id}`, { responseType: "blob" })
       .then((res) => {
         console.log('res of download prescription: ', res)
         const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
