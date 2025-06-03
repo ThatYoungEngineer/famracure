@@ -1,5 +1,5 @@
 .customer-love {
-    padding: 40px 0;
+    padding: 20px 0;
     background-color: #fff; /* Background color similar to design */
 }
 
@@ -88,7 +88,7 @@
         width: 95%; /* Full-width on mobile */
     }
     .testimonial {
-        width: 100%; /* Single testimonial per row */
+        width: 90%; /* Single testimonial per row */
         margin-bottom: 20px;
     }
     .customer-img {

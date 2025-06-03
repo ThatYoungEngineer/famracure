@@ -7,6 +7,22 @@
   background-color: #587FD9; /* Light blue background */
   padding: 10px 9vw;
   box-sizing: border-box;
+  position: relative;
+}
+
+.topbar-content {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mobile-menu-button {
+  display: none;
+  cursor: pointer;
+  font-size: 24px;
+  color: white;
+  z-index: 1001;
 }
 
 .topbar-left {
@@ -16,8 +32,8 @@
 .icons {
   display: flex;
   align-items: center;
-  gap: 2rem;
-  flex: 1;
+  gap: 0.5rem;
+  /*flex: 1;*/
 }
 
 /* Right Section */
@@ -106,43 +122,80 @@
 /* RESPONSIVE STYLING */
 @media (max-width: 768px) {
   .topbar {
-      flex-direction: column;
-      align-items: flex-start;
       padding: 10px 15px;
   }
 
-  .topbar-left, .topbar-right {
+  .mobile-menu-button {
+      display: none; /* Hide the mobile menu button */
+  }
+
+  .topbar-content {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
       width: 100%;
-      justify-content: space-between;
+      background-color: #587FD9;
+      padding: 10px;
+      z-index: 1000;
+  }
+
+  .topbar-left, .topbar-right, .icons {
+      margin: 5px;
+  }
+
+  .icons {
+      justify-content: center;
+      flex: 0 0 auto;
   }
 
   .topbar-left {
-      margin-bottom: 10px;
-      left: 0;
+      flex: 1;
+      display: flex;
+      justify-content: flex-start;
   }
 
   .topbar-right {
-      right: 0;
+      flex: 1;
+      display: flex;
+      justify-content: flex-end;
   }
 
   .topbar-icon {
-      margin-right: 10px;
+      margin-right: 15px;
       font-size: 16px;
   }
 
   .topbar-button {
-      padding: 6px 12px;
+      padding: 8px 12px;
       font-size: 12px;
+      margin: 5px 0;
+  }
+
+  .auth-buttons {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-end;
+  }
+
+  .dropdown {
+      margin-right: 10px;
+  }
+
+  .dropdown-menu {
+      position: absolute;
+      width: auto;
+      margin-top: 5px;
+      right: 0;
   }
 
   .x-icon {
-    width: 14px !important;
-}
+      width: 14px !important;
+  }
 
-
-.Section_bg {
-  background-image: none !important;
-}
+  .Section_bg {
+      background-image: none !important;
+  }
 }
 
 @media (max-width: 480px) {
@@ -150,16 +203,34 @@
       padding: 8px;
   }
 
+  .topbar-content {
+      padding: 8px;
+  }
+
   .topbar-icon {
       font-size: 14px;
+      margin-right: 10px;
   }
 
   .topbar-button {
       padding: 5px 10px;
       font-size: 10px;
+      text-align: center;
+  }
+
+  .auth-buttons {
+      flex-wrap: wrap;
+  }
+
+  .dropdown, .topbar-button-blue {
+      margin-bottom: 5px;
+  }
+
+  .dropdown-toggle {
+      justify-content: center;
   }
 
   .x-icon {
-      width: 100px;
+      width: 12px !important;
   }
 }

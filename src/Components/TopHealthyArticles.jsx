@@ -7,9 +7,9 @@ const TopHealthyArticles = () => {
             <div className="container">
                 <div className="header-container">
                     <h2>Top Healthy Articles</h2>
-        
                     <a href="/blogs" className="view-all"><u>View All</u></a>
                 </div>
+
                 <div className="articles-container">
                     <div className="article">
                         <img src="/img/ar1 (1).png" className="article-img" alt="Basic Dental Care" />

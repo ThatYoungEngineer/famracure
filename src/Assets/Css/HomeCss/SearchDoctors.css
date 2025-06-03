@@ -11,25 +11,23 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-   /* width: 50%;  */
-  padding: 14px 9px 14px 9px;
+  width: 90%;
+  max-width: 800px;
+  padding: 14px 9px;
   background-color: white;
   border-radius: 10px;
   border: 1px solid;
 }
 
 .search_bar form {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 100%;
 }
 
 .search_input input {
   border: none;
-  margin-left: -10px;
   border-radius: 3px;
   padding: 10px;
-  width: 295px;
+  width: 96%;
 }
 
 .search_input input::placeholder {
@@ -80,7 +78,7 @@
 
 
 select:not([size]) {
- 
+
   border-width: inherit;
 }
 
@@ -142,15 +140,12 @@ p.v-p {
 
 .doctor-card-detail {
   position: relative;
-  width: 50%;
   margin-top: 28px;
   text-align: justify;
-  left: 24%;
 }
 
 .avalible {
   position: relative;
-  left: 151%;
   margin-top: 8px;
 }
 
@@ -166,17 +161,21 @@ p.v-p {
   }
 
 
-    .card-img {
-      margin-top: -116px;
-    }
+    /* Responsive card image styles */
+.card-img {
+  margin-top: 1rem;
+}
 
+/* Responsive video call section */
 .vedio-cal {
-         top: 5%;
-         
-        }
+  width: 100%;
+  margin-top: 1rem;
+}
+
+/* Responsive availability badge */
 .avalible {
-      margin-top: -11px;
-          left: 108%;
+  display: inline-flex;
+  margin-top: 0;
 }
 
 
@@ -197,7 +196,7 @@ p.v-p {
   }
 
   .search_input input {
-    width: 100%; /* Full width on mobile */
+    width: 96%; /* Full width on mobile */
     margin-bottom: 10px; /* Add spacing */
   }
 
@@ -214,7 +213,7 @@ p.v-p {
 
   .search_bar form {
     display: unset;
-    
+
   }
 
 
@@ -274,7 +273,6 @@ justify-content: center;
 .doctor-card-detail {
   margin-top: 16px;
   margin-bottom: 10px;
-  left: 30%;
 }
 
 p.v-p {
@@ -305,7 +303,7 @@ p.v-p {
 
 
 .ml-\[22rem\] {
- 
+
   display: none !important;
 }
 
@@ -331,10 +329,9 @@ p.v-p {
 
     margin-left: 66px;
 }
-  
+
 .text-sm {
-    font-size: -0.125rem !important;
-    
+    font-size: 0.875rem !important;
 }
 
 label.px-4.py-2.text-sm.font-medium.text-white.bg-blue-600.rounded-lg.cursor-pointer.hover\:bg-blue-700 {
@@ -345,15 +342,55 @@ label.px-4.py-2.text-sm.font-medium.text-white.bg-blue-600.rounded-lg.cursor-poi
 }
 
 
+/* Mobile-first responsive styles */
 @media (max-width: 576px) {
+  /* General responsive adjustments */
   .w-\[75\%\] {
     width: unset !important;
+  }
+
+  /* Search bar responsive adjustments */
+  .search_bar {
+    width: 95%;
+    padding: 10px 5px;
+  }
+
+  .search_input {
+    margin-bottom: 10px;
+  }
+
+  .search_input label {
+    font-size: 14px;
+    margin-left: 5px;
+  }
+
+  .btn_search {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  /* Doctor card responsive adjustments */
+  .border_card {
+    padding: 15px 10px;
+  }
+
+  .doctor-name {
+    font-size: 16px;
+    margin-top: 10px;
+  }
+
+  .specialization, .degree {
+    font-size: 14px;
+  }
+
+  .experience {
+    font-size: 12px;
   }
 }
 
 @media (max-width: 414px) and (min-width: 414px) {
   .doctor-card-detail {
-    
+
     left: 44%;
   }
 
@@ -388,7 +425,7 @@ label.px-4.py-2.text-sm.font-medium.text-white.bg-blue-600.rounded-lg.cursor-poi
   }
 
 .css-1it4a80-MuiTypography-root {
-  
+
   margin-bottom: 1.35em;
 }
 
@@ -397,7 +434,7 @@ label.px-4.py-2.text-sm.font-medium.text-white.bg-blue-600.rounded-lg.cursor-poi
           font-size: 5px;
         }
 
-  
+
 }
 
 @media (max-width: 320px) and (min-width: 320px) {
@@ -424,7 +461,7 @@ label.px-4.py-2.text-sm.font-medium.text-white.bg-blue-600.rounded-lg.cursor-poi
   /* left: 10%; */
   position: relative;
 }
-    
+
 
 .vedio-cal img {
   left: 5px;
@@ -444,14 +481,10 @@ label.px-4.py-2.text-sm.font-medium.text-white.bg-blue-600.rounded-lg.cursor-poi
 
 
 .css-1it4a80-MuiTypography-root {
- 
+
   font-size: 33px;
   margin-top: 20px;
-  
-}
 
 }
 
-
-
-
+}

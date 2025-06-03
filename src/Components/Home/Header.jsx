@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "../../Assets/Css/HomeCss/header.css";
 // import ProfileImg from "./ProfileImg";
@@ -10,7 +10,35 @@ import TopBar from "../TopBar";
 const Header = () => {
   const { t } = useTranslation();
   const [Toggle, setToggle] = useState(false);
- 
+
+  // Close mobile menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (Toggle && !event.target.closest('.menu') && !event.target.closest('.menu_mobile')) {
+        setToggle(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [Toggle]);
+
+  // Close mobile menu when window is resized to desktop size
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768 && Toggle) {
+        setToggle(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [Toggle]);
+
   return (
     <div>
       <TopBar/>
@@ -22,11 +50,17 @@ const Header = () => {
             </Link>
             <div className="menu_mobile">
               {Toggle ? (
-                <button className="btn_menu" onClick={() => setToggle(!Toggle)}>
+                <button className="btn_menu" onClick={(e) => {
+                  e.stopPropagation();
+                  setToggle(!Toggle);
+                }}>
                   <i className="fa-regular fa-xmark-large"></i>
                 </button>
               ) : (
-                <button className="btn_menu" onClick={() => setToggle(!Toggle)}>
+                <button className="btn_menu" onClick={(e) => {
+                  e.stopPropagation();
+                  setToggle(!Toggle);
+                }}>
                   <i className="fa-light fa-bars"></i>
                 </button>
               )}

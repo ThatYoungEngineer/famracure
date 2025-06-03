@@ -13,21 +13,36 @@ const TopBar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-const admin = useSelector((state) => state.AuthAdmin);
-const user = useSelector((state) => state.authUser);
-const doctor = useSelector((state) => state.AuthDoctor);
+  const admin = useSelector((state) => state.AuthAdmin);
+  const user = useSelector((state) => state.authUser);
+  const doctor = useSelector((state) => state.AuthDoctor);
 
-  const [isDropdownOpen, setDropdownOpen] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const isUserLoggedIn = user.isAuthenticated || admin.isAuthenticated || doctor.isAuthenticated;
 
   useEffect(() => {
     console.log("Refreshed")
-  }, [isUserLoggedIn]);  
+  }, [isUserLoggedIn]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isDropdownOpen && !event.target.closest('.dropdown')) {
+        setDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [isDropdownOpen]);
 
 
-  const toggleDropdown = () => {
+  const toggleDropdown = (e) => {
+    e.stopPropagation();
     setDropdownOpen(!isDropdownOpen);
   };
 
@@ -77,57 +92,60 @@ const doctor = useSelector((state) => state.AuthDoctor);
 
   return (
     <div className="topbar">
-      {isUserLoggedIn &&
-        <div className="topbar-left">
-          <ProfileImg />
-        </div>
-      }
-      <div className={`icons ${!isUserLoggedIn ? 'justify-start' : 'justify-center'} `}>
-        <a href="https://facebook.com" className="topbar-icon" aria-label="Facebook">
-          <i className="fab fa-facebook-f"></i>
-        </a>
-        <a href="https://twitter.com" className="topbar-icon" aria-label="X (Twitter)">
-          <img
-            src="/img/x.png"
-            className="w-[18px] h-[18px]"
-            alt=""
-          />
-        </a>
-        <a href="https://instagram.com" className="topbar-icon" aria-label="Instagram">
-          <i className="fab fa-instagram"></i>
-        </a>
-
-      </div>
-      <div className="topbar-right">
-        {isUserLoggedIn ?
-          <button
-            type='button'
-            onClick={logout}
-            className='bg-red-600 text-gray-200 rounded-lg px-6 py-2 font-medium'
-            disabled={isLoading}
-          >
-            {isLoading ? "Loading..." : "Logout"}
-          </button>
-          :
-          <>
-            <div className="dropdown">
-              <button
-                className="topbar-button topbar-button-white dropdown-toggle"
-                onClick={toggleDropdown}
-              >
-                Login/Signup
-              </button>
-              {isDropdownOpen && (
-                <div className="dropdown-menu">
-                  <Link to="/user-login" className="dropdown-item">Login</Link>
-                  <Link to="/user-signup" className="dropdown-item">Signup</Link>
-                </div>
-              )}
-            </div>
-
-            <Link to="/doctor/signup" className="topbar-button topbar-button-blue">Join as a Doctor</Link>
-          </>
+      <div className="topbar-content">
+        {isUserLoggedIn &&
+          <div className="topbar-left">
+            <ProfileImg />
+          </div>
         }
+
+        <div className={`icons ${!isUserLoggedIn ? 'justify-start' : 'justify-center'}`}>
+          <a href="https://facebook.com" className="topbar-icon" aria-label="Facebook">
+            <i className="fab fa-facebook-f"></i>
+          </a>
+          <a href="https://twitter.com" className="topbar-icon" aria-label="X (Twitter)">
+            <img
+              src="/img/x.png"
+              className="w-[18px] h-[18px]"
+              alt=""
+            />
+          </a>
+          <a href="https://instagram.com" className="topbar-icon" aria-label="Instagram">
+            <i className="fab fa-instagram"></i>
+          </a>
+        </div>
+
+        <div className="topbar-right">
+          {isUserLoggedIn ?
+            <button
+              type='button'
+              onClick={logout}
+              className='bg-red-600 text-gray-200 rounded-lg px-6 py-2 font-medium'
+              disabled={isLoading}
+            >
+              {isLoading ? "Loading..." : "Logout"}
+            </button>
+            :
+            <div className="auth-buttons">
+              <div className="dropdown">
+                <button
+                  className="topbar-button topbar-button-white dropdown-toggle"
+                  onClick={toggleDropdown}
+                >
+                  Login/Signup
+                </button>
+                {isDropdownOpen && (
+                  <div className="dropdown-menu">
+                    <Link to="/user-login" className="dropdown-item">Login</Link>
+                    <Link to="/user-signup" className="dropdown-item">Signup</Link>
+                  </div>
+                )}
+              </div>
+
+              <Link to="/doctor/signup" className="topbar-button topbar-button-blue">Join as a Doctor</Link>
+            </div>
+          }
+        </div>
       </div>
     </div>
   );

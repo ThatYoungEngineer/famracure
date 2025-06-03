@@ -1,5 +1,5 @@
 .top-healthy-articles {
-    padding: 40px 0;
+    padding: 20px 0;
     background-color: #ffffff; 
 }
 
@@ -59,8 +59,26 @@
     color: #1e4080; 
 }
 
+/* Responsive for Tablets */
+@media (max-width: 1024px) and (min-width: 769px) {
+    .container {
+        width: 90%; /* Adjust width for tablets */
+    }
 
+    .article {
+        width: 48%; /* Two articles per row */
+        margin-bottom: 20px;
+    }
 
+    .articles-container {
+        gap: 15px;
+        justify-content: space-between;
+    }
+
+    .header-container h2 {
+        font-size: 2rem; /* Adjust title size for tablets */
+    }
+}
 
 /* Responsive for Mobile Devices */
 @media (max-width: 768px) {
@@ -71,6 +89,11 @@
     .article {
         width: 100%; /* One article per row */
         margin-bottom: 20px;
+    }
+
+    .articles-container {
+        gap: 0;
+        justify-content: center;
     }
 
     .header-container {

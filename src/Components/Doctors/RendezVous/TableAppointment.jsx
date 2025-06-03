@@ -146,7 +146,7 @@ const TableAppointment = ({ refreshApp, showAnnuler, setShowAnnuler, setIdAppoin
   }
   const downloadPrescription = (id) => {
     axiosClient
-      .get(`/appointments/${id}/prescription/download`, { responseType: "blob" })
+      .get(`/prescriptions/${id}/download`, { responseType: "blob" })
       .then((res) => {
         console.log('res of download prescription: ', res)
         const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
@@ -286,10 +286,11 @@ const TableAppointment = ({ refreshApp, showAnnuler, setShowAnnuler, setIdAppoin
 
   return (
     <>
-      <div className="flex flex-col">
+      {/* Desktop Table View */}
+      <div className="hidden md:flex md:flex-col">
         <div className="overflow-x-auto">
           <div className="inline-block min-w-full align-middle">
-            <div className="overflow-hidden shadow">
+            <div className="overflow-hidden shadow rounded-lg">
               <table className="min-w-full divide-y divide-gray-200 table-fixed">
                 <thead className="bg-gray-100">
                   <tr>
@@ -369,32 +370,137 @@ const TableAppointment = ({ refreshApp, showAnnuler, setShowAnnuler, setIdAppoin
                   }
                 </tbody>
               </table>
-              {isLoading &&
-                <div className=" flex justify-center items-center h-20 ">
-                  <div role="status">
-                    <svg
-                      aria-hidden="true"
-                      className="w-8 h-8 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
-                      viewBox="0 0 100 101"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                        fill="currentColor"
-                      />
-                      <path
-                        d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                        fill="currentFill"
-                      />
-                    </svg>
-                  </div>
-                </div>
-              }
             </div>
           </div>
         </div>
       </div>
+
+      {/* Mobile Card View */}
+      <div className="md:hidden">
+        <div className="grid grid-cols-1 gap-4 px-4">
+          {(appointments && appointments.length > 0) ? appointments.map((el, idx) => (
+            <div key={idx} className="bg-white p-4 rounded-lg shadow hover:shadow-md">
+              <div className="flex justify-between items-start mb-3">
+                <span
+                  className={`text-left px-3 py-1 rounded-full text-xs font-medium ${el?.status === "confirmed"
+                      ? "bg-green-100 text-green-700"
+                      : el?.status === "pending"
+                        ? "bg-yellow-100 text-yellow-700"
+                        : el?.status === "completed"
+                          ? "bg-blue-100 text-blue-700"
+                          : "bg-gray-100 text-gray-700"
+                    }`}
+                >
+                  {el?.status}
+                </span>
+                <span className="text-xs text-gray-500">{el?.appointment_type}</span>
+              </div>
+
+              <div className="space-y-2 mb-4">
+                <div>
+                  <p className="text-xs text-gray-500">Patient:</p>
+                  <p className={`text-sm font-medium ${el.user ? "not-italic" : "italic text-opacity-40"}`}>
+                    {el?.user ? `${el?.user?.firstname} ${el?.user?.lastname}` : "NULL"}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-xs text-gray-500">Email:</p>
+                  <p className={`text-sm truncate ${el.user ? "not-italic" : "italic text-opacity-40"}`}>
+                    {el?.user ? el?.user?.email : "NULL"}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-xs text-gray-500">Phone:</p>
+                  <p className={`text-sm ${el.user ? "not-italic" : "italic text-opacity-40"}`}>
+                    {el?.user ? el?.user?.phone_number : "NULL"}
+                  </p>
+                </div>
+
+                <div className="flex space-x-4">
+                  <div>
+                    <p className="text-xs text-gray-500">Date:</p>
+                    <p className="text-sm">{el?.appointment_date}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">Time:</p>
+                    <p className="text-sm">{el?.appointment_time}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => setSelectedAppointment(el)}
+                  className="flex items-center gap-1 px-2 py-1 text-xs text-white rounded-lg bg-primary-600 hover:bg-primary-800"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3">
+                    <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                    <path fillRule="evenodd" d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 0 1 0-1.113ZM17.25 12a5.25 5.25 0 1 1-10.5 0 5.25 5.25 0 0 1 10.5 0Z" clipRule="evenodd" />
+                  </svg>
+                  View
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setOpenUpdateAppointment(el)}
+                  className="flex items-center gap-1 px-2 py-1 text-xs text-white rounded-lg bg-yellow-600 hover:bg-yellow-800"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3">
+                    <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                    <path fillRule="evenodd" d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 0 1 0-1.113ZM17.25 12a5.25 5.25 0 1 1-10.5 0 5.25 5.25 0 0 1 10.5 0Z" clipRule="evenodd" />
+                  </svg>
+                  Update
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => deleteApp(el.id)}
+                  className="flex items-center gap-1 px-2 py-1 text-xs text-white rounded-lg bg-red-600 hover:bg-red-800"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3">
+                    <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                    <path fillRule="evenodd" d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 0 1 0-1.113ZM17.25 12a5.25 5.25 0 1 1-10.5 0 5.25 5.25 0 0 1 10.5 0Z" clipRule="evenodd" />
+                  </svg>
+                  Delete
+                </button>
+              </div>
+            </div>
+          ))
+            :
+            !isLoading &&
+            <div className="text-center italic text-gray-500 py-8">
+              No data found
+            </div>
+          }
+        </div>
+      </div>
+
+      {/* Loading Indicator */}
+      {isLoading &&
+        <div className="flex justify-center items-center h-20">
+          <div role="status">
+            <svg
+              aria-hidden="true"
+              className="w-8 h-8 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+              viewBox="0 0 100 101"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                fill="currentColor"
+              />
+              <path
+                d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                fill="currentFill"
+              />
+            </svg>
+          </div>
+        </div>
+      }
 
       {/* Appointment Dialog */}
       {selectedAppointment && (
@@ -402,83 +508,112 @@ const TableAppointment = ({ refreshApp, showAnnuler, setShowAnnuler, setIdAppoin
           header=""
           visible={!!selectedAppointment}
           maximized
-          style={{ width: "50vw" }}
+          className="w-full md:w-4/5 lg:w-3/4 xl:w-1/2"
           onHide={() => setSelectedAppointment(null)}
         >
-          <div className="w-full m-0 flex flex-col gap-1">
-            <div className="w-full flex flex-col items-center justify-center">
+          <div className="w-full m-0 flex flex-col gap-2 p-2 md:p-4">
+            {/* Action Buttons */}
+            <div className="w-full flex flex-wrap gap-2 justify-center">
               <Button
                 variant="outlined"
                 color="primary"
                 size="small"
                 onClick={(e) => generateInvoice(selectedAppointment.id)}
-                className="w-fit p-2"
+                className="w-full sm:w-auto p-2 text-xs md:text-sm"
               >
                 Generate Invoice
               </Button>
-            </div>
-            <div className="w-full flex flex-col items-center justify-center">
+
               <Button
                 variant="contained"
                 color="success"
                 size="small"
                 onClick={(e) => downloadInvoice(selectedAppointment.id)}
-                className="w-fit p-2"
+                className="w-full sm:w-auto p-2 text-xs md:text-sm"
               >
                 Download Invoice
               </Button>
-              {invoiceError && <p className="w-full text-center text-red-500">{invoiceError}</p>}
-            </div>
-            <div className="w-full flex flex-col items-center justify-center">
+
               <Button
                 variant="contained"
                 color="warning"
                 size="small"
                 onClick={(e) => downloadPrescription(selectedAppointment.id)}
-                className="w-fit p-2"
+                className="w-full sm:w-auto p-2 text-xs md:text-sm"
               >
                 Download Prescription
               </Button>
-              {invoiceError && <p className="w-full text-center text-red-500">{invoiceError}</p>}
             </div>
 
-            <div className="w-full flex items-center justify-between">
+            {invoiceError && <p className="w-full text-center text-red-500 text-sm">{invoiceError}</p>}
+
+            <div className="w-full">
               <section className="w-full flex flex-col gap-2">
                 {(selectedAppointment.status === "confirmed" || selectedAppointment.status === "completed")
                   &&
-                  <section className="w-full flex flex-col gap-2 mb-5">
-                    <h1 className="flex-1 text-left font-bold text-2xl">Patient Information:</h1>
-                    <div>
+                  <section className="w-full flex flex-col gap-2 mb-5 p-2 bg-gray-50 rounded-lg">
+                    <h1 className="text-left font-bold text-lg md:text-xl lg:text-2xl border-b pb-2">Patient Information:</h1>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm md:text-base">
                       <div>Name: <span className="font-bold"> {selectedAppointment?.user?.firstname} {selectedAppointment?.user?.lastname}</span></div>
-                      <div>Email: {selectedAppointment?.user?.email}</div>
-                      <div>Phone: {selectedAppointment?.user?.phone_number}</div>
-                      <div>CNIC: {selectedAppointment?.user?.cin}</div>
-                      <div>Age: {selectedAppointment?.user?.age} years</div>
-                      <div className="capitalize">Gender: {selectedAppointment?.user?.gender}</div>
+                      <div className="truncate">Email: <span className="font-medium">{selectedAppointment?.user?.email}</span></div>
+                      <div>Phone: <span className="font-medium">{selectedAppointment?.user?.phone_number}</span></div>
+                      <div>CNIC: <span className="font-medium">{selectedAppointment?.user?.cin}</span></div>
+                      <div>Age: <span className="font-medium">{selectedAppointment?.user?.age} years</span></div>
+                      <div className="capitalize">Gender: <span className="font-medium">{selectedAppointment?.user?.gender}</span></div>
                     </div>
                   </section>
                 }
                 {completeAppointment &&
-                  <div className="w-full flex items-center justify-center text-green-400">
+                  <div className="w-full flex items-center justify-center text-green-400 my-2 p-2 bg-green-50 rounded">
                     {completeAppointment}
                   </div>
                 }
-                <div className="w-full flex items-center justify-between">
-                  <h2 className="flex-1 text-left">Appointment Type:</h2>
-                  <h2 className="flex-1 text-left">Appointment Status:</h2>
-                  <h2 className="flex-1 text-center">Appointment Fee</h2>
+
+                {/* Appointment Details Headers - Desktop */}
+                <div className="hidden md:flex w-full items-center justify-between border-b pb-2">
+                  <h2 className="flex-1 text-left font-medium">Appointment Type:</h2>
+                  <h2 className="flex-1 text-left font-medium">Appointment Status:</h2>
+                  <h2 className="flex-1 text-center font-medium">Appointment Fee</h2>
                   {(selectedAppointment?.status === "confirmed" || selectedAppointment?.status === "completed") && (
                     <>
-                      <h2 className="flex-1 text-center">Join Call</h2>
-                      <h2 className="flex-1 text-center">Create Prescription</h2>
-                      <h2 className="flex-1 text-center">Complete Appointment</h2>
+                      <h2 className="flex-1 text-center font-medium">Join Call</h2>
+                      <h2 className="flex-1 text-center font-medium">Create Prescription</h2>
+                      <h2 className="flex-1 text-center font-medium">Complete Appointment</h2>
                     </>
                   )}
+                </div>
+
+                {/* Appointment Details Headers - Mobile */}
+                <div className="md:hidden w-full grid grid-cols-1 gap-2 mt-3">
+                  <div className="flex justify-between items-center p-2 bg-gray-50 rounded">
+                    <span className="font-medium">Type:</span>
+                    <span>{selectedAppointment?.appointment_type}</span>
+                  </div>
+                  <div className="flex justify-between items-center p-2 bg-gray-50 rounded">
+                    <span className="font-medium">Status:</span>
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-medium ${selectedAppointment?.status === "confirmed"
+                          ? "bg-green-100 text-green-700"
+                          : selectedAppointment?.status === "pending"
+                            ? "bg-yellow-100 text-yellow-700"
+                            : selectedAppointment?.status === "completed"
+                              ? "bg-blue-100 text-blue-700"
+                              : "bg-gray-100 text-gray-700"
+                        }`}
+                    >
+                      {selectedAppointment?.status}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center p-2 bg-gray-50 rounded">
+                    <span className="font-medium">Fee:</span>
+                    <span>PKR/- {selectedAppointment?.appointment_type === "video" ? selectedAppointment?.video_fee : selectedAppointment?.clinic_fee}</span>
+                  </div>
                 </div>
               </section>
             </div>
 
-            <div className="flex items-center justify-between font-semibold">
+            {/* Desktop view for appointment actions */}
+            <div className="hidden md:flex items-center justify-between font-semibold">
               <h2 className="flex-1 text-left">{selectedAppointment?.appointment_type}</h2>
               <div className="flex-1">
                 <h2
@@ -536,27 +671,88 @@ const TableAppointment = ({ refreshApp, showAnnuler, setShowAnnuler, setIdAppoin
                 </>
               )}
             </div>
-            {(selectedAppointment.reschedule_requested || selectedAppointment.reschedule_requested == '1')
-              && <div className="w-full my-5 flex flex-col gap-1">
-                <h1 className="font-semibold"> A Reschedule is requested.. </h1>
-                <p>Reschedule Date: {selectedAppointment?.rescheduled_date || "N/A"} </p>
-                <p>Reschedule Time: {selectedAppointment?.rescheduled_time || "N/A"} </p>
+
+            {/* Mobile view for appointment actions */}
+            <div className="md:hidden mt-4 space-y-3">
+              {/* Video call button for video appointments */}
+              {selectedAppointment?.appointment_type === "video" && (selectedAppointment?.status === "confirmed" || selectedAppointment?.status === "completed") && (
                 <Button
                   variant="contained"
                   color="primary"
+                  fullWidth
                   size="small"
-                  type="button"
-                  className="w-fit"
-                  onClick={() => handleAcceptReschedule(selectedAppointment?.id)}
+                  disabled={selectedAppointment?.status === "cancelled"}
+                  onClick={() => navigate(`/room/${selectedAppointment?.id}`, { state: { user: doctorData.doctor } })}
+                  className="py-2 text-sm"
                 >
-                  Accept Reschedule
+                  Join Video Call
                 </Button>
-                {rescheduleSuccess && <p className="w-full my-5 text-green-600">{rescheduleSuccess}</p>}
+              )}
+
+              {/* Prescription and Complete buttons */}
+              {(selectedAppointment?.status === "confirmed" || selectedAppointment?.status === "completed") && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    size="small"
+                    fullWidth
+                    disabled={selectedAppointment?.status === "cancelled"}
+                    onClick={() => { setSelectedAppointment(null); setPrescriptionOpen(true) }}
+                    className="py-2 text-sm"
+                  >
+                    Create Prescription
+                  </Button>
+
+                  {selectedAppointment?.status !== "completed" && (
+                    <Button
+                      type="button"
+                      variant="contained"
+                      color="success"
+                      size="small"
+                      fullWidth
+                      disabled={selectedAppointment?.status === "cancelled" || selectedAppointment?.status === "completed"}
+                      onClick={() => { handleCompleteAppointment(selectedAppointment.id) }}
+                      className="py-2 text-sm"
+                    >
+                      Complete Appointment
+                    </Button>
+                  )}
+                </div>
+              )}
+            </div>
+            {(selectedAppointment.reschedule_requested || selectedAppointment.reschedule_requested == '1')
+              && <div className="w-full my-4 md:my-5 p-3 bg-yellow-50 rounded-lg border border-yellow-200 flex flex-col gap-2">
+                <h1 className="font-semibold text-sm md:text-base text-yellow-800"> A Reschedule is requested.. </h1>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+                  <p><span className="font-medium">New Date:</span> {selectedAppointment?.rescheduled_date || "N/A"} </p>
+                  <p><span className="font-medium">New Time:</span> {selectedAppointment?.rescheduled_time || "N/A"} </p>
+                </div>
+                <div className="mt-1">
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    type="button"
+                    className="w-full sm:w-fit py-1.5 text-xs md:text-sm"
+                    onClick={() => handleAcceptReschedule(selectedAppointment?.id)}
+                  >
+                    Accept Reschedule
+                  </Button>
+                </div>
+                {rescheduleSuccess && 
+                  <p className="w-full p-2 bg-green-100 text-green-700 rounded text-xs md:text-sm text-center">
+                    {rescheduleSuccess}
+                  </p>
+                }
               </div>
             }
             {(selectedAppointment?.status === "confirmed" || selectedAppointment?.status === "completed") &&
-              <section className="mt-20 w-full">
-                <Chat doctor_id={selectedAppointment?.doctor_id} user_id={selectedAppointment?.user_id} appointmentId={selectedAppointment?.id} />
+              <section className="mt-8 md:mt-12 lg:mt-16 w-full">
+                <h2 className="text-lg md:text-xl font-semibold mb-3 pb-2 border-b">Chat with Patient</h2>
+                <div className="bg-white rounded-lg shadow-sm">
+                  <Chat doctor_id={selectedAppointment?.doctor_id} user_id={selectedAppointment?.user_id} appointmentId={selectedAppointment?.id} />
+                </div>
               </section>
             }
           </div>

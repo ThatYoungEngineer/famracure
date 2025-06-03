@@ -8,8 +8,8 @@ const ListOfAppointment = () => {
   const [show, setShow] = useState(false);
   const [showAnnuler, setShowAnnuler] = useState(false);
   const [idAppointment, setIdAppointment] = useState(null);
-  
-  
+
+
   const [refreshApp, setRefreshApp] = useState(false);
 
   const AnnulerAppointment = (idAppointment) => {
@@ -20,20 +20,20 @@ const ListOfAppointment = () => {
 
   return (
     <>
-      <div className="p-4 bg-gray-50 block sm:flex items-center justify-between border-b border-gray-200 lg:mt-1.5 dark:bg-gray-800 dark:border-gray-700">
+      <div className="p-3 md:p-4 bg-gray-50 block border-b border-gray-200 lg:mt-1.5 dark:bg-gray-800 dark:border-gray-700">
         <div className="w-full mb-1">
           {/* Header of Page  */}
 
-          <div className="mb-4">
-            <nav className="flex mb-5" aria-label="Breadcrumb">
-              <ol className="inline-flex items-center space-x-1 text-sm font-medium md:space-x-2">
+          <div className="mb-3 md:mb-4">
+            <nav className="flex flex-wrap mb-3 md:mb-5" aria-label="Breadcrumb">
+              <ol className="inline-flex flex-wrap items-center space-x-1 text-xs sm:text-sm font-medium md:space-x-2">
                 <li className="inline-flex items-center">
                   <Link
                     to="/doctor/dashboard"
                     className="inline-flex items-center text-gray-700 hover:text-primary-600 dark:text-gray-300 dark:hover:text-white"
                   >
                     <svg
-                      className="w-5 h-5 mr-2.5"
+                      className="w-4 h-4 md:w-5 md:h-5 mr-1.5 md:mr-2.5"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                       xmlns="http://www.w3.org/2000/svg"
@@ -46,7 +46,7 @@ const ListOfAppointment = () => {
                 <li>
                   <div className="flex items-center">
                     <svg
-                      className="w-6 h-6 text-gray-400"
+                      className="w-5 h-5 md:w-6 md:h-6 text-gray-400"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                       xmlns="http://www.w3.org/2000/svg"
@@ -68,7 +68,7 @@ const ListOfAppointment = () => {
                 <li>
                   <div className="flex items-center">
                     <svg
-                      className="w-6 h-6 text-gray-400"
+                      className="w-5 h-5 md:w-6 md:h-6 text-gray-400"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                       xmlns="http://www.w3.org/2000/svg"
@@ -89,23 +89,22 @@ const ListOfAppointment = () => {
                 </li>
               </ol>
             </nav>
-            <h1 className="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">
+            <h1 className="text-lg md:text-xl lg:text-2xl font-semibold text-gray-900 dark:text-white">
             All Appointments
             </h1>
           </div>
 
           {/* End Header Of page */}
 
-          <div className="sm:flex">
-          
-            <div className="flex items-center ml-auto space-x-2 sm:space-x-3">
+          <div className="flex justify-end">
+            <div className="flex items-center space-x-2 sm:space-x-3">
               <button
                 type="button"
-                className="inline-flex items-center justify-center w-1/2 px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 sm:w-auto dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                className="inline-flex items-center justify-center w-full px-3 py-2 text-xs sm:text-sm font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 sm:w-auto dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                 onClick={() => setShow(!show)}
               >
                 <svg
-                  className="w-5 h-5 mr-2 -ml-1"
+                  className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2 -ml-1"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"

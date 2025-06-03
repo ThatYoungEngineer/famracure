@@ -92,10 +92,11 @@
   .card_body {
     width: 90%; /* Full width for mobile */
     margin-bottom: 15px;
+    height: 300px;
   }
 
   .card_body div img {
-    width: 140px;
+    width: 120px;
     height: 120px; /* Further adjust image size */
   }
 

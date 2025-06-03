@@ -172,7 +172,7 @@ a.nav_link {
 
 
 .w-full {
-  
+
   /* width: 78%; */
 }
 .nav_item {
@@ -203,6 +203,7 @@ a.nav_link {
     flex-direction: column;
     background-color: white;
     width: 100%;
+    z-index: 999; /* Ensure menu appears above other content */
   }
 
   .shaw.menu {
@@ -211,11 +212,17 @@ a.nav_link {
 
   .nav_items {
     flex-direction: column;
+    width: 100%;
+    left: 0;
+    position: relative;
+    padding: 10px 0;
   }
 
   .nav_item {
     margin-left: 0;
     margin-bottom: 10px;
+    width: 100%;
+    text-align: center;
   }
 }
 
@@ -251,16 +258,20 @@ a.nav_link {
     border-top: 1px solid white;
     transition: all 0.3s ease-in-out;
     height: fit-content;
-    z-index: 10;
+    z-index: 999; /* Increased z-index to match tablet view */
   }
   .nav_items {
     flex-direction: column;
     align-items: center;
-    left:unset;
+    left: 0;
+    width: 100%;
+    padding: 15px 0;
   }
   .nav_item {
     margin-right: 0px;
     margin-top: 10px;
+    width: 100%;
+    text-align: center;
   }
   .mr_left {
     margin-left: 0px;

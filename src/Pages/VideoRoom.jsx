@@ -25,8 +25,8 @@ const VideoRoom = () => {
     if (!user) return;
 
     if (meetingContainerRef.current) {
-      const appID = 1877023770;
-      const serverSecret = "846e971a896a5226e3b2df6c90405d78";
+      const appID = 469540022;
+      const serverSecret = "d5487de96cfc24b73bae4b0f6ea2f77c";
       const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
         appID,
         serverSecret,

@@ -107,8 +107,8 @@ const SearchDoctors = () => {
       <section>
         <div className="_img_cover">
           <div className="search_bar">
-            <form onSubmit={handleSubmitData}>
-              <div className="search_input">
+            <form onSubmit={handleSubmitData} className="flex flex-col md:flex-row items-center">
+              <div className="search_input w-full md:w-auto mb-2 md:mb-0">
                 <label htmlFor="Location" className="label_search">
                   Location
                   <i className="fas fa-map-marker-alt"></i>
@@ -117,12 +117,12 @@ const SearchDoctors = () => {
                   id="Location"
                   type="text"
                   name="address_cabinet"
-                  className="input_search"
+                  className="input_search w-full"
                   placeholder="Choose Town"
                   onChange={handleChangeData}
                 />
               </div>
-              <div className="search_input">
+              <div className="search_input w-full md:w-auto mb-2 md:mb-0">
                 <label htmlFor="Specialite" className="label_search">
                   Specialty
                   <i className="fas fa-stethoscope"></i>
@@ -130,7 +130,7 @@ const SearchDoctors = () => {
                 <select
                   id="Specialite"
                   name="specialite"
-                  className="input_search"
+                  className="input_search w-full"
                   onChange={handleChangeData}
                 >
                   <option value="default" disabled selected>Select Specialty</option>
@@ -141,31 +141,47 @@ const SearchDoctors = () => {
                   ))}
                 </select>
               </div>
-              <button className="btn_search btn_bg_primary">Search</button>
+              <button className="btn_search btn_bg_primary w-full md:w-auto mt-2 md:mt-0">Search</button>
             </form>
           </div>
         </div>
       </section>
 
       <main className="_container mt-4 mb-4">
-        <div className="grid lg:grid-cols-4 gap-4">
-          {/* Left Column - Appointment Filter Panel */}
-          <div className="lg:col-span-1">
-            <AppointmentFilterPanel
-              handleChangeData={handleChangeData}
-              specialitiesList={specialitiesList}
-              areasList={areasList}
-            />
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {/* Filter Panel - Full width on mobile, sidebar on larger screens */}
+          <div className="col-span-1 md:col-span-1 lg:col-span-1 mb-4 md:mb-0">
+            {/* Mobile Filter Toggle Button */}
+            <div className="block md:hidden mb-4">
+              <button 
+                className="w-full py-2 px-4 bg-blue-600 text-white rounded-md flex items-center justify-center"
+                onClick={() => document.getElementById('filter-panel').classList.toggle('hidden')}
+              >
+                <span>Filter Options</span>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clipRule="evenodd" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Filter Panel - Hidden on mobile by default, always visible on larger screens */}
+            <div id="filter-panel" className="hidden md:block">
+              <AppointmentFilterPanel
+                handleChangeData={handleChangeData}
+                specialitiesList={specialitiesList}
+                areasList={areasList}
+              />
+            </div>
           </div>
 
           {/* Right Column - Doctor Cards */}
-          <div className="lg:col-span-3">
+          <div className="col-span-1 md:col-span-2 lg:col-span-3">
             {loading ? (
               <div className="w-full flex items-center justify-center mb-10">
                 <Spinner />
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4">
+              <div className="grid grid-cols-1 gap-4">
                 {dataSearch.length ? (
                   dataSearch.map((info) => (
                     <SearchDoctorCard
@@ -196,7 +212,9 @@ const SearchDoctors = () => {
 
             {/* Load More Button */}
             {!loading && hasMore && dataSearch.length > 0 && (
-              <LoadMoreButton onClick={handleLoadMore} />
+              <div className="mt-4">
+                <LoadMoreButton onClick={handleLoadMore} />
+              </div>
             )}
           </div>
         </div>

@@ -5,20 +5,20 @@ import AdminAppointmentsTable from './AdminAppointmentsTable'
 
 const AdminAppointmentsContainer = () => {
     return (
-      <div className="p-4 pb-0 bg-white block sm:flex items-center justify-between border-b border-gray-200 lg:mt-1.5 dark:bg-gray-800 dark:border-gray-700">
+      <div className="p-3 sm:p-4 pb-0 bg-white block border-b border-gray-200 lg:mt-1.5 dark:bg-gray-800 dark:border-gray-700">
         <div className="w-full mb-1">
           {/* Header of Page  */}
 
-          <div className="mb-4">
-            <nav className="flex mb-5" aria-label="Breadcrumb">
-              <ol className="inline-flex items-center space-x-1 text-sm font-medium md:space-x-2">
+          <div className="mb-3 sm:mb-4">
+            <nav className="flex mb-3 sm:mb-5 overflow-x-auto" aria-label="Breadcrumb">
+              <ol className="inline-flex items-center space-x-1 text-xs sm:text-sm font-medium md:space-x-2 whitespace-nowrap">
                 <li className="inline-flex items-center">
                   <Link
                     to="#"
                     className="inline-flex items-center text-gray-700 hover:text-primary-600 dark:text-gray-300 dark:hover:text-white"
                   >
                     <svg
-                      className="w-5 h-5 mr-2.5"
+                      className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2.5"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                       xmlns="http://www.w3.org/2000/svg"
@@ -31,7 +31,7 @@ const AdminAppointmentsContainer = () => {
                 <li>
                   <div className="flex items-center">
                     <svg
-                      className="w-6 h-6 text-gray-400"
+                      className="w-4 h-4 sm:w-6 sm:h-6 text-gray-400"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                       xmlns="http://www.w3.org/2000/svg"
@@ -53,7 +53,7 @@ const AdminAppointmentsContainer = () => {
                 <li>
                   <div className="flex items-center">
                     <svg
-                      className="w-6 h-6 text-gray-400"
+                      className="w-4 h-4 sm:w-6 sm:h-6 text-gray-400"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                       xmlns="http://www.w3.org/2000/svg"
@@ -74,7 +74,7 @@ const AdminAppointmentsContainer = () => {
                 </li>
               </ol>
             </nav>
-            <h1 className="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">
+            <h1 className="text-lg sm:text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">
               Appointments Record
             </h1>
           </div>

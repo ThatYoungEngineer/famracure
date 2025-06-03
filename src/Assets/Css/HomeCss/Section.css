@@ -373,9 +373,9 @@
   color: #555; /* Optional: Customize text color */
 }
 .article_img img {
- 
+
   height:unset !important;
- 
+
 }
 
 
@@ -487,7 +487,7 @@
   } */
 
   /* .Section_bg {
-    
+
     width: 118%;
     position: relative;
 } */
@@ -501,50 +501,50 @@
   }
 
   .banner {
-    
-    height: 175px;
-    
-    
-}
+    height: 140px;
+  }
 
-.height_article_1 {
-  
-  margin-top:unset;
-}
+  .height_article_1 {
+    margin-top: unset;
+    height: auto;
+  }
 
+  .height_article_2 {
+    margin-top: unset;
+    height: auto;
+  }
 
-.height_article_2 {
-  
-  margin-top:unset;
-  
-}
+  .cards_info h1 {
+    right: unset;
+    font-size: 28px;
+  }
 
+  .cards_ {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+  }
 
-.cards_info h1 {
- 
-  right:unset;
-  
-}
+  .article_img {
+    justify-content: center;
+  }
 
+  .article_img img {
+    width: calc(33.33% - 10px);
+  }
 
-/* .two-banner-section .banner-container {
-  flex-direction: unset;
-  
-}
+  ._title_Section {
+    font-size: 40px;
+    padding-right: 0;
+    text-align: center;
+  }
 
-.article_img {
-  
-  flex-wrap: unset;
-  
-}
-
-
-.height_article_1 {
-  height: unset;
-  margin-top: unset;
-
-} */
-
+  .su_text {
+    padding-right: 0;
+    text-align: center;
+    width: 90%;
+    margin: 0 auto;
+  }
 }
 
 
@@ -552,34 +552,47 @@
   /* RESPONSIV SECTION */
 
   .Section_img {
-    display: none;
+    /* Make responsive instead of hiding */
+    display: block;
+    width: 100%;
+    margin-top: 20px;
   }
 
   .pd-top {
-    padding-top: 0px;
+    padding-top: 20px;
   }
+
   .su_text {
     padding-right: 0px;
-    font-size: 10px;
+    font-size: 14px; /* Increased from 10px for better readability */
     text-align: center;
-    width: 79%;
+    width: 90%;
+    margin: 0 auto;
   }
+
   ._height {
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    height: 87%;
+    height: auto;
+    padding-bottom: 20px;
   }
+
   ._title_Section {
     padding-right: 0px;
     text-align: center;
-    font-size: 34px;
-    width: 96%;
+    font-size: 32px;
+    width: 100%;
+    margin-top: 20px;
   }
+
   .Section_bg {
-    height: fit-content;
+    height: auto;
+    background-position: center;
+    background-size: cover;
   }
+
   .mr_top {
     margin-bottom: 22px;
   }
@@ -588,39 +601,52 @@
   /* START RESPONSIV  ARTICLE 1 */
 
   .article_info {
-    margin-top: 0px;
+    margin-top: 20px;
   }
-  .article_info h1 {
-    font-size: 18px;
-    margin-bottom: 2px;
 
+  .article_info h1 {
+    font-size: 24px; /* Increased from 18px for better readability */
+    margin-bottom: 10px;
   }
 
   .article_info p {
-    width: 87%;
-    font-size: 11px;
+    width: 90%;
+    font-size: 14px; /* Increased from 11px for better readability */
+    margin: 0 auto 15px;
+  }
+
+  .article_img {
+    justify-content: center;
+    gap: 10px;
   }
 
   .article_img img {
     margin-left: 0px;
     margin-right: 0px;
-    width: 272px;
-    height: 257px;
+    width: calc(50% - 10px); /* 2 images per row instead of tiny ones */
   }
 
   .height_article_1 {
-    height: fit-content;
+    height: auto;
+    padding: 20px 0;
   }
 
   /* END RESPONSIV  ARTICLE 1 */
 
   /* START RESPONSIV ARTICLE 2 */
   .article_title {
-    font-size: 24px;
+    font-size: 28px; /* Increased from 24px for better readability */
   }
 
   .height_article_2 {
-    height: fit-content;
+    height: auto;
+    padding: 30px 0;
+  }
+
+  .cards_ {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
   }
 
   /* END RESPONSIV ARTICLE 2 */
@@ -628,7 +654,9 @@
   /* START RESPONSIV ARTICLE 3 */
 
   .aside_bg {
-    height: 144px;
+    height: auto;
+    min-height: 160px;
+    padding: 30px;
   }
 
   .circle_bg,
@@ -641,32 +669,34 @@
     right: -26px;
     top: -29px;
   }
+
   .circle_border {
     right: -11px;
     top: -48px;
   }
 
   .aside_bg h1 {
-    font-size: 14px;
-    margin-bottom: 12px;
-    width: 83%;
+    font-size: 18px; /* Increased from 14px for better readability */
+    margin-bottom: 15px;
+    width: 90%;
   }
 
-  .aside_bg {
-    padding: 23px;
-  }
   .aside_bg button {
-    font-size: 10px;
+    font-size: 14px; /* Increased from 10px for better readability */
+    padding: 8px 16px;
   }
+
   .circle_bottom_border {
     width: 100px;
     height: 100px;
     top: 116px;
     left: -38px;
   }
+
   .height_aside {
-    height: 205px;
-}
+    height: auto;
+    padding: 20px 0;
+  }
   /* END RESPONSIV ARTICLE 3 */
 
 
@@ -739,7 +769,6 @@
 
   .banner {
     width: 100%;
-    margin-bottom: 20px;
   }
 }
 

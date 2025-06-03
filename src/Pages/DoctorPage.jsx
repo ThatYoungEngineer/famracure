@@ -24,7 +24,7 @@ const DoctorPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    
+
     axios.get(`https://backend.famracure.com/api/doctor_view/${id}`)
       .then((response) => {
         if (response) {
@@ -42,28 +42,28 @@ const DoctorPage = () => {
 
   console.log('doctor: ', doctor); // Log the doctor data to debug
 
-  if (loading) return <div className="text-center mt-10">Loading...</div>;
-  if (!doctor) return <div className="text-center mt-10 text-red-500">Doctor not found.</div>;
+  if (loading) return <div className="text-center mt-8 sm:mt-10 px-4">Loading...</div>;
+  if (!doctor) return <div className="text-center mt-8 sm:mt-10 text-red-500 px-4">Doctor not found.</div>;
 
   return (
     <>
       <Header />
-      <h1 className="text-center text-2xl mt-12 font-bold">Connect with Best Neurology</h1>
+      <h1 className="text-center text-xl sm:text-2xl mt-8 sm:mt-12 font-bold px-4">Connect with Best Neurology</h1>
 
       <div className="container mx-auto my-10 px-4 md:px-6">
         <div className="relative bg-cover bg-no-repeat h-80 bg-center"></div>
 
         <div className="container px-4 md:px-12 -mt-72">
-          <div className="block rounded-lg bg-white border border-gray-200 shadow-lg p-8 backdrop-blur-sm">
+          <div className="block rounded-lg bg-white border border-gray-200 shadow-lg p-4 sm:p-6 md:p-8 backdrop-blur-sm">
             <div className="flex flex-col lg:flex-row items-center lg:items-start space-y-6 lg:space-y-0 lg:space-x-10">
-              
+
               {/* Doctor Image */}
-              <div className="w-full lg:w-1/3 flex justify-center">
+              <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/3 flex justify-center">
                 <img src={doctor?.avatar_doctor ? doctor?.avatar_doctor : "/img/doc-listing.jpg"} alt="Doctor profile" className="shadow-lg object-cover w-[131px] h-[110px]" />
               </div>
-              
+
               {/* Doctor Details */}
-              <div className="w-full lg:w-2/3 flex flex-col space-y-4">
+              <div className="w-full sm:w-1/2 md:w-2/3 lg:w-2/3 flex flex-col space-y-4 text-center sm:text-left">
                 <AvailabilityBadge available={doctor?.available} />
                 <h2 className="font-bold text-xl">Dr. {doctor?.firstname} {doctor?.lastname}</h2>
                 <p className="text-gray-700">{doctor?.specialite}</p>
@@ -74,12 +74,12 @@ const DoctorPage = () => {
               </div>
 
               {/* Video Consultation Section */}
-              <div className="w-full lg:w-2/5 bg-white p-6 rounded-lg shadow-lg">
-                <div className="flex items-center mb-4">
-                  <i className="fas fa-video text-blue-500 text-2xl mr-2"></i>
-                  <h1 className="text-xl font-semibold text-blue-500">Online Video Consultation</h1>
+              <div className="w-full sm:w-full md:w-3/4 lg:w-2/5 bg-white p-4 sm:p-6 rounded-lg shadow-lg mx-auto lg:mx-0 mt-6 lg:mt-0">
+                <div className="flex flex-col sm:flex-row items-center mb-4">
+                  <i className="fas fa-video text-blue-500 text-2xl mr-0 sm:mr-2 mb-2 sm:mb-0"></i>
+                  <h1 className="text-xl font-semibold text-blue-500 text-center sm:text-left">Online Video Consultation</h1>
                 </div>
-                <div className="flex justify-end mb-4">
+                <div className="flex justify-center sm:justify-end mb-4">
                   <div className="bg-blue-100 text-blue-500 text-xs px-2 py-1 rounded text-center">
                     I'm Online <br /> 12:00 - 02:00
                   </div>
@@ -88,9 +88,9 @@ const DoctorPage = () => {
                   <span className="text-gray-500">Fee:</span>
                   <span className="text-gray-900 font-semibold">${doctor?.video_fee || "Not Available"}</span>
                 </div>
-                <div className="mb-4 flex justify-between gap-2">
+                <div className="mb-4 flex flex-col sm:flex-row justify-between gap-2">
                   <span className="text-gray-500">Address:</span>
-                  <span className="text-gray-900 text-right">{doctor?.address_cabinet}</span>
+                  <span className="text-gray-900 text-center sm:text-right">{doctor?.address_cabinet}</span>
                 </div>
                 <div className="mb-4 flex justify-between items-center">
                   <span className="text-gray-500">Available today</span>
