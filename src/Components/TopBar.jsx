@@ -131,18 +131,25 @@ const TopBar = () => {
                 <button
                   className="topbar-button topbar-button-white dropdown-toggle"
                   onClick={toggleDropdown}
+                  aria-expanded={isDropdownOpen}
                 >
-                  Login/Signup
+                  <span className="button-text">Login/Signup</span>
                 </button>
                 {isDropdownOpen && (
                   <div className="dropdown-menu">
-                    <Link to="/user-login" className="dropdown-item">Login</Link>
-                    <Link to="/user-signup" className="dropdown-item">Signup</Link>
+                    <Link to="/user-login" className="dropdown-item login-item">
+                      <i className="fas fa-sign-in-alt mr-2"></i> Login
+                    </Link>
+                    <Link to="/user-signup" className="dropdown-item signup-item">
+                      <i className="fas fa-user-plus mr-2"></i> Signup
+                    </Link>
                   </div>
                 )}
               </div>
 
-              <Link to="/doctor/signup" className="topbar-button topbar-button-blue">Join as a Doctor</Link>
+              <Link to="/doctor/signup" className="topbar-button topbar-button-blue">
+                <span className="button-text">Join as a Doctor</span>
+              </Link>
             </div>
           }
         </div>

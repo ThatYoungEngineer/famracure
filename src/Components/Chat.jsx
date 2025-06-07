@@ -7,7 +7,7 @@ import { Spinner } from 'flowbite-react';
 window.Pusher = Pusher;
 Pusher.logToConsole = true
 
-const Chat = ({ appointmentId, doctor_id, user_id, from }) => {
+const Chat = ({ appointmentId, doctor_id, user_id, from, isMobile }) => {
     const messagesEndRef = useRef(null);
     const [file, setFile] = useState(null);
     const [message, setMessage] = useState('');
@@ -71,7 +71,7 @@ const Chat = ({ appointmentId, doctor_id, user_id, from }) => {
     };
 
     useEffect(() => {
-        
+
         if (!doctor_id || !user_id) return;
 
         const echo = new Echo({
@@ -126,34 +126,34 @@ const Chat = ({ appointmentId, doctor_id, user_id, from }) => {
 
 
 return (
-    <div className="border rounded-lg shadow-md w-full h-[50%] bg-white">
-      <div className="h-[35rem] overflow-y-auto p-2 border-b px-4">
-      {isMessagesLoading && <div className="flex items-center justify-center h-[35rem]"><Spinner size="lg" variant="primary" /></div>}
+    <div className="border rounded-lg shadow-md w-full bg-white">
+      <div className={`${isMobile ? 'h-[20rem]' : 'h-[35rem]'} overflow-y-auto border-b ${isMobile ? 'p-1 px-2' : 'p-2 px-4'}`}>
+      {isMessagesLoading && <div className={`flex items-center justify-center ${isMobile ? 'h-[20rem]' : 'h-[35rem]'}`}><Spinner size="lg" variant="primary" /></div>}
         {messages.map((msg, index) => (
-          <div key={index} className={`p-2 my-2 flex gap-1 items-start ${msg.sender_type.includes("User") ? "justify-start" : "justify-end"}`} >
+          <div key={index} className={`${isMobile ? 'p-1 my-1' : 'p-2 my-2'} flex gap-1 items-start ${msg.sender_type.includes("User") ? "justify-start" : "justify-end"}`} >
             {msg.sender_type.includes("User")
             ?
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5 text-blue-800">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={`${isMobile ? 'h-4 w-4' : 'h-5 w-5'} text-blue-800 flex-shrink-0`}>
                 <path fillRule="evenodd" d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" clipRule="evenodd" />
               </svg>
             :
               <img 
                 src="https://w7.pngwing.com/pngs/661/543/png-transparent-stethoscope-cartoon-stethoscope-medical-medical-equipment-thumbnail.png" 
                 alt="doctor"
-                className="w-6 h-6 rounded-full object-cover order-2"
+                className={`${isMobile ? 'w-5 h-5' : 'w-6 h-6'} rounded-full object-cover order-2 flex-shrink-0`}
                />
             }
-            <div className={`inline-block p-2 rounded-lg ${!msg.sender_type.includes("User") ? "bg-blue-500 text-white" : "bg-gray-200 text-black"}`}>
+            <div className={`inline-block ${isMobile ? 'p-1.5 text-xs' : 'p-2 text-sm'} rounded-lg ${!msg.sender_type.includes("User") ? "bg-blue-500 text-white" : "bg-gray-200 text-black"} ${isMobile ? 'max-w-[85%]' : 'max-w-[90%]'}`}>
               {msg.message}
               {(msg.file_path) && (
                 <div>
                   <button 
                     type="button"
                     target="_blank" rel="noopener noreferrer" 
-                    className={`flex gap-2 ${msg.sender_type.includes("User") ? "text-gray-500" : "text-blue-100"} brightness-90 hover:underline hover:brightness-110 transition-all ease-in-out duration-150`}
+                    className={`flex ${isMobile ? 'gap-0.5' : 'gap-1'} items-center ${msg.sender_type.includes("User") ? "text-gray-500" : "text-blue-100"} brightness-90 hover:underline hover:brightness-110 transition-all ease-in-out duration-150 ${isMobile ? 'text-xs mt-0.5' : 'text-sm mt-1'}`}
                     onClick={e => handleFileOpen(msg.id)}
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'}`}>
                       <path fillRule="evenodd" d="M5.625 1.5c-1.036 0-1.875.84-1.875 1.875v17.25c0 1.035.84 1.875 1.875 1.875h12.75c1.035 0 1.875-.84 1.875-1.875V12.75A3.75 3.75 0 0 0 16.5 9h-1.875a1.875 1.875 0 0 1-1.875-1.875V5.25A3.75 3.75 0 0 0 9 1.5H5.625ZM7.5 15a.75.75 0 0 1 .75-.75h7.5a.75.75 0 0 1 0 1.5h-7.5A.75.75 0 0 1 7.5 15Zm.75 2.25a.75.75 0 0 0 0 1.5H12a.75.75 0 0 0 0-1.5H8.25Z" clipRule="evenodd" />
                       <path d="M12.971 1.816A5.23 5.23 0 0 1 14.25 5.25v1.875c0 .207.168.375.375.375H16.5a5.23 5.23 0 0 1 3.434 1.279 9.768 9.768 0 0 0-6.963-6.963Z" />
                     </svg>
@@ -167,35 +167,38 @@ return (
         <div ref={messagesEndRef} />
       </div>
 
-      <form onSubmit={sendMessage} className="flex gap-2 mt-2">
+      <form onSubmit={sendMessage} className={`${isMobile ? 'flex flex-col' : 'flex'} ${isMobile ? 'gap-1.5' : 'gap-2'} mt-2 ${isMobile ? 'p-1.5' : 'p-2'}`}>
         <input
           type="text"
           placeholder="Type a message..."
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          className="flex-1 p-2 border rounded-lg disabled:opacity-40"
+          className={`flex-1 ${isMobile ? 'p-1.5 text-sm h-8 text-base' : 'p-2'} border rounded-lg disabled:opacity-40`}
           disabled={loading}
         />
-        <input 
-          type="file" 
-          accept={from === 'user' ? 'image/*' : ''}
-          // ref={fileInputRef}
-          multiple={false} 
-          onChange={(e) => setFile(e.target.files[0])} 
-          className="disabled:opacity-40 border rounded-lg p-1" 
-          disabled={loading} 
-        />
-        <button 
-          disabled={loading} 
-          onClick={sendMessage}
-          type='button'
-          className="bg-blue-500 text-white px-4 py-2 rounded-lg disabled:opacity-40"
-        >
-          {loading 
-            ? <Spinner />
-            : "Send"          
-          }          
-        </button>
+        <div className={`${isMobile ? 'flex justify-between mt-1.5' : 'flex'} ${isMobile ? 'gap-1.5' : 'gap-2'}`}>
+          <div className={`${isMobile ? 'w-3/5' : ''} relative`}>
+            <input 
+              type="file" 
+              accept={from === 'user' ? 'image/*' : ''}
+              multiple={false} 
+              onChange={(e) => setFile(e.target.files[0])} 
+              className={`disabled:opacity-40 border rounded-lg ${isMobile ? 'p-0.5 text-xs w-full file:mr-1 file:py-1 file:px-2 file:text-xs' : 'p-1 file:mr-2 file:py-1 file:px-3'} file:rounded-md file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100`}
+              disabled={loading} 
+            />
+          </div>
+          <button 
+            disabled={loading} 
+            onClick={sendMessage}
+            type='button'
+            className={`bg-blue-500 text-white rounded-lg disabled:opacity-40 ${isMobile ? 'px-2 py-1.5 text-sm w-2/5 h-8' : 'px-4 py-2'} flex items-center justify-center`}
+          >
+            {loading 
+              ? <Spinner size={isMobile ? "sm" : "md"} />
+              : "Send"          
+            }          
+          </button>
+        </div>
       </form>
     </div>
   );

@@ -43,7 +43,7 @@ console.log("avatar_doctor: ", avatar_doctor);
 
   return (
     <>
-      <div className="mx-auto p-4 w-full relative rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 bg-white capitalize">
+      <div className="mx-auto p-4 w-full relative rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 bg-white capitalize border border-gray-200">
 
         <div className="absolute top-2 right-2 sm:top-3 sm:right-3 flex">
           <div className="avalible">

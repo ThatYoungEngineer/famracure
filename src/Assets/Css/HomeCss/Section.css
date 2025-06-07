@@ -576,7 +576,8 @@
     justify-content: center;
     flex-direction: column;
     height: auto;
-    padding-bottom: 20px;
+    /*padding-bottom: 20px;*/
+    padding-top:20px
   }
 
   ._title_Section {

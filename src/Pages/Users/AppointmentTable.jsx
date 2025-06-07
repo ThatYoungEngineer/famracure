@@ -153,7 +153,7 @@ const AppointmentPage = () => {
     <div className="w-screen min-h-screen flex flex-col">
       {rescheduleDialogue &&
         <section className="fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-gray-800 bg-opacity-95 z-50">
-          <div className={`${isMobile ? 'w-11/12' : isTablet ? 'w-4/5' : 'w-3/5'} ${isMobile ? 'h-2/3' : 'h-2/5'} bg-white bg-opacity-90 rounded-md flex flex-col items-center p-5 overflow-y-auto`}>
+          <div className={`${isMobile ? 'w-11/12' : isTablet ? 'w-4/5' : 'w-3/5'} ${isMobile ? 'max-h-[90vh]' : 'h-2/5'} bg-white bg-opacity-90 rounded-md flex flex-col items-center p-3 md:p-5 overflow-y-auto`}>
             <div className="w-full flex justify-end">
               <button
                 type="button"
@@ -163,10 +163,10 @@ const AppointmentPage = () => {
                 X
               </button>
             </div>
-            <span className="text-lg md:text-xl text-center">You can reschedule your appointment upto one week from now</span>
+            <span className={`${isMobile ? 'text-base' : 'text-lg md:text-xl'} text-center`}>You can reschedule your appointment upto one week from now</span>
             <span className="text-xs md:text-sm mt-2 text-yellow-500 text-center">* It will be as per the doctor availability</span>
-            <form className="w-full flex flex-col items-center justify-center" onSubmit={handleRescheduleForm}>
-              <div className="my-3 md:my-5 w-full flex flex-col gap-1 items-center justify-center">
+            <form className="w-full flex flex-col items-center justify-center mt-2 md:mt-4" onSubmit={handleRescheduleForm}>
+              <div className="my-2 md:my-5 w-full flex flex-col gap-1 items-center justify-center">
                 <label htmlFor="dateAppointment" className="block w-fit mb-1 md:mb-2 text-sm font-medium text-gray-900 dark:text-white">
                   Appointment Date
                 </label>
@@ -181,7 +181,7 @@ const AppointmentPage = () => {
                   required
                 />
               </div>
-              <div className="my-3 md:my-5 w-full flex flex-col gap-1 items-center justify-center">
+              <div className="my-2 md:my-5 w-full flex flex-col gap-1 items-center justify-center">
                 <label htmlFor="timeAppointment" className="block w-fit mb-1 md:mb-2 text-sm font-medium text-gray-900 dark:text-white">
                   Appointment Time
                 </label>
@@ -199,7 +199,7 @@ const AppointmentPage = () => {
                 color="primary"
                 size={isMobile ? "small" : "medium"}
                 type="submit"
-                className="w-1/2 md:w-auto"
+                className={`${isMobile ? 'w-4/5' : 'w-1/2 md:w-auto'} mt-2 md:mt-0`}
               >
                 Reschedule
               </Button>
@@ -220,7 +220,7 @@ const AppointmentPage = () => {
           >
             My Appointments
           </Typography>
-          
+
           {isMobile ? (
             // Mobile view - Card layout
             <div className="space-y-4">
@@ -229,7 +229,7 @@ const AppointmentPage = () => {
                   <CircularProgress />
                 </div>
               )}
-              
+
               {(!isLoading && appointments && appointments.length > 0) ? (
                 appointments.map((appointment) => (
                   <Paper key={appointment.id} className="p-4 space-y-2">

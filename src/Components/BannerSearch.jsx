@@ -9,6 +9,11 @@ const BannerSearch = () => {
     address_cabinet: "",
     specialite: "",
   });
+  const [errors, setErrors] = useState({
+    address_cabinet: "",
+    specialite: "",
+  });
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   const navigate = useNavigate();
 
@@ -17,25 +22,66 @@ const BannerSearch = () => {
     axiosClient.get("/specialite/list")
       .then((res) => setSpecialitiesList(res.data.specialities))
       .catch((err) => console.error(err));
+
+    // Add event listener for window resize
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    // Clean up event listener
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
+
+  const validateForm = () => {
+    let valid = true;
+    const newErrors = {
+      address_cabinet: "",
+      specialite: "",
+    };
+
+    if (!dataForm.address_cabinet.trim()) {
+      newErrors.address_cabinet = "Location is required";
+      valid = false;
+    }
+
+    if (!dataForm.specialite) {
+      newErrors.specialite = "Specialty is required";
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid;
+  };
 
   const handleChangeData = (ev) => {
     const { name, value } = ev.target;
     setDataForm({ ...dataForm, [name]: value });
+
+    // Clear error when user types
+    if (errors[name]) {
+      setErrors({
+        ...errors,
+        [name]: "",
+      });
+    }
   };
 
   const handleSubmitData = (e) => {
     e.preventDefault();
-    navigate("/search-doctor", { state: dataForm });
+    if (validateForm()) {
+      navigate("/search-doctor", { state: dataForm });
+    }
   };
 
   return (
     <section className="banner_search">
-        <h2 className="search_heading">Find and Book the <br></br>Best Doctors near you</h2>
+      <h2 className="search_heading">Find and Book the <br></br>Best Doctors near you</h2>
       <form onSubmit={handleSubmitData} className="search_form">
-        <div className="search_input" style={{
-          color:"white",
-        }}>
+        <div className="search_input">
           {/* <label htmlFor="Location" className="label_search">
             Location
           </label> */}
@@ -43,10 +89,16 @@ const BannerSearch = () => {
             id="Location"
             type="text"
             name="address_cabinet"
-            className="input_search"
+            className={`input_search ${errors.address_cabinet ? 'input-error' : ''}`}
             placeholder="Choose Town"
             onChange={handleChangeData}
+            value={dataForm.address_cabinet}
           />
+          {errors.address_cabinet && (
+            <div className="error-message">
+              {errors.address_cabinet}
+            </div>
+          )}
         </div>
 
         <div className="search_input">
@@ -56,8 +108,9 @@ const BannerSearch = () => {
           <select
             id="Specialite"
             name="specialite"
-            className="input_search"
+            className={`input_search ${errors.specialite ? 'input-error' : ''}`}
             onChange={handleChangeData}
+            value={dataForm.specialite}
           >
             <option value="">Select Specialty</option>
             {specialitiesList.map((specialite, idx) => (
@@ -66,6 +119,11 @@ const BannerSearch = () => {
               </option>
             ))}
           </select>
+          {errors.specialite && (
+            <div className="error-message">
+              {errors.specialite}
+            </div>
+          )}
         </div>
 
         <button type="submit" className="btn_search">

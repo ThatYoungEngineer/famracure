@@ -107,8 +107,8 @@ const SearchDoctors = () => {
       <section>
         <div className="_img_cover">
           <div className="search_bar">
-            <form onSubmit={handleSubmitData} className="flex flex-col md:flex-row items-center">
-              <div className="search_input w-full md:w-auto mb-2 md:mb-0">
+            <form onSubmit={handleSubmitData} className="flex flex-col md:flex-row items-end">
+              <div className="search_input">
                 <label htmlFor="Location" className="label_search">
                   Location
                   <i className="fas fa-map-marker-alt"></i>
@@ -117,12 +117,12 @@ const SearchDoctors = () => {
                   id="Location"
                   type="text"
                   name="address_cabinet"
-                  className="input_search w-full"
+                  className="input_search"
                   placeholder="Choose Town"
                   onChange={handleChangeData}
                 />
               </div>
-              <div className="search_input w-full md:w-auto mb-2 md:mb-0">
+              <div className="search_input">
                 <label htmlFor="Specialite" className="label_search">
                   Specialty
                   <i className="fas fa-stethoscope"></i>
@@ -130,7 +130,7 @@ const SearchDoctors = () => {
                 <select
                   id="Specialite"
                   name="specialite"
-                  className="input_search w-full"
+                  className="input_search"
                   onChange={handleChangeData}
                 >
                   <option value="default" disabled selected>Select Specialty</option>
@@ -141,7 +141,7 @@ const SearchDoctors = () => {
                   ))}
                 </select>
               </div>
-              <button className="btn_search btn_bg_primary w-full md:w-auto mt-2 md:mt-0">Search</button>
+              <button className="btn_search btn_bg_primary">Search</button>
             </form>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useReducer } from "react";
+import React, { useEffect, useState, useReducer, useCallback } from "react";
 import { useSelector } from "react-redux";
 import axiosClient from "../../../AxiosClient";
 import Chat from "../../Chat";
@@ -14,9 +14,22 @@ const TableAppointment = ({ refreshApp, showAnnuler, setShowAnnuler, setIdAppoin
   const [isLoading, setIsLoading] = useState(false);
   const [isPrescriptionOpen, setPrescriptionOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
-  const [prescriptionError, setPrescriptionError] = useState("")
-  const [completeAppointment, setCompleteAppointment] = useState("")
+  const [prescriptionError, setPrescriptionError] = useState("");
+  const [completeAppointment, setCompleteAppointment] = useState("");
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const navigate = useNavigate();
+
+  // Handle window resize to update mobile state
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   const [rescheduleSuccess, setRescheduleSuccess] = useState(null)
 
@@ -508,10 +521,11 @@ const TableAppointment = ({ refreshApp, showAnnuler, setShowAnnuler, setIdAppoin
           header=""
           visible={!!selectedAppointment}
           maximized
-          className="w-full md:w-4/5 lg:w-3/4 xl:w-1/2"
+          className={`${isMobile ? 'w-full' : 'w-full md:w-4/5 lg:w-3/4 xl:w-1/2'}`}
+          style={{ padding: isMobile ? '0' : undefined }}
           onHide={() => setSelectedAppointment(null)}
         >
-          <div className="w-full m-0 flex flex-col gap-2 p-2 md:p-4">
+          <div className={`w-full m-0 flex flex-col gap-2 ${isMobile ? 'p-1' : 'p-2 md:p-4'}`}>
             {/* Action Buttons */}
             <div className="w-full flex flex-wrap gap-2 justify-center">
               <Button
@@ -748,10 +762,15 @@ const TableAppointment = ({ refreshApp, showAnnuler, setShowAnnuler, setIdAppoin
               </div>
             }
             {(selectedAppointment?.status === "confirmed" || selectedAppointment?.status === "completed") &&
-              <section className="mt-8 md:mt-12 lg:mt-16 w-full">
-                <h2 className="text-lg md:text-xl font-semibold mb-3 pb-2 border-b">Chat with Patient</h2>
-                <div className="bg-white rounded-lg shadow-sm">
-                  <Chat doctor_id={selectedAppointment?.doctor_id} user_id={selectedAppointment?.user_id} appointmentId={selectedAppointment?.id} />
+              <section className={`${isMobile ? 'mt-4' : 'mt-8 md:mt-12 lg:mt-16'} w-full`}>
+                <h2 className={`${isMobile ? 'text-base' : 'text-lg md:text-xl'} font-semibold mb-2 pb-1 border-b`}>Chat with Patient</h2>
+                <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+                  <Chat 
+                    doctor_id={selectedAppointment?.doctor_id} 
+                    user_id={selectedAppointment?.user_id} 
+                    appointmentId={selectedAppointment?.id} 
+                    isMobile={isMobile} 
+                  />
                 </div>
               </section>
             }

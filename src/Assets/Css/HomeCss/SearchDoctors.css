@@ -13,21 +13,34 @@
   transform: translate(-50%, -50%);
   width: 90%;
   max-width: 800px;
-  padding: 14px 9px;
+  padding: 16px 16px;
   background-color: white;
   border-radius: 10px;
   border: 1px solid;
+  display: flex;
+  justify-content: center;
 }
 
 .search_bar form {
   width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: space-between;
+  align-items: flex-end;
 }
 
-.search_input input {
-  border: none;
+.search_input {
+  flex: 1;
+  min-width: 200px;
+  margin-right: 10px;
+}
+
+.search_input input, .search_input select {
+  border: 1px solid #ccc!important;
   border-radius: 3px;
   padding: 10px;
-  width: 96%;
+  width: 100%;
 }
 
 .search_input input::placeholder {
@@ -37,20 +50,21 @@
 
 .search_input input:focus {
   outline: none;
-  border: none;
+  border: 1px solid #587fd9;
   caret-color: #8c8d96;
 }
 .search_input label {
   font-size: 18px;
   color: #00214a;
   font-weight: 600;
-  margin-left: 20px;
   cursor: pointer;
+  margin-bottom:20px;
 }
 
 .search_input input[type="text"]:focus {
   outline: none;
   box-shadow: none;
+  border: 1px solid #587fd9;
 }
 
 .search_bar i {
@@ -58,17 +72,17 @@
   color: #8c8d96;
 }
 
-.search_input:not(:last-of-type) {
-  /* border-right: 1px solid #c4c4c4; */
-  margin-left: 10px;
-}
 
 .btn_search {
   border: none;
-  padding: 7px 15px;
+  padding: 10px 20px;
   border-radius: 5px;
-  margin-right: 13px;
   font-size: 16px;
+  min-width: 120px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .border_card {
@@ -192,28 +206,31 @@ p.v-p {
 
   .search_bar {
     width: 98%; /* Full width on mobile */
-    flex-direction: column; /* Stack items vertically */
   }
 
-  .search_input input {
-    width: 96%; /* Full width on mobile */
-    margin-bottom: 10px; /* Add spacing */
+  .search_bar form {
+    flex-direction: column; /* Stack items vertically */
+    gap: 15px;
+  }
+
+  .search_input {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+
+  .search_input input, .search_input select {
+    width: 100%; /* Full width on mobile */
   }
 
   .btn_search {
     width: 100%; /* Full width for button */
-    text-align: center;
+    margin-top: 10px;
   }
 
   .blue-dot {
     width: 8px; /* Adjust size for mobile */
     height: 8px;
-  }
-
-
-  .search_bar form {
-    display: unset;
-
   }
 
 
@@ -352,21 +369,30 @@ label.px-4.py-2.text-sm.font-medium.text-white.bg-blue-600.rounded-lg.cursor-poi
   /* Search bar responsive adjustments */
   .search_bar {
     width: 95%;
-    padding: 10px 5px;
+    padding: 16px 16px;
+  }
+
+  .search_bar form {
+    gap: 10px;
   }
 
   .search_input {
-    margin-bottom: 10px;
+    margin-bottom: 8px;
   }
 
   .search_input label {
     font-size: 14px;
-    margin-left: 5px;
+  }
+
+  .search_input input, .search_input select {
+    padding: 8px;
   }
 
   .btn_search {
     width: 100%;
-    margin-top: 10px;
+    margin-top: 8px;
+    height: 38px;
+    padding: 8px 15px;
   }
 
   /* Doctor card responsive adjustments */
@@ -389,12 +415,6 @@ label.px-4.py-2.text-sm.font-medium.text-white.bg-blue-600.rounded-lg.cursor-poi
 }
 
 @media (max-width: 414px) and (min-width: 414px) {
-  .doctor-card-detail {
-
-    left: 44%;
-  }
-
-
     .vedio-cal h1 {
       font-size: 10px;
       font-weight: 600;
@@ -438,10 +458,6 @@ label.px-4.py-2.text-sm.font-medium.text-white.bg-blue-600.rounded-lg.cursor-poi
 }
 
 @media (max-width: 320px) and (min-width: 320px) {
-    .doctor-card-detail {
-        left: 58%;
-      }
-
 .vedio-cal {
   margin-top: 14px;
   padding: 18px;
