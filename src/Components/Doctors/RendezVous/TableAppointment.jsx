@@ -139,6 +139,7 @@ const TableAppointment = ({ refreshApp, showAnnuler, setShowAnnuler, setIdAppoin
 
   }
 
+
   const downloadInvoice = (id) => {
     setInvoiceError(null)
     axiosClient
@@ -157,9 +158,10 @@ const TableAppointment = ({ refreshApp, showAnnuler, setShowAnnuler, setIdAppoin
         err?.response?.data && setInvoiceError("Invoice not found")
       })
   }
+  //backend.famracure.com/api/appointments/{appointmentId}/prescription/download
   const downloadPrescription = (id) => {
     axiosClient
-      .get(`/prescriptions/${id}/download`, { responseType: "blob" })
+      .get(`/appointments/${id}/prescription/download`, { responseType: "blob" })
       .then((res) => {
         console.log('res of download prescription: ', res)
         const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
