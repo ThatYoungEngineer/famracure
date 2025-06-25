@@ -176,18 +176,18 @@ const Prescriptions = () => {
                                     rel="noopener noreferrer"
                                     className="text-white no-underline"
                                   >
-                                    View
+                                    Download
                                   </a>
                                 </Button>
                               )}
-                              <Button
+                              {/*<Button
                                 variant="contained"
                                 color="primary"
                                 size="small"
                                 onClick={() => handlePrescriptionDownload(prescription.id)}
                               >
                                 Download
-                              </Button>
+                              </Button>*/}
                             </div>
                           </td>
                         </tr>

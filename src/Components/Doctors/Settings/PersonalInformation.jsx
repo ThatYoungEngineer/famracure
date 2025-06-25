@@ -76,7 +76,7 @@ const PersonalInformation = () => {
         if (success) {
           setDataForm(prev => ({
             ...prev,
-            available: !prev.available
+            available: e.target.checked
           }));
           setResponseForToggle("Doctor availability updated successfully!");
         }
@@ -143,7 +143,7 @@ const PersonalInformation = () => {
     formData.append("specialite", DataForm.specialite);
     formData.append("nom_cabinet", DataForm.nom_cabinet);
     formData.append("address_cabinet", DataForm.address_cabinet);
-    formData.append("available", 1);
+    formData.append("available", DataForm.available ? 1 : 0);
     formData.append("about", DataForm.about);
     formData.append("cin", DataForm.cin);
 
@@ -204,31 +204,49 @@ const PersonalInformation = () => {
       {/* Profile Picture Section */}
       <div className="w-full lg:w-[40%] xl:w-[35%] 2xl:w-[30%]">
         <div className="p-4 mb-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 sm:p-6 dark:bg-gray-800">
-          <div className="items-center sm:flex xl:flex 2xl:flex sm:space-x-4 xl:space-x-0 2xl:space-x-4">
-            <img 
-              className="mb-4 rounded-lg w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 sm:mb-0 xl:mb-4 2xl:mb-0" 
-              src={preview} 
-              alt="Profile" 
-            />
-
-            <div className="w-full">
-              <h3 className="mb-1 text-lg sm:text-xl font-bold text-gray-900 dark:text-white">
+          <div className="flex flex-col items-center gap-6">
+            <div className="relative group mx-auto">
+              <img 
+                className="rounded-full object-cover w-36 h-36 sm:w-40 sm:h-40 md:w-44 md:h-44 border-4 border-blue-100 dark:border-blue-900 shadow-lg transition-transform duration-300 group-hover:scale-105" 
+                src={preview} 
+                alt="Profile" 
+              />
+              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 rounded-full transition-all duration-300 flex items-center justify-center">
+                <input
+                  id="fileInput"
+                  type="file"
+                  accept="image/png, image/jpeg, image/gif"
+                  className="hidden"
+                  onChange={handleFileChange}
+                />
+                <label
+                  htmlFor="fileInput"
+                  className="absolute inset-0 w-full h-full cursor-pointer rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100"
+                >
+                  <span className="bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm px-3 py-1.5 rounded-md shadow-md transition-all duration-200 transform translate-y-1 group-hover:translate-y-0">
+                    Change Photo
+                  </span>
+                </label>
+              </div>
+            </div>
+            <div className="w-full text-center mt-4">
+              <h3 className="mb-2 text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
                 Profile picture
               </h3>
-              <div className="mb-4 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
+              <div className="mb-4 text-sm text-gray-500 dark:text-gray-400">
                 JPG, GIF, or PNG. Max size: 800KB
               </div>
 
               <input
-                id="fileInput"
+                id="fileInputButton"
                 type="file"
                 accept="image/png, image/jpeg, image/gif"
                 className="hidden"
                 onChange={handleFileChange}
               />
               <label
-                htmlFor="fileInput"
-                className="inline-block px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium text-white bg-blue-600 rounded-lg cursor-pointer hover:bg-blue-700"
+                htmlFor="fileInputButton"
+                className="inline-block px-5 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg cursor-pointer hover:bg-blue-700 active:bg-blue-800 transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 active:translate-y-0 mx-auto"
               >
                 Choose Image
               </label>
@@ -439,7 +457,7 @@ const PersonalInformation = () => {
               />
             </div>
           </div>
-          
+
           <div className="col-span-6 sm:col-span-3 mt-3">
             <label className="block mb-1 sm:mb-2 text-xs sm:text-sm font-medium text-gray-900 dark:text-white">
               CIN
@@ -454,7 +472,7 @@ const PersonalInformation = () => {
               onChange={HandelChange}
             />
           </div>
-          
+
           <div className="w-full flex gap-2 items-center justify-center mt-4 sm:mt-5">
             <h1 className="text-lg sm:text-xl md:text-2xl font-semibold">Experience Fields</h1>
             <span className="flex-1 border-t border-black" />
@@ -462,7 +480,7 @@ const PersonalInformation = () => {
               <ChevronDownIcon className={`w-4 h-4 sm:w-5 sm:h-5 ${showExpFields ? 'rotate-180' : 'rotate-0'}`} />
             </button>
           </div>
-          
+
           {showExpFields && (
             <>
               {experienceList?.map((experience, index) => (
@@ -547,7 +565,7 @@ const PersonalInformation = () => {
                       />
                     </div>
                   </div>
-                  
+
                   <div className="grid mt-2 grid-cols-6 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
                     <div className="col-span-6">
                       <label className="block mb-1 sm:mb-2 text-xs sm:text-sm font-medium text-gray-900 dark:text-white">
@@ -562,7 +580,7 @@ const PersonalInformation = () => {
                         value={experience.detail}
                       ></textarea>
                     </div>
-                    
+
                     <div className="col-span-6 flex flex-col gap-1 sm:gap-2">
                       <label className="block mb-1 sm:mb-2 text-sm sm:text-lg font-medium text-gray-900 dark:text-white">
                         Experience Certificates
@@ -577,7 +595,7 @@ const PersonalInformation = () => {
                         className="text-xs sm:text-sm"
                       />
                     </div>
-                    
+
                     <div className="col-span-6 flex flex-col gap-1 sm:gap-2">
                       {experience?.degree_certificates?.length > 0 &&
                         experience.degree_certificates.map((certificate, certificateIndex) => (
@@ -616,7 +634,7 @@ const PersonalInformation = () => {
               </button>
             </>
           )}
-          
+
           <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 md:gap-5 w-full mt-6 sm:mt-8">
             <div className="w-full sm:w-[30%] md:w-[25%] lg:w-[20%]">
               <AuthButton 
@@ -639,14 +657,14 @@ const PersonalInformation = () => {
               </Button>
             </div>
           </div>
-          
+
           {successMessage && (
             <p className="mt-2 sm:mt-3 text-green-500 text-xs sm:text-sm">
               {successMessage}
             </p>
           )}
         </form>
-        
+
         <div className="mt-6 sm:mt-8">
           <Alert color="warning" withBorderAccent icon={InformationCircleIcon}>
             <span className="text-xs sm:text-sm">
