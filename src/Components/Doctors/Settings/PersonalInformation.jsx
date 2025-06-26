@@ -60,9 +60,19 @@ const PersonalInformation = () => {
       if (doctorData?.doctor?.experience?.length > 0) {
         setExperienceList(doctorData.doctor.experience);
       }
-      setPreview(doctorData.doctor.avatar_doctor || "/img/Rectangle 4.jpg");
+      setPreview(doctorData.doctor.avatar_doctor || process.env.PUBLIC_URL + "/img/doc-image.jpg");
     }
   }, [doctorData]);
+
+  // Cleanup function for the object URL when component unmounts
+  useEffect(() => {
+    return () => {
+      // Check if preview is a blob URL (created by URL.createObjectURL)
+      if (preview && preview.startsWith('blob:')) {
+        URL.revokeObjectURL(preview);
+      }
+    };
+  }, [preview]);
 
   const HandelChangeCheckbox = (e) => {
     setLoadingForToggle(true);
@@ -208,26 +218,13 @@ const PersonalInformation = () => {
             <div className="relative group mx-auto">
               <img 
                 className="rounded-full object-cover w-36 h-36 sm:w-40 sm:h-40 md:w-44 md:h-44 border-4 border-blue-100 dark:border-blue-900 shadow-lg transition-transform duration-300 group-hover:scale-105" 
-                src={preview} 
+                src={preview || process.env.PUBLIC_URL + "/img/doc-image.jpg"} 
                 alt="Profile" 
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = process.env.PUBLIC_URL + "/img/doc-image.jpg";
+                }}
               />
-              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 rounded-full transition-all duration-300 flex items-center justify-center">
-                <input
-                  id="fileInput"
-                  type="file"
-                  accept="image/png, image/jpeg, image/gif"
-                  className="hidden"
-                  onChange={handleFileChange}
-                />
-                <label
-                  htmlFor="fileInput"
-                  className="absolute inset-0 w-full h-full cursor-pointer rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100"
-                >
-                  <span className="bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm px-3 py-1.5 rounded-md shadow-md transition-all duration-200 transform translate-y-1 group-hover:translate-y-0">
-                    Change Photo
-                  </span>
-                </label>
-              </div>
             </div>
             <div className="w-full text-center mt-4">
               <h3 className="mb-2 text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
